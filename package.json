@@ -1,0 +1,17 @@
+{
+  "name": "email-send",
+  "packageManager": "yarn@4.7.0",
+  "devDependencies": {
+    "@rcnald/eslint-config": "^0.2.0",
+    "@types/node": "^22.15.30",
+    "eslint": "^9.28.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^16.2.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.8.3",
+    "unplugin-swc": "^1.5.4",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.3"
+  }
+}

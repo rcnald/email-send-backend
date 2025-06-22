@@ -6,12 +6,14 @@ import { generateMailContent } from "../utils/mail-generator"
 
 export interface MailProps {
   accountantEmail: string
-  attachments: string[]
+  attachmentIds: string[]
+  clientId: string
   clientCNPJ: string
   clientName: string
   referenceMonth: string
   subject: string
-  body: string
+  html: string
+  text: string
   status: "failed_to_send" | "pending" | "draft" | "sent"
   message?: string
 }
@@ -34,32 +36,42 @@ export class Mail {
     return this.props.accountantEmail
   }
 
-  get body() {
-    return this.props.body
+  get html() {
+    return this.props.html
+  }
+
+  get text() {
+    return this.props.text
   }
 
   get subject() {
     return this.props.subject
   }
 
-  get attachments() {
-    return this.props.attachments
+  get attachmentIds() {
+    return this.props.attachmentIds
   }
 
   get clientCNPJ() {
     return this.props.clientCNPJ
   }
 
+  get clientId() {
+    return this.props.clientId
+  }
+
   static create(
     {
       clientCNPJ,
+      clientId,
       clientName,
       accountantEmail,
-      attachments,
+      attachmentIds,
       referenceMonth,
-      body,
+      html,
+      text,
       subject,
-    }: Optional<MailProps, "status" | "message" | "body" | "subject">,
+    }: Optional<MailProps, "status" | "message" | "text" | "html" | "subject">,
     id?: string,
   ) {
     const mailContent = generateMailContent({
@@ -71,11 +83,13 @@ export class Mail {
     const mail = new Mail(
       {
         clientCNPJ,
+        clientId,
         accountantEmail,
-        attachments,
+        attachmentIds,
         clientName,
         referenceMonth,
-        body: body ?? mailContent.body,
+        html: html ?? mailContent.html,
+        text: text ?? mailContent.text,
         subject: subject ?? mailContent.subject,
         status: "pending",
       },

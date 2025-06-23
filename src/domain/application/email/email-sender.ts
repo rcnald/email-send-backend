@@ -13,5 +13,10 @@ export interface SendEmailParams {
 }
 
 export abstract class EmailSender {
-  abstract send(params: SendEmailParams): Promise<void>
+  abstract send(
+    params: SendEmailParams,
+  ): Promise<
+    | [undefined, { ok: true }]
+    | [{ code: "EMAIL_TO_SENT_NOT_FOUND" } | undefined]
+  >
 }

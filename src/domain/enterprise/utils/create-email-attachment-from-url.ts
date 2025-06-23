@@ -1,10 +1,12 @@
-import { EmailAttachment } from "@/domain/application/email/email-sender"
+import { bad, nice } from "@/core/error"
 
 import { AttachmentProps } from "../entities/attachment"
 
+// TODO: return to user "failed to fetch attachment 'filename'" if any of the attachments fail to download
+
 export async function createEmailAttachmentsFromUrls(
   attachments: AttachmentProps[],
-): Promise<EmailAttachment[]> {
+) {
   const emailAttachments = await Promise.all(
     attachments.map(async (attachment) => {
       try {
@@ -25,7 +27,13 @@ export async function createEmailAttachmentsFromUrls(
         return null
       }
     }),
+  ).then((attachments) =>
+    attachments.filter((attachment) => attachment !== null),
   )
 
-  return emailAttachments.filter((att): att is EmailAttachment => att !== null)
+  if (emailAttachments.length === 0) {
+    return bad({ code: "ATTACHMENTS_HAS_EXPIRED" })
+  }
+
+  return nice(emailAttachments)
 }

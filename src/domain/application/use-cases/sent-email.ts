@@ -1,3 +1,4 @@
+import { bad, nice } from "@/core/error"
 import { Mail } from "@/domain/enterprise/entities/mail"
 import { createEmailAttachmentsFromUrls } from "@/domain/enterprise/utils/create-email-attachment-from-url"
 
@@ -23,7 +24,7 @@ export class SentEmailUseCase {
   async execute({ email, clientId, attachmentIds }: SentEmailUseCaseRequest) {
     const client = await this.clientRepository.find(clientId)
 
-    if (!client) return null
+    if (!client) return bad({ code: "CLIENT_NOT_FOUND" })
 
     const mail = Mail.create({
       clientId,
@@ -42,9 +43,12 @@ export class SentEmailUseCase {
       )
     ).filter((attachment) => !!attachment)
 
-    const emailAttachments = await createEmailAttachmentsFromUrls(attachments)
+    const [createEmailAttachmentsError, emailAttachments] =
+      await createEmailAttachmentsFromUrls(attachments)
 
-    await this.emailSender.send({
+    if (createEmailAttachmentsError) return bad(createEmailAttachmentsError)
+
+    const [emailSenderError] = await this.emailSender.send({
       to: mail.accountantEmail,
       from: "email@email.com",
       html: mail.html,
@@ -52,5 +56,11 @@ export class SentEmailUseCase {
       subject: mail.subject,
       attachments: emailAttachments,
     })
+
+    if (emailSenderError) {
+      return bad(emailSenderError)
+    }
+
+    return nice({})
   }
 }

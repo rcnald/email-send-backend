@@ -14,7 +14,7 @@ const sut: UploadAndCreateAttachmentUseCase =
 describe("UploadAndCreateAttachmentUseCase", () => {
   it("should return null if file type is not valid", async () => {
     const request = {
-      fileName: "test.txt",
+      fileName: "test",
       fileType: "txt",
       body: Buffer.from("test content"),
     }
@@ -26,7 +26,7 @@ describe("UploadAndCreateAttachmentUseCase", () => {
 
   it("should upload the file and create an attachment if file type is valid", async () => {
     const request = {
-      fileName: "test.zip",
+      fileName: "test",
       fileType: "zip",
       body: Buffer.from("test content"),
     }
@@ -35,7 +35,7 @@ describe("UploadAndCreateAttachmentUseCase", () => {
 
     expect(result?.attachment).toEqual(
       expect.objectContaining({
-        title: "test.zip",
+        title: "test",
         url: "http://fakeurl.com/test.zip",
       }),
     )

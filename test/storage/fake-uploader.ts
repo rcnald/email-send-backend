@@ -10,6 +10,6 @@ export class FakeUploader implements Uploader {
     fileType: string
     body: Buffer
   }): Promise<{ url: string }> {
-    return { url: `http://fakeurl.com/${fileName}` }
+    return { url: `http://fakeurl.com/${fileName}.${fileType}` }
   }
 }

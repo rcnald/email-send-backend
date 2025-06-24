@@ -2,7 +2,7 @@ import { AttachmentRepository } from "@/domain/application/repositories/attachme
 import { Attachment } from "@/domain/enterprise/entities/attachment"
 
 export class InMemoryAttachmentRepository implements AttachmentRepository {
-  private attachments: Attachment[] = []
+  public attachments: Attachment[] = []
 
   async create(attachment: Attachment): Promise<void> {
     this.attachments.push(attachment)
@@ -14,5 +14,19 @@ export class InMemoryAttachmentRepository implements AttachmentRepository {
     )
 
     return attachment || null
+  }
+
+  async findManyByMultipleIds(ids: string[]): Promise<Attachment[]> {
+    return this.attachments.filter((attachment) => ids.includes(attachment.id))
+  }
+
+  async update(attachment: Attachment): Promise<void> {
+    const index = this.attachments.findIndex(
+      (existingAttachment) => existingAttachment.id === attachment.id,
+    )
+
+    if (index !== -1) {
+      this.attachments[index] = attachment
+    }
   }
 }

@@ -23,8 +23,16 @@ export class Attachment {
     return this.props.title
   }
 
+  set title(value: string) {
+    this.props.title = value
+  }
+
   get url() {
     return this.props.url
+  }
+
+  set url(value: string) {
+    this.props.url = value
   }
 
   static create({ title, url }: AttachmentProps, id?: string) {

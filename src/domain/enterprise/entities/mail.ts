@@ -60,6 +60,18 @@ export class Mail {
     return this.props.clientId
   }
 
+  get status() {
+    return this.props.status
+  }
+
+  set status(value: MailProps["status"]) {
+    this.props.status = value
+  }
+
+  get referenceMonth() {
+    return this.props.referenceMonth
+  }
+
   static create(
     {
       clientCNPJ,
@@ -71,13 +83,20 @@ export class Mail {
       html,
       text,
       subject,
-    }: Optional<MailProps, "status" | "message" | "text" | "html" | "subject">,
+    }: Optional<
+      MailProps,
+      "status" | "message" | "text" | "html" | "subject" | "referenceMonth"
+    >,
     id?: string,
   ) {
+    const currentMonthBRL = new Intl.DateTimeFormat("pt-BR", {
+      month: "long",
+    }).format(new Date())
+
     const mailContent = generateMailContent({
       clientCNPJ,
       clientName,
-      referenceMonth,
+      referenceMonth: referenceMonth ?? currentMonthBRL,
     })
 
     const mail = new Mail(
@@ -87,7 +106,7 @@ export class Mail {
         accountantEmail,
         attachmentIds,
         clientName,
-        referenceMonth,
+        referenceMonth: referenceMonth ?? currentMonthBRL,
         html: html ?? mailContent.html,
         text: text ?? mailContent.text,
         subject: subject ?? mailContent.subject,

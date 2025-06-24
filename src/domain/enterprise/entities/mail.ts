@@ -89,14 +89,14 @@ export class Mail {
     >,
     id?: string,
   ) {
-    const currentMonthBRL = new Intl.DateTimeFormat("pt-BR", {
+    const previousMonthBRL = new Intl.DateTimeFormat("pt-BR", {
       month: "long",
-    }).format(new Date())
+    }).format(new Date().setMonth(new Date().getMonth() - 1))
 
     const mailContent = generateMailContent({
       clientCNPJ,
       clientName,
-      referenceMonth: referenceMonth ?? currentMonthBRL,
+      referenceMonth: referenceMonth ?? previousMonthBRL,
     })
 
     const mail = new Mail(
@@ -106,7 +106,7 @@ export class Mail {
         accountantEmail,
         attachmentIds,
         clientName,
-        referenceMonth: referenceMonth ?? currentMonthBRL,
+        referenceMonth: referenceMonth ?? previousMonthBRL,
         html: html ?? mailContent.html,
         text: text ?? mailContent.text,
         subject: subject ?? mailContent.subject,

@@ -81,12 +81,12 @@ O sistema é uma plataforma web projetada para otimizar o processo de envio de d
 
 * [x] **RN-01:** O arquivo anexado pelo usuário **deve**, obrigatoriamente, estar no formato **.zip**. O sistema deve validar a extensão do arquivo e rejeitar formatos diferentes.  
 * [x] **RN-02:** O assunto do e-mail **deve** seguir o padrão: "Arquivos fiscais de '[nome do cliente]' ('[cnpj]') referente ao mês '[mês referente]'".  
-* [ ] **RN-03:** O arquivo .zip anexado ao e-mail **deve** ser renomeado para o formato: "arquivos fiscais '[cliente]' do mês de '[mês referente]'.zip".  
+* [x] **RN-03:** O arquivo .zip anexado ao e-mail **deve** ser renomeado para o formato: "arquivos-fiscais-[cliente]-do-mes-de-[mês referente]'.zip".  
 * [ ] **RN-04:** É obrigatório selecionar um cliente da lista para que o envio do e-mail seja habilitado.  
 * [ ] **RN-05:** Todo cliente cadastrado **deve** possuir um contador com um endereço de e-mail válido para ser o destinatário.  
-* [ ] **RN-06:** O processo de envio só pode ser iniciado se houver um arquivo válido (.zip) anexado e um cliente selecionado.  
+* [x] **RN-06:** O processo de envio só pode ser iniciado se houver um arquivo válido (.zip) anexado e um cliente selecionado.  
 * [ ] **RN-07:** Os arquivos armazenados temporariamente para envio (mencionando S3/Tebi.io) **devem** ser excluídos permanentemente após 3 dias.  
-* [ ] **RN-08:** O campo de mês de referência deve ser preenchido automaticamente com o mês anterior à data atual, mas **deve** permitir a alteração pelo usuário.  
+* [x] **RN-08:** O campo de mês de referência deve ser preenchido automaticamente com o mês anterior à data atual, mas **deve** permitir a alteração pelo usuário.  
 * [ ] **RN-09:** Um usuário só poderá visualizar o histórico dos **seus próprios** envios.  
 * [ ] **RN-10:** Na tela de envio, o usuário só poderá selecionar clientes que ele mesmo cadastrou.
 

@@ -3,6 +3,7 @@ import { randomUUID } from "crypto"
 export interface AttachmentProps {
   title: string
   url: string
+  mailId?: string
 }
 
 export class Attachment {
@@ -33,6 +34,14 @@ export class Attachment {
 
   set url(value: string) {
     this.props.url = value
+  }
+
+  get mailId(): string | undefined {
+    return this.props.mailId
+  }
+
+  set mailId(value: string) {
+    this.props.mailId = value
   }
 
   static create({ title, url }: AttachmentProps, id?: string) {

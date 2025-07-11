@@ -1,0 +1,14 @@
+services:
+  postgres:
+      image: bitnami/postgresql:latest
+      restart: unless-stopped
+      environment:
+        - POSTGRESQL_USERNAME=postgres
+        - POSTGRESQL_PASSWORD=postgres
+        - POSTGRESQL_DATABASE=email-send
+      ports:
+        - "5432:5432"
+      volumes:
+        - pg:/var/lib/postgresql/data
+volumes:
+  pg:

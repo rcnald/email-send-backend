@@ -19,9 +19,12 @@ describe("UploadAndCreateAttachmentUseCase", () => {
       body: Buffer.from("test content"),
     }
 
-    const result = await sut.execute(request)
+    const [error] = await sut.execute(request)
 
-    expect(result).toBeNull()
+    expect(error).toEqual({
+      CODE: "INVALID_FILE_TYPE",
+      message: "Invalid file type",
+    })
   })
 
   it("should upload the file and create an attachment if file type is valid", async () => {
@@ -31,8 +34,9 @@ describe("UploadAndCreateAttachmentUseCase", () => {
       body: Buffer.from("test content"),
     }
 
-    const result = await sut.execute(request)
+    const [error, result] = await sut.execute(request)
 
+    expect(error).toBeUndefined()
     expect(result?.attachment).toEqual(
       expect.objectContaining({
         title: "test.zip",

@@ -1,3 +1,4 @@
+import { bad, nice } from "@/core/error"
 import { Attachment } from "@/domain/enterprise/entities/attachment"
 
 import { AttachmentRepository } from "../repositories/attachment-repository"
@@ -25,7 +26,7 @@ export class UploadAndCreateAttachmentUseCase {
     const isFileTypeValid = zipRegex.test(fileType)
 
     if (!isFileTypeValid) {
-      return null
+      return bad({ CODE: "INVALID_FILE_TYPE", message: "Invalid file type" })
     }
 
     const { url } = await this.uploader.upload({ fileName, fileType, body })
@@ -34,8 +35,6 @@ export class UploadAndCreateAttachmentUseCase {
 
     this.attachmentRepository.create(attachment)
 
-    return {
-      attachment,
-    }
+    return nice({ attachment })
   }
 }

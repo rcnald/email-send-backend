@@ -1,14 +1,17 @@
 {
   "name": "email-send",
   "packageManager": "yarn@4.7.0",
+  "type": "module",
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "dev": "node --no-warnings --experimental-strip-types src/infra/server.ts"
   },
   "devDependencies": {
     "@rcnald/eslint-config": "^0.2.0",
     "@swc/core": "^1.12.5",
     "@types/express": "^5",
     "@types/node": "^22.15.30",
+    "dotenv": "^17.2.0",
     "eslint": "^9.28.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^16.2.0",
@@ -21,6 +24,7 @@
     "vitest": "^3.2.3"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.844.0",
     "@prisma/client": "^6.11.1",
     "express": "^5.1.0",
     "install": "^0.13.0",

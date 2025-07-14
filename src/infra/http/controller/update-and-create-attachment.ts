@@ -3,10 +3,18 @@ import z from "zod"
 
 import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/upload-and-create-attachment"
 
-const updateAndCreateAttachmentBody = z.object({
-  fileName: z.string(),
-  fileType: z.string(),
-  body: z.instanceof(Buffer),
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+const ACCEPTED_MIME_TYPES = ["application/zip"]
+
+const attachmentFileSchema = z.object({
+  originalname: z.string(),
+  mimetype: z.string().refine((mime) => ACCEPTED_MIME_TYPES.includes(mime), {
+    message: `File type invalid. Accepted types: ${ACCEPTED_MIME_TYPES.join(", ")}.`,
+  }),
+  size: z.number().max(MAX_FILE_SIZE, {
+    message: `File too large. Maximum size ${MAX_FILE_SIZE / (1024 * 1024)}MB.`,
+  }),
+  buffer: z.instanceof(Buffer),
 })
 
 export class UpdateAndCreateAttachmentController {
@@ -15,9 +23,19 @@ export class UpdateAndCreateAttachmentController {
   ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const { fileName, fileType, body } = updateAndCreateAttachmentBody.parse(
-      request.body,
-    )
+    const fileValidation = attachmentFileSchema.safeParse(request.file)
+
+    if (!fileValidation.success) {
+      return response.status(400).json({
+        error: "Invalid file",
+      })
+    }
+
+    const {
+      mimetype: fileType,
+      buffer: body,
+      originalname: fileName,
+    } = fileValidation.data
 
     const [error, result] = await this.updateAndCreateAttachmentUseCase.execute(
       {

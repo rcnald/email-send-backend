@@ -2,16 +2,17 @@ import { PrismaClient } from "@prisma/client"
 
 import { AttachmentRepository } from "@/domain/application/repositories/attachment-repository"
 import { Attachment } from "@/domain/enterprise/entities/attachment"
+
 import { PrismaAttachmentMapper } from "../mappers/prisma-attachment-mapper"
 
 export class PrismaAttachmentRepository implements AttachmentRepository {
-  constructor(private prisma: PrismaClient) { }
+  constructor(private prisma: PrismaClient) {}
 
   async create(attachment: Attachment): Promise<void> {
     const data = PrismaAttachmentMapper.toPrisma(attachment)
 
     await this.prisma.attachment.create({
-      data
+      data,
     })
   }
 
@@ -22,7 +23,7 @@ export class PrismaAttachmentRepository implements AttachmentRepository {
   }
 
   async find(id: string): Promise<Attachment | null> {
-    const attachment =  await this.prisma.attachment.findUnique({
+    const attachment = await this.prisma.attachment.findUnique({
       where: { id },
     })
 

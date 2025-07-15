@@ -9,6 +9,7 @@ Data: 06/06/2025
 | ------ | ---- | ----- | --------- |
 | 1.0 | 06/06/2025 | Ronaldo Junior | Documento inicial focado no fluxo de envio de e-mail |
 | 1.1 | 06/06/2025 | Ronaldo Junior | Escopo expandido e adição de RNs e RNFs |
+| 1.3 | 11/06/2025 | Ronaldo Junior | Atualização dos Requisitos Funcionais e Regras de Negócio |
 
 ## **Índice**
 
@@ -85,7 +86,7 @@ O sistema é uma plataforma web projetada para otimizar o processo de envio de d
 * [ ] **RN-04:** É obrigatório selecionar um cliente da lista para que o envio do e-mail seja habilitado.  
 * [ ] **RN-05:** Todo cliente cadastrado **deve** possuir um contador com um endereço de e-mail válido para ser o destinatário.  
 * [x] **RN-06:** O processo de envio só pode ser iniciado se houver um arquivo válido (.zip) anexado e um cliente selecionado.  
-* [ ] **RN-07:** Os arquivos armazenados temporariamente para envio (mencionando S3/Tebi.io) **devem** ser excluídos permanentemente após 3 dias.  
+* [x] **RN-07:** Os arquivos armazenados temporariamente para envio (mencionando S3/Tebi.io) **devem** ser excluídos permanentemente após 3 dias.  
 * [x] **RN-08:** O campo de mês de referência deve ser preenchido automaticamente com o mês anterior à data atual, mas **deve** permitir a alteração pelo usuário.  
 * [ ] **RN-09:** Um usuário só poderá visualizar o histórico dos **seus próprios** envios.  
 * [ ] **RN-10:** Na tela de envio, o usuário só poderá selecionar clientes que ele mesmo cadastrou.

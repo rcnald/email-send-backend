@@ -35,6 +35,7 @@
     "express": "^5.1.0",
     "install": "^0.13.0",
     "multer": "^2.0.1",
-    "zod": "^4.0.5"
+    "zod": "^4.0.5",
+    "zod-validation-error": "^3.5.3"
   }
 }

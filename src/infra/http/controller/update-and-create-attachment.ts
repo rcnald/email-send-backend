@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import z from "zod"
+import { fromZodError } from "zod-validation-error/v4"
 
 import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/upload-and-create-attachment"
 
@@ -26,8 +27,11 @@ export class UpdateAndCreateAttachmentController {
     const fileValidation = attachmentFileSchema.safeParse(request.file)
 
     if (!fileValidation.success) {
+      const formattedError = fromZodError(fileValidation.error)
+
       return response.status(400).json({
         error: "Invalid file",
+        details: formattedError.details,
       })
     }
 
@@ -47,10 +51,10 @@ export class UpdateAndCreateAttachmentController {
 
     if (error) {
       if (error.CODE === "INVALID_FILE_TYPE") {
-        return response.status(400).json("Invalid file type")
+        return response.status(400).json({ error: error.message })
       }
 
-      return response.status(400).send("Client Error")
+      return response.status(400).send({ error: "Client Error" })
     }
 
     return response.status(201).json(result.attachment)

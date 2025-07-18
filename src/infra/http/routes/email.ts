@@ -1,11 +1,15 @@
-import { Router } from "express"
+import { Request, Response, Router } from "express"
 
 import { makeSentEmail } from "@/infra/factories/make-sent-email"
 
-const emailsRoutes = Router()
+export const createEmailRoutes = () => {
+  const emailsRoutes = Router()
 
-const { sentEmailController } = makeSentEmail()
+  const { sentEmailController } = makeSentEmail()
 
-emailsRoutes.post("/", (req, res) => sentEmailController.handle(req, res))
+  emailsRoutes.post("/", (request: Request, response: Response) =>
+    sentEmailController.handle(request, response),
+  )
 
-export { emailsRoutes }
+  return emailsRoutes
+}

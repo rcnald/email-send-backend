@@ -8,6 +8,7 @@ import { EmailSender } from "../email/email-sender"
 import { AttachmentRepository } from "../repositories/attachment-repository"
 import { ClientRepository } from "../repositories/client-repository"
 import { MailRepository } from "../repositories/mail-repository"
+import { Downloader } from "../storage/downloader"
 import { Renamer } from "../storage/renamer"
 
 export interface SentEmailUseCaseRequest {
@@ -23,6 +24,7 @@ export class SentEmailUseCase {
     private attachmentRepository: AttachmentRepository,
     private renamer: Renamer,
     private emailSender: EmailSender,
+    private downloader: Downloader,
   ) {}
 
   async execute({ email, clientId, attachmentIds }: SentEmailUseCaseRequest) {
@@ -97,7 +99,7 @@ export class SentEmailUseCase {
       )
 
       const { url } = await this.renamer.rename({
-        currentFileName: attachment.title,
+        currentFileName: attachment.url,
         newFileName,
       })
 
@@ -137,7 +139,9 @@ export class SentEmailUseCase {
     attachments = successfulAttachments
 
     const [createEmailAttachmentsError, emailAttachments] =
-      await createEmailAttachmentsFromUrls(attachments)
+      await createEmailAttachmentsFromUrls(attachments, {
+        downloader: this.downloader,
+      })
 
     if (createEmailAttachmentsError) {
       mail.sent()

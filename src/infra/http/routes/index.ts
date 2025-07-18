@@ -1,15 +1,13 @@
 import { Router } from "express"
 
-// import { configureDependencies } from "../../container"
 import { createAttachmentRoutes } from "./attachment"
+import { createEmailRoutes } from "./email"
 
 export function createRouter() {
-  // configureDependencies()
-
   const router = Router()
 
   router.use("/attachments", createAttachmentRoutes())
-  // router.use("/emails", createEmailRoutes()) // Para futuras rotas
+  router.use("/emails", createEmailRoutes())
 
   return router
 }

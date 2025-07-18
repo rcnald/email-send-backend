@@ -2,6 +2,7 @@ import { FakeEmailSender } from "test/email/fake-email-sender"
 import { InMemoryAttachmentRepository } from "test/in-memory-repositories/in-memory-attachment-repository"
 import { InMemoryClientRepository } from "test/in-memory-repositories/in-memory-client-repository"
 import { InMemoryMailRepository } from "test/in-memory-repositories/in-memory-mail-repository"
+import { FakeDownloader } from "test/storage/fake-downloader"
 import { FakeRenamer } from "test/storage/fake-renamer"
 
 import { Attachment } from "@/domain/enterprise/entities/attachment"
@@ -20,6 +21,7 @@ describe("SentEmailUseCase", () => {
   let inMemoryAttachmentRepository: InMemoryAttachmentRepository
   let fakeEmailSender: FakeEmailSender
   let fakeRenamer: FakeRenamer
+  let fakeDownloader: FakeDownloader
   let sut: SentEmailUseCase
 
   beforeEach(() => {
@@ -28,12 +30,14 @@ describe("SentEmailUseCase", () => {
     inMemoryAttachmentRepository = new InMemoryAttachmentRepository()
     fakeEmailSender = new FakeEmailSender()
     fakeRenamer = new FakeRenamer()
+    fakeDownloader = new FakeDownloader()
     sut = new SentEmailUseCase(
       inMemoryMailRepository,
       inMemoryClientRepository,
       inMemoryAttachmentRepository,
       fakeRenamer,
       fakeEmailSender,
+      fakeDownloader,
     )
   })
 
@@ -75,7 +79,9 @@ describe("SentEmailUseCase", () => {
 
     await sut.execute(request)
 
-    expect(createEmailAttachmentsFromUrls).toHaveBeenCalledWith([attachment])
+    expect(createEmailAttachmentsFromUrls).toHaveBeenCalledWith([attachment], {
+      downloader: fakeDownloader,
+    })
     expect(inMemoryMailRepository.find("client-1")).not.toBeNull()
   })
 
@@ -90,6 +96,7 @@ describe("SentEmailUseCase", () => {
 
     expect(error).toEqual({
       code: "CLIENT_NOT_FOUND",
+      message: "Client not found",
     })
     expect(result).toBeUndefined()
   })
@@ -132,9 +139,12 @@ describe("SentEmailUseCase", () => {
 
     await sut.execute(request)
 
-    expect(createEmailAttachmentsFromUrls).toHaveBeenCalledWith([
-      validAttachment,
-    ])
+    expect(createEmailAttachmentsFromUrls).toHaveBeenCalledWith(
+      [validAttachment],
+      {
+        downloader: fakeDownloader,
+      },
+    )
   })
 
   it("should rename attachments and update their URLs", async () => {

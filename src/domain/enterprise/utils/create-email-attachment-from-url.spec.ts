@@ -1,29 +1,20 @@
 import { vi } from "vitest"
 
+import { Downloader } from "@/domain/application/storage/downloader"
+
 import { Attachment } from "../entities/attachment"
 import { createEmailAttachmentsFromUrls } from "./create-email-attachment-from-url"
 
-vi.stubGlobal("fetch", vi.fn())
+// Mock do Downloader
+class MockDownloader extends Downloader {
+  constructor(
+    private mockImplementation: (url: string) => Promise<{ buffer: Buffer }>,
+  ) {
+    super()
+  }
 
-function createMockFetchResponse(data: string, ok: boolean): Response {
-  return {
-    ok,
-    status: ok ? 200 : 400,
-    statusText: ok ? "OK" : "Bad Request",
-    headers: new Headers(),
-    redirected: false,
-    type: "basic",
-    url: "",
-    clone: vi.fn(),
-    body: null,
-    bodyUsed: false,
-    arrayBuffer: vi
-      .fn()
-      .mockResolvedValue(new TextEncoder().encode(data).buffer),
-    blob: vi.fn(),
-    formData: vi.fn(),
-    json: vi.fn(),
-    text: vi.fn(),
+  async download(url: string): Promise<{ buffer: Buffer }> {
+    return this.mockImplementation(url)
   }
 }
 
@@ -44,20 +35,22 @@ describe("createEmailAttachmentsFromUrls", () => {
       }),
     ]
 
-    vi.mocked(fetch)
-      .mockResolvedValueOnce(
-        createMockFetchResponse("conteúdo do arquivo 1", true),
-      )
-      .mockResolvedValueOnce(
-        createMockFetchResponse("conteúdo do arquivo 2", true),
-      )
+    const mockDownloader = new MockDownloader(async (url: string) => {
+      if (url === "http://example.com/file1.zip") {
+        return { buffer: Buffer.from("conteúdo do arquivo 1") }
+      }
+      if (url === "http://example.com/file2.zip") {
+        return { buffer: Buffer.from("conteúdo do arquivo 2") }
+      }
+      throw new Error("URL não encontrada")
+    })
 
-    const [error, result] =
-      await createEmailAttachmentsFromUrls(attachmentsToFetch)
-
-    expect(fetch).toHaveBeenCalledTimes(2)
-    expect(fetch).toHaveBeenCalledWith("http://example.com/file1.zip")
-    expect(fetch).toHaveBeenCalledWith("http://example.com/file2.zip")
+    const [error, result] = await createEmailAttachmentsFromUrls(
+      attachmentsToFetch,
+      {
+        downloader: mockDownloader,
+      },
+    )
 
     expect(error).toEqual(undefined)
 
@@ -82,20 +75,24 @@ describe("createEmailAttachmentsFromUrls", () => {
       }),
     ]
 
-    vi.mocked(fetch)
-      .mockResolvedValueOnce(
-        createMockFetchResponse("conteúdo do arquivo ok", true),
-      )
-      .mockResolvedValueOnce(createMockFetchResponse("", false))
+    const mockDownloader = new MockDownloader(async (url: string) => {
+      if (url === "http://example.com/file-ok.zip") {
+        return { buffer: Buffer.from("conteúdo do arquivo ok") }
+      }
+      throw new Error("Download failed")
+    })
 
-    const [error, result] =
-      await createEmailAttachmentsFromUrls(attachmentsToProcess)
+    const [error, result] = await createEmailAttachmentsFromUrls(
+      attachmentsToProcess,
+      {
+        downloader: mockDownloader,
+      },
+    )
 
     expect(error).toEqual(undefined)
-    expect(fetch).toHaveBeenCalledTimes(2)
 
-    expect(result).toHaveLength(1)
     if (!error) {
+      expect(result).toHaveLength(1)
       expect(result[0].filename).toBe("file-ok.zip")
     }
   })

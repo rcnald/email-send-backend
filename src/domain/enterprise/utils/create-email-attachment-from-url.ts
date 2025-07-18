@@ -1,5 +1,6 @@
 import { bad, nice } from "@/core/error"
 import { EmailAttachment } from "@/domain/application/email/email-sender"
+import { Downloader } from "@/domain/application/storage/downloader"
 
 import { AttachmentProps } from "../entities/attachment"
 
@@ -7,31 +8,25 @@ import { AttachmentProps } from "../entities/attachment"
 
 export async function createEmailAttachmentsFromUrls(
   attachments: AttachmentProps[],
+  { downloader }: { downloader: Downloader },
 ) {
-  const emailAttachments: EmailAttachment[] = await Promise.all(
-    attachments.map(async (attachment) => {
-      try {
-        const response = await fetch(attachment.url)
+  const emailAttachments: EmailAttachment[] = (
+    await Promise.all(
+      attachments.map(async (attachment) => {
+        try {
+          const { buffer } = await downloader.download(attachment.url)
 
-        if (!response.ok) {
-          throw new Error()
+          return {
+            filename: attachment.title,
+            content: buffer,
+            type: "application/zip" as const,
+          }
+        } catch {
+          return null
         }
-
-        const arrayBuffer = await response.arrayBuffer()
-        const buffer = Buffer.from(arrayBuffer)
-
-        return {
-          filename: attachment.title,
-          content: buffer,
-          type: "application/zip" as const,
-        }
-      } catch {
-        return null
-      }
-    }),
-  ).then((attachments) =>
-    attachments.filter((attachment) => attachment !== null),
-  )
+      }),
+    )
+  ).filter((attachment): attachment is EmailAttachment => attachment !== null)
 
   if (emailAttachments.length === 0) {
     return bad({

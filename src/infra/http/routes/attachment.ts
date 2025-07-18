@@ -5,7 +5,7 @@ import { makeUpdateAndCreateAttachment } from "@/infra/factories/make-update-and
 
 const upload = multer({ storage: multer.memoryStorage() })
 
-export function createAttachmentRoutes() {
+export const createAttachmentRoutes = () => {
   const attachmentsRoutes = Router()
 
   const { updateAndCreateAttachmentController } =

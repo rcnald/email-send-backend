@@ -1,5 +1,3 @@
-// import "reflect-metadata"
-
 import { execSync } from "node:child_process"
 import { randomUUID } from "node:crypto"
 
@@ -25,7 +23,7 @@ beforeAll(() => {
 
   process.env.DATABASE_URL = databaseURL
 
-  execSync("npx prisma migrate deploy", { stdio: "inherit" })
+  execSync("npx prisma migrate deploy")
 })
 
 afterAll(async () => {

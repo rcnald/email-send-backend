@@ -3,18 +3,19 @@ import { randomUUID } from "node:crypto"
 import {
   CopyObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommand,
   PutObjectCommand,
 } from "@aws-sdk/client-s3"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 
-// import { injectable } from "tsyringe"
+import { Downloader } from "@/domain/application/storage/downloader"
 import { Renamer, RenamerParams } from "@/domain/application/storage/renamer"
 import { Uploader, UploadParams } from "@/domain/application/storage/uploader"
 
 import { env } from "../env"
 import { tebiClient } from "../lib/tebi"
 
-// @injectable()
-export class TebiStorage implements Uploader, Renamer {
+export class TebiStorage implements Uploader, Renamer, Downloader {
   async upload({
     fileName,
     fileType,
@@ -42,11 +43,13 @@ export class TebiStorage implements Uploader, Renamer {
     currentFileName,
     newFileName,
   }: RenamerParams): Promise<{ url: string }> {
+    const uuid = randomUUID()
+
     await tebiClient.send(
       new CopyObjectCommand({
         Bucket: env.S3_BUCKET,
         CopySource: `${env.S3_BUCKET}/${currentFileName}`,
-        Key: newFileName,
+        Key: `${newFileName}-${uuid}`,
       }),
     )
 
@@ -58,7 +61,24 @@ export class TebiStorage implements Uploader, Renamer {
     )
 
     return {
-      url: newFileName,
+      url: `${newFileName}-${uuid}`,
+    }
+  }
+
+  async download(url: string): Promise<{ buffer: Buffer }> {
+    const signedUrl = await getSignedUrl(
+      tebiClient,
+      new GetObjectCommand({
+        Bucket: env.S3_BUCKET,
+        Key: url,
+      }),
+      { expiresIn: 300 },
+    )
+
+    const response = await fetch(signedUrl)
+
+    return {
+      buffer: Buffer.from(await response.arrayBuffer()),
     }
   }
 }

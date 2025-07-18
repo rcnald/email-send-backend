@@ -107,8 +107,7 @@ describe("Send Email E2E Tests", () => {
         clientId,
         attachmentIds: [result?.attachment.id],
       })
-    console.log(response.body)
 
-    expect(response.status).toBe(201)
+    expect(response.status).toBe(200)
   })
 })

@@ -1,16 +1,8 @@
-import express from "express"
+import { createApp } from "./app"
+import { env } from "./env"
 
-import { env } from "./env.ts"
-import { router } from "./http/routes/index.ts"
-
-const app = express()
-
-app.use(express.json())
-
-app.use(router)
+const app = createApp()
 
 app.listen(env.PORT, () => {
-  console.log(`Server is running on port ${env.PORT}`)
+  console.log(`🚀 Server is running on port ${env.PORT}`)
 })
-
-export { app }

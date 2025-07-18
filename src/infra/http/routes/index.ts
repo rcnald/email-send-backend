@@ -1,9 +1,15 @@
 import { Router } from "express"
 
-import { attachmentsRoutes } from "./attachment.ts"
+// import { configureDependencies } from "../../container"
+import { createAttachmentRoutes } from "./attachment"
 
-const router = Router()
+export function createRouter() {
+  // configureDependencies()
 
-router.use("/attachments", attachmentsRoutes)
+  const router = Router()
 
-export { router }
+  router.use("/attachments", createAttachmentRoutes())
+  // router.use("/emails", createEmailRoutes()) // Para futuras rotas
+
+  return router
+}

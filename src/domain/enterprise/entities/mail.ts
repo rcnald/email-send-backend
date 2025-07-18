@@ -10,11 +10,14 @@ export interface MailProps {
   clientId: string
   clientCNPJ: string
   clientName: string
-  referenceMonth: string
+  referenceMonth: number
   subject: string
   html: string
   text: string
-  status: "failed_to_send" | "pending" | "draft" | "sent"
+  failedAt?: Date | null
+  sentAt?: Date | null
+  createdAt: Date
+  updatedAt: Date
   message?: string
 }
 
@@ -60,16 +63,46 @@ export class Mail {
     return this.props.clientId
   }
 
-  get status() {
-    return this.props.status
+  get clientName() {
+    return this.props.clientName
   }
 
-  set status(value: MailProps["status"]) {
-    this.props.status = value
+  get status() {
+    if (this.props.failedAt) {
+      return "failed"
+    }
+
+    if (this.props.sentAt) {
+      return "sent"
+    }
+
+    return "draft"
+  }
+
+  get createdAt() {
+    return this.props.createdAt
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt
   }
 
   get referenceMonth() {
     return this.props.referenceMonth
+  }
+
+  failed() {
+    this.props.failedAt = new Date()
+    this.touch()
+  }
+
+  sent() {
+    this.props.sentAt = new Date()
+    this.touch()
+  }
+
+  private touch() {
+    this.props.updatedAt = new Date()
   }
 
   static create(
@@ -83,20 +116,30 @@ export class Mail {
       html,
       text,
       subject,
+      createdAt,
+      updatedAt,
     }: Optional<
       MailProps,
-      "status" | "message" | "text" | "html" | "subject" | "referenceMonth"
+      | "message"
+      | "text"
+      | "html"
+      | "subject"
+      | "referenceMonth"
+      | "createdAt"
+      | "updatedAt"
     >,
     id?: string,
   ) {
-    const previousMonthBRL = new Intl.DateTimeFormat("pt-BR", {
+    const previousCurrentMonth = new Date().getMonth() - 1
+
+    const monthBRL = new Intl.DateTimeFormat("pt-BR", {
       month: "long",
-    }).format(new Date().setMonth(new Date().getMonth() - 1))
+    }).format(new Date().setMonth(referenceMonth ?? previousCurrentMonth))
 
     const mailContent = generateMailContent({
       clientCNPJ,
       clientName,
-      referenceMonth: referenceMonth ?? previousMonthBRL,
+      referenceMonth: monthBRL,
     })
 
     const mail = new Mail(
@@ -106,11 +149,12 @@ export class Mail {
         accountantEmail,
         attachmentIds,
         clientName,
-        referenceMonth: referenceMonth ?? previousMonthBRL,
+        referenceMonth: referenceMonth ?? previousCurrentMonth,
         html: html ?? mailContent.html,
         text: text ?? mailContent.text,
         subject: subject ?? mailContent.subject,
-        status: "pending",
+        createdAt: createdAt ?? new Date(),
+        updatedAt: updatedAt ?? new Date(),
       },
       id,
     )

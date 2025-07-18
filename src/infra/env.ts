@@ -13,6 +13,7 @@ const envSchema = z.object({
   S3_URL: z.url(),
   S3_REGION: z.string().min(1),
   S3_BUCKET: z.string().min(1),
+  RESEND_API_KEY: z.string().min(1),
 })
 
 export const env = envSchema.parse(process.env)

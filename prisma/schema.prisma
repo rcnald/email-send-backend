@@ -28,11 +28,12 @@ model Client {
 }
 
 model Mail {
-  id String @id @default(cuid())
+  id         String @id @default(cuid())
+  clientName String @map("client_name")
 
   subject String
   text    String
-  html    String?
+  html    String
 
   referenceMonth Int @map("reference_month")
 

@@ -58,7 +58,13 @@ describe("SentEmailUseCase", () => {
 
     vi.mocked(createEmailAttachmentsFromUrls).mockResolvedValue([
       undefined,
-      [{ filename: "file.zip", content: Buffer.from("file-content") }],
+      [
+        {
+          filename: "file.zip",
+          content: Buffer.from("file-content"),
+          type: "application/zip",
+        },
+      ],
     ])
 
     const request = {
@@ -109,7 +115,13 @@ describe("SentEmailUseCase", () => {
 
     vi.mocked(createEmailAttachmentsFromUrls).mockResolvedValue([
       undefined,
-      [{ filename: "file.zip", content: Buffer.from("file-content") }],
+      [
+        {
+          filename: "file.zip",
+          content: Buffer.from("file-content"),
+          type: "application/zip",
+        },
+      ],
     ])
 
     const request = {
@@ -146,7 +158,13 @@ describe("SentEmailUseCase", () => {
 
     vi.mocked(createEmailAttachmentsFromUrls).mockResolvedValue([
       undefined,
-      [{ filename: "file.zip", content: Buffer.from("file-content") }],
+      [
+        {
+          filename: "file.zip",
+          content: Buffer.from("file-content"),
+          type: "application/zip",
+        },
+      ],
     ])
 
     const request = {

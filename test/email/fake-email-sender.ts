@@ -9,7 +9,10 @@ export class FakeEmailSender implements EmailSender {
     params: SendEmailParams,
   ): Promise<
     | [undefined, { ok: true }]
-    | [{ code: "EMAIL_TO_SENT_NOT_FOUND" } | undefined]
+    | [
+        { code: "EMAIL_TO_SENT_NOT_FOUND"; message: "Email not found" },
+        undefined,
+      ]
   > {
     return nice({ ok: true })
   }

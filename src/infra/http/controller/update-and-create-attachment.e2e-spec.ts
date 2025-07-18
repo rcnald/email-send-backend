@@ -1,38 +1,19 @@
-import { execSync } from "node:child_process"
-import { randomUUID } from "node:crypto"
 import { readFileSync } from "node:fs"
 import { resolve } from "node:path"
 
 import { DeleteObjectCommand } from "@aws-sdk/client-s3"
-import { config } from "dotenv"
 import request from "supertest"
 
+import { createApp } from "@/infra/app"
 import { env } from "@/infra/env"
-import { prisma } from "@/infra/lib/prisma"
 import { tebiClient } from "@/infra/lib/tebi"
-import { app } from "@/infra/server"
 
-const schemaId = randomUUID()
 let fileUrl: string | null = null
+let app: ReturnType<typeof createApp>
 
 describe("Update and Create Attachment E2E Tests", () => {
-  beforeAll(async () => {
-    config({ path: ".env.test", override: true })
-
-    const database_url = new URL(env.DATABASE_URL)
-
-    database_url.searchParams.set("schema", schemaId)
-
-    process.env.DATABASE_URL = database_url.toString()
-
-    execSync("npx prisma migrate deploy")
-  })
-
-  afterAll(async () => {
-    await prisma.$executeRawUnsafe(
-      `DROP SCHEMA IF EXISTS "${schemaId}" CASCADE`,
-    )
-    await prisma.$disconnect()
+  beforeEach(async () => {
+    app = createApp()
   })
 
   afterEach(async () => {

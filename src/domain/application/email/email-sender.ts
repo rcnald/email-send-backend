@@ -1,6 +1,7 @@
 export interface EmailAttachment {
   filename: string
   content: Buffer
+  type: "application/zip"
 }
 
 export interface SendEmailParams {
@@ -17,6 +18,9 @@ export abstract class EmailSender {
     params: SendEmailParams,
   ): Promise<
     | [undefined, { ok: true }]
-    | [{ code: "EMAIL_TO_SENT_NOT_FOUND" } | undefined]
+    | [
+        { code: "EMAIL_TO_SENT_NOT_FOUND"; message: "Email not found" },
+        undefined,
+      ]
   >
 }

@@ -28,7 +28,8 @@ export class SentEmailUseCase {
   async execute({ email, clientId, attachmentIds }: SentEmailUseCaseRequest) {
     const client = await this.clientRepository.find(clientId)
 
-    if (!client) return bad({ code: "CLIENT_NOT_FOUND" })
+    if (!client)
+      return bad({ code: "CLIENT_NOT_FOUND", message: "Client not found" })
 
     const mail = Mail.create({
       clientId,
@@ -65,14 +66,14 @@ export class SentEmailUseCase {
     })
 
     if (emailSenderError) {
-      mail.status = "failed_to_send"
+      mail.failed()
 
       await this.mailRepository.update(mail)
 
       return bad(emailSenderError)
     }
 
-    mail.status = "sent"
+    mail.sent()
 
     await this.mailRepository.update(mail)
 
@@ -122,14 +123,14 @@ export class SentEmailUseCase {
     }
 
     if (failedReasons.length > 0) {
-      mail.status = "failed_to_send"
+      mail.failed()
 
       await this.mailRepository.update(mail)
 
       return bad({
         code: "ATTACHMENT_PROCESSING_ERROR",
         message: "One or more attachments failed to be processed.",
-        details: failedReasons.map((r) => r.message), // Envia detalhes do erro
+        details: failedReasons.map((r) => r.message),
       })
     }
 
@@ -139,7 +140,7 @@ export class SentEmailUseCase {
       await createEmailAttachmentsFromUrls(attachments)
 
     if (createEmailAttachmentsError) {
-      mail.status = "failed_to_send"
+      mail.sent()
 
       await this.mailRepository.update(mail)
 

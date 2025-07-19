@@ -1,8 +1,8 @@
 export interface RenamerParams {
-  currentFileName: string
-  newFileName: string
+  currentFileUrl: string
+  newFileUrl: string
 }
 
 export abstract class Renamer {
-  abstract rename(params: RenamerParams): Promise<{ url: string }>
+  abstract rename(params: RenamerParams): Promise<void>
 }

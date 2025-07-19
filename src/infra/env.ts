@@ -14,6 +14,13 @@ const envSchema = z.object({
   S3_REGION: z.string().min(1),
   S3_BUCKET: z.string().min(1),
   RESEND_API_KEY: z.string().min(1),
+  ENVIRONMENT: z
+    .enum(["development", "production", "test"])
+    .default("development"),
 })
 
-export const env = envSchema.parse(process.env)
+export type Env = z.infer<typeof envSchema>
+
+export function getEnv() {
+  return envSchema.parse(process.env)
+}

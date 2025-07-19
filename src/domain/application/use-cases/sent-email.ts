@@ -12,7 +12,6 @@ import { Downloader } from "../storage/downloader"
 import { Renamer } from "../storage/renamer"
 
 export interface SentEmailUseCaseRequest {
-  email: string
   clientId: string
   attachmentIds: string[]
 }
@@ -27,7 +26,7 @@ export class SentEmailUseCase {
     private downloader: Downloader,
   ) {}
 
-  async execute({ email, clientId, attachmentIds }: SentEmailUseCaseRequest) {
+  async execute({ clientId, attachmentIds }: SentEmailUseCaseRequest) {
     const client = await this.clientRepository.find(clientId)
 
     if (!client)
@@ -36,7 +35,7 @@ export class SentEmailUseCase {
     const mail = Mail.create({
       clientId,
       attachmentIds,
-      accountantEmail: email,
+      accountantEmail: client.accountant.email,
       clientCNPJ: client.CNPJ,
       clientName: client.name,
     })
@@ -47,15 +46,17 @@ export class SentEmailUseCase {
       mail.attachmentIds,
     )
 
-    const [processAndRenameError, emailAttachments] =
-      await this._processAndRenameAttachments({
-        attachments,
-        mail,
-        clientName: client.name,
-      })
+    const [attachmentsError, emailAttachments] = await this._fetchAttachments({
+      attachments,
+      mail,
+    })
 
-    if (processAndRenameError) {
-      return bad(processAndRenameError)
+    if (attachmentsError) {
+      mail.failed()
+
+      await this.mailRepository.update(mail)
+
+      return bad(attachmentsError)
     }
 
     const [emailSenderError] = await this.emailSender.send({
@@ -82,29 +83,56 @@ export class SentEmailUseCase {
     return nice({})
   }
 
-  private async _processAndRenameAttachments({
+  private async _fetchAttachments({
     attachments,
     mail,
-    clientName,
   }: {
     attachments: Attachment[]
     mail: Mail
-    clientName: string
+  }) {
+    const [renameAttachmentsError, renamedAttachments] =
+      await this._renameAttachments({
+        mail,
+        attachments,
+      })
+
+    if (renameAttachmentsError) {
+      return bad(renameAttachmentsError)
+    }
+
+    const [createEmailAttachmentsError, emailAttachments] =
+      await createEmailAttachmentsFromUrls(renamedAttachments, {
+        downloader: this.downloader,
+      })
+
+    if (createEmailAttachmentsError) {
+      return bad(createEmailAttachmentsError)
+    }
+
+    return nice(emailAttachments)
+  }
+
+  private async _renameAttachments({
+    mail,
+    attachments,
+  }: {
+    mail: Mail
+    attachments: Attachment[]
   }) {
     const attachmentPromises = attachments.map(async (attachment, index) => {
-      const newFileName = generateFileName(
-        clientName,
+      const { name: newName, url: newUrl } = generateFileName(
+        mail.clientName,
         mail.referenceMonth,
         index,
       )
 
-      const { url } = await this.renamer.rename({
-        currentFileName: attachment.url,
-        newFileName,
+      await this.renamer.rename({
+        currentFileUrl: attachment.url,
+        newFileUrl: newUrl,
       })
 
-      attachment.title = newFileName
-      attachment.url = url
+      attachment.title = newName
+      attachment.url = newUrl
 
       await this.attachmentRepository.update(attachment)
 
@@ -125,10 +153,6 @@ export class SentEmailUseCase {
     }
 
     if (failedReasons.length > 0) {
-      mail.failed()
-
-      await this.mailRepository.update(mail)
-
       return bad({
         code: "ATTACHMENT_PROCESSING_ERROR",
         message: "One or more attachments failed to be processed.",
@@ -136,21 +160,6 @@ export class SentEmailUseCase {
       })
     }
 
-    attachments = successfulAttachments
-
-    const [createEmailAttachmentsError, emailAttachments] =
-      await createEmailAttachmentsFromUrls(attachments, {
-        downloader: this.downloader,
-      })
-
-    if (createEmailAttachmentsError) {
-      mail.sent()
-
-      await this.mailRepository.update(mail)
-
-      return bad(createEmailAttachmentsError)
-    }
-
-    return nice(emailAttachments)
+    return nice(successfulAttachments)
   }
 }

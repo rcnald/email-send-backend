@@ -10,5 +10,18 @@ services:
         - "5432:5432"
       volumes:
         - pg:/var/lib/postgresql/data
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000" 
+      - "9001:9001"  
+    environment:
+      # Credenciais de teste. NUNCA use em produção.
+      MINIO_ROOT_USER: "testuser"
+      MINIO_ROOT_PASSWORD: "testpassword"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
 volumes:
   pg:
+  minio_data:

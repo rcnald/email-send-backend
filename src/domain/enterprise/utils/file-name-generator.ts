@@ -1,8 +1,10 @@
+import { randomUUID } from "node:crypto"
+
 export function generateFileName(
   client: string,
   referenceMonth: number,
   index?: number,
-): string {
+): { name: string; url: string } {
   const monthBRL = new Intl.DateTimeFormat("pt-BR", {
     month: "long",
   }).format(new Date().setMonth(referenceMonth))
@@ -17,5 +19,10 @@ export function generateFileName(
     .toLowerCase()
     .trim()
 
-  return `arquivos-fiscais-${flatClient}-do-mes-de-${flatMonth}-${index}.zip`
+  const uuid = randomUUID()
+
+  return {
+    name: `arquivos-fiscais-${flatClient}-do-mes-de-${flatMonth}-${index}.zip`,
+    url: `arquivos-fiscais-${flatClient}-do-mes-de-${flatMonth}-${index}-${uuid}.zip`,
+  }
 }

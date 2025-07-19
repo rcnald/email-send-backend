@@ -1,10 +1,12 @@
 import { randomUUID } from "node:crypto"
+import path from "node:path"
 
 import {
   CopyObjectCommand,
   DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
+  S3Client,
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 
@@ -12,10 +14,14 @@ import { Downloader } from "@/domain/application/storage/downloader"
 import { Renamer, RenamerParams } from "@/domain/application/storage/renamer"
 import { Uploader, UploadParams } from "@/domain/application/storage/uploader"
 
-import { env } from "../env"
-import { tebiClient } from "../lib/tebi"
+import { Env } from "../env"
 
 export class TebiStorage implements Uploader, Renamer, Downloader {
+  constructor(
+    private tebiClient: S3Client,
+    private env: Env,
+  ) {}
+
   async upload({
     fileName,
     fileType,
@@ -23,11 +29,14 @@ export class TebiStorage implements Uploader, Renamer, Downloader {
   }: UploadParams): Promise<{ url: string }> {
     const uuid = randomUUID()
 
-    const uniqueFilename = `${fileName}-${uuid}`
+    const extension = path.extname(fileName)
 
-    await tebiClient.send(
+    const baseName = path.basename(fileName, extension)
+
+    const uniqueFilename = `${baseName}-${uuid}${extension}`
+    await this.tebiClient.send(
       new PutObjectCommand({
-        Bucket: env.S3_BUCKET,
+        Bucket: this.env.S3_BUCKET,
         Key: uniqueFilename,
         Body: body,
         ContentType: fileType,
@@ -39,37 +48,28 @@ export class TebiStorage implements Uploader, Renamer, Downloader {
     }
   }
 
-  async rename({
-    currentFileName,
-    newFileName,
-  }: RenamerParams): Promise<{ url: string }> {
-    const uuid = randomUUID()
-
-    await tebiClient.send(
+  async rename({ currentFileUrl, newFileUrl }: RenamerParams): Promise<void> {
+    await this.tebiClient.send(
       new CopyObjectCommand({
-        Bucket: env.S3_BUCKET,
-        CopySource: `${env.S3_BUCKET}/${currentFileName}`,
-        Key: `${newFileName}-${uuid}`,
+        Bucket: this.env.S3_BUCKET,
+        CopySource: `${this.env.S3_BUCKET}/${currentFileUrl}`,
+        Key: newFileUrl,
       }),
     )
 
-    await tebiClient.send(
+    await this.tebiClient.send(
       new DeleteObjectCommand({
-        Bucket: env.S3_BUCKET,
-        Key: currentFileName,
+        Bucket: this.env.S3_BUCKET,
+        Key: currentFileUrl,
       }),
     )
-
-    return {
-      url: `${newFileName}-${uuid}`,
-    }
   }
 
   async download(url: string): Promise<{ buffer: Buffer }> {
     const signedUrl = await getSignedUrl(
-      tebiClient,
+      this.tebiClient,
       new GetObjectCommand({
-        Bucket: env.S3_BUCKET,
+        Bucket: this.env.S3_BUCKET,
         Key: url,
       }),
       { expiresIn: 300 },

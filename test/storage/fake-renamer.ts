@@ -4,7 +4,5 @@ export class FakeRenamer implements Renamer {
   async rename({
     currentFileName,
     newFileName,
-  }: RenamerParams): Promise<{ url: string }> {
-    return { url: `http://fakeurl.com/${newFileName}` }
-  }
+  }: RenamerParams): Promise<void> {}
 }

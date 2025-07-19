@@ -1,9 +1,8 @@
-import { FakeEmailSender } from "test/email/fake-email-sender"
+import { makeSendEmailUseCase } from "test/factories/make-send-email-use-case"
 import { InMemoryAttachmentRepository } from "test/in-memory-repositories/in-memory-attachment-repository"
 import { InMemoryClientRepository } from "test/in-memory-repositories/in-memory-client-repository"
 import { InMemoryMailRepository } from "test/in-memory-repositories/in-memory-mail-repository"
 import { FakeDownloader } from "test/storage/fake-downloader"
-import { FakeRenamer } from "test/storage/fake-renamer"
 
 import { Attachment } from "@/domain/enterprise/entities/attachment"
 import { Client } from "@/domain/enterprise/entities/client"
@@ -19,26 +18,23 @@ describe("SentEmailUseCase", () => {
   let inMemoryMailRepository: InMemoryMailRepository
   let inMemoryClientRepository: InMemoryClientRepository
   let inMemoryAttachmentRepository: InMemoryAttachmentRepository
-  let fakeEmailSender: FakeEmailSender
-  let fakeRenamer: FakeRenamer
   let fakeDownloader: FakeDownloader
   let sut: SentEmailUseCase
 
   beforeEach(() => {
-    inMemoryMailRepository = new InMemoryMailRepository()
-    inMemoryClientRepository = new InMemoryClientRepository()
-    inMemoryAttachmentRepository = new InMemoryAttachmentRepository()
-    fakeEmailSender = new FakeEmailSender()
-    fakeRenamer = new FakeRenamer()
-    fakeDownloader = new FakeDownloader()
-    sut = new SentEmailUseCase(
-      inMemoryMailRepository,
-      inMemoryClientRepository,
-      inMemoryAttachmentRepository,
-      fakeRenamer,
-      fakeEmailSender,
-      fakeDownloader,
-    )
+    const {
+      sendEmailUseCase,
+      attachmentRepository,
+      clientRepository,
+      mailRepository,
+      downloader,
+    } = makeSendEmailUseCase()
+
+    sut = sendEmailUseCase
+    inMemoryAttachmentRepository = attachmentRepository
+    inMemoryClientRepository = clientRepository
+    inMemoryMailRepository = mailRepository
+    fakeDownloader = downloader
   })
 
   it("should send an email with valid data", async () => {

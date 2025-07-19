@@ -5,7 +5,6 @@ import { fromZodError } from "zod-validation-error/v4"
 import { SentEmailUseCase } from "@/domain/application/use-cases/sent-email"
 
 const sentEmailControllerBodySchema = z.object({
-  email: z.email(),
   clientId: z.uuid(),
   attachmentIds: z.array(z.uuid()),
 })
@@ -25,10 +24,9 @@ export class SentEmailController {
       })
     }
 
-    const { email, clientId, attachmentIds } = bodyValidation.data
+    const { clientId, attachmentIds } = bodyValidation.data
 
     const [error] = await this.sentEmailUseCase.execute({
-      email,
       attachmentIds,
       clientId,
     })

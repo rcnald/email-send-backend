@@ -19,7 +19,7 @@ export abstract class EmailSender {
   ): Promise<
     | [undefined, { ok: true }, undefined]
     | [
-        { code: "EMAIL_TO_SENT_NOT_FOUND"; message: "Email not found" },
+        { code: "FAILED_TO_SEND_EMAIL"; message: "Failed to send email" },
         undefined,
         undefined,
       ]

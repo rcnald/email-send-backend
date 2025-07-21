@@ -14,9 +14,10 @@ export class RendEmailSender implements EmailSender {
   async send(
     params: SendEmailParams,
   ): Promise<
-    | [undefined, { ok: true }]
+    | [undefined, { ok: true }, undefined]
     | [
-        { code: "EMAIL_TO_SENT_NOT_FOUND"; message: "Email not found" },
+        { code: "FAILED_TO_SEND_EMAIL"; message: "Failed to send email" },
+        undefined,
         undefined,
       ]
   > {
@@ -36,8 +37,8 @@ export class RendEmailSender implements EmailSender {
 
       if (response.error) {
         return bad({
-          code: "EMAIL_TO_SENT_NOT_FOUND",
-          message: "Email not found",
+          code: "FAILED_TO_SEND_EMAIL",
+          message: "Failed to send email",
         })
       }
     }

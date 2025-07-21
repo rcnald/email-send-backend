@@ -177,7 +177,7 @@ export class SendEmailUseCase {
 
     if (failedReasons.length > 0) {
       return bad({
-        code: "ATTACHMENT_PROCESSING_ERROR",
+        code: "FAILED_TO_PROCESS_ATTACHMENTS",
         message: "attachments failed to be processed.",
         details: failedReasons.map((reason) => reason.message),
       })

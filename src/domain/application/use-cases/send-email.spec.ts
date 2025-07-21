@@ -4,21 +4,15 @@ import { makeSendEmailUseCase } from "test/factories/make-send-email-use-case"
 import { InMemoryAttachmentRepository } from "test/in-memory-repositories/in-memory-attachment-repository"
 import { InMemoryClientRepository } from "test/in-memory-repositories/in-memory-client-repository"
 import { InMemoryMailRepository } from "test/in-memory-repositories/in-memory-mail-repository"
-import { FakeDownloader } from "test/storage/fake-downloader"
 
 import { createEmailAttachmentsFromUrls } from "@/domain/application/utils/create-email-attachment-from-url"
 
 import { SendEmailUseCase } from "./send-email"
 
-vi.mock("@/domain/application/utils/create-email-attachment-from-url", () => ({
-  createEmailAttachmentsFromUrls: vi.fn(),
-}))
-
 describe("SentEmailUseCase", () => {
   let inMemoryMailRepository: InMemoryMailRepository
   let inMemoryClientRepository: InMemoryClientRepository
   let inMemoryAttachmentRepository: InMemoryAttachmentRepository
-  let fakeDownloader: FakeDownloader
   let sut: SendEmailUseCase
 
   beforeEach(() => {
@@ -28,7 +22,6 @@ describe("SentEmailUseCase", () => {
     inMemoryAttachmentRepository = setup.attachmentRepository
     inMemoryClientRepository = setup.clientRepository
     inMemoryMailRepository = setup.mailRepository
-    fakeDownloader = setup.downloader
   })
 
   it("should send an email with valid data", async () => {
@@ -40,32 +33,17 @@ describe("SentEmailUseCase", () => {
 
     inMemoryAttachmentRepository.create(attachment)
 
-    vi.mocked(createEmailAttachmentsFromUrls).mockResolvedValue([
-      undefined,
-      [
-        {
-          filename: attachment.title,
-          content: Buffer.from("file-content"),
-          type: "application/zip",
-        },
-      ],
-      undefined,
-    ])
-
     await sut.execute({
       clientId: client.id,
       attachmentIds: [attachment.id],
     })
 
-    expect(createEmailAttachmentsFromUrls).toHaveBeenCalledWith([attachment], {
-      downloader: fakeDownloader,
-    })
     expect(inMemoryMailRepository.find(client.id)).not.toBeNull()
   })
 
   it("should return error if client does not exist", async () => {
     const [error, result] = await sut.execute({
-      clientId: "non-existent-client",
+      clientId: "non-existent-client-id",
       attachmentIds: ["attachment-id-1"],
     })
 
@@ -76,7 +54,7 @@ describe("SentEmailUseCase", () => {
     expect(result).toBeUndefined()
   })
 
-  it("should filter out invalid attachments", async () => {
+  it("should not proceed with any not found attachments", async () => {
     const client = makeClient()
 
     inMemoryClientRepository.create(client)
@@ -85,33 +63,55 @@ describe("SentEmailUseCase", () => {
 
     inMemoryAttachmentRepository.create(validAttachment)
 
-    vi.mocked(createEmailAttachmentsFromUrls).mockResolvedValue([
-      undefined,
-      [
-        {
-          filename: validAttachment.title,
-          content: Buffer.from("file-content"),
-          type: "application/zip",
-        },
-      ],
-      {
-        code: "ATTACHMENT_PROCESSING_ERROR",
-        message: "One or more attachments failed to be processed.",
-        details: ["invalid-attachment"],
-      },
-    ])
-
-    await sut.execute({
+    const [error] = await sut.execute({
       clientId: client.id,
       attachmentIds: [validAttachment.id, "invalid-attachment-id"],
     })
 
-    expect(createEmailAttachmentsFromUrls).toHaveBeenCalledWith(
-      [validAttachment],
-      {
-        downloader: fakeDownloader,
-      },
-    )
+    expect(error).toEqual({
+      code: "SOME_ATTACHMENTS_NOT_FOUND",
+      message: "Some attachments were not found",
+      missingIds: ["invalid-attachment-id"],
+    })
+  })
+
+  it("should not proceed with any invalid attachments", async () => {
+    const client = makeClient({ name: "invalid SA" })
+
+    inMemoryClientRepository.create(client)
+
+    const validAttachment = makeAttachment()
+    const invalidAttachment = makeAttachment()
+
+    inMemoryAttachmentRepository.create(validAttachment)
+    inMemoryAttachmentRepository.create(invalidAttachment)
+
+    const [error, result, warn] = await sut.execute({
+      clientId: client.id,
+      attachmentIds: [validAttachment.id, invalidAttachment.id],
+    })
+
+    const updatedValidAttachment =
+      inMemoryAttachmentRepository.attachments.find(
+        (attachment) => attachment.id === validAttachment.id,
+      )
+
+    const updatedInvalidAttachment =
+      inMemoryAttachmentRepository.attachments.find(
+        (attachment) => attachment.id === invalidAttachment.id,
+      )
+
+    expect(error).toBeUndefined()
+    expect(result).toEqual([
+      expect.objectContaining({
+        filename: updatedValidAttachment?.title,
+      }),
+    ])
+    expect(warn).toEqual({
+      code: "ATTACHMENT_PROCESSING_ERROR",
+      message: "One or more attachments failed to be processed.",
+      details: [updatedInvalidAttachment?.url],
+    })
   })
 
   it("should rename attachments and update their URLs", async () => {
@@ -123,21 +123,9 @@ describe("SentEmailUseCase", () => {
 
     inMemoryAttachmentRepository.create(attachment)
 
-    vi.mocked(createEmailAttachmentsFromUrls).mockResolvedValue([
-      undefined,
-      [
-        {
-          filename: attachment.title,
-          content: Buffer.from("file-content"),
-          type: "application/zip",
-        },
-      ],
-      undefined,
-    ])
-
     await sut.execute({
       clientId: client.id,
-      attachmentIds: [attachment.id, "invalid-attachment"],
+      attachmentIds: [attachment.id],
     })
 
     const clientName = client.name.toLowerCase().replace(/\s+/g, "-")

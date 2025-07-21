@@ -16,8 +16,16 @@ export class InMemoryAttachmentRepository implements AttachmentRepository {
     return attachment || null
   }
 
-  async findManyByMultipleIds(ids: string[]): Promise<Attachment[]> {
-    return this.attachments.filter((attachment) => ids.includes(attachment.id))
+  async findManyByMultipleIds(
+    ids: string[],
+  ): Promise<[Attachment[], missingIds: string[]]> {
+    const foundAttachments = this.attachments.filter((attachment) =>
+      ids.includes(attachment.id),
+    )
+    const foundIds = foundAttachments.map((attachment) => attachment.id)
+    const missingIds = ids.filter((id) => !foundIds.includes(id))
+
+    return [foundAttachments, missingIds]
   }
 
   async update(attachment: Attachment): Promise<void> {

@@ -1,4 +1,4 @@
-import { bad, nice } from "@/core/error"
+import { bad, nice, warn } from "@/core/error"
 import { createEmailAttachmentsFromUrls } from "@/domain/application/utils/create-email-attachment-from-url"
 import { generateFileName } from "@/domain/application/utils/file-name-generator"
 import { Attachment } from "@/domain/enterprise/entities/attachment"
@@ -42,14 +42,22 @@ export class SendEmailUseCase {
 
     this.mailRepository.create(mail)
 
-    const attachments = await this.attachmentRepository.findManyByMultipleIds(
-      mail.attachmentIds,
-    )
+    const [attachments, missingIds] =
+      await this.attachmentRepository.findManyByMultipleIds(mail.attachmentIds)
 
-    const [attachmentsError, emailAttachments] = await this._fetchAttachments({
-      attachments,
-      mail,
-    })
+    if (missingIds.length > 0) {
+      return bad({
+        code: "SOME_ATTACHMENTS_NOT_FOUND",
+        message: "Some attachments were not found",
+        missingIds,
+      })
+    }
+
+    const [attachmentsError, emailAttachments, emailAttachmentsWarn] =
+      await this._fetchAttachments({
+        attachments,
+        mail,
+      })
 
     if (attachmentsError) {
       mail.failed()
@@ -57,6 +65,14 @@ export class SendEmailUseCase {
       await this.mailRepository.update(mail)
 
       return bad(attachmentsError)
+    }
+
+    if (emailAttachmentsWarn) {
+      mail.failed()
+
+      await this.mailRepository.update(mail)
+
+      return warn(emailAttachments, emailAttachmentsWarn)
     }
 
     const [emailSenderError] = await this.emailSender.send({
@@ -100,13 +116,20 @@ export class SendEmailUseCase {
       return bad(renameAttachmentsError)
     }
 
-    const [createEmailAttachmentsError, emailAttachments, warn] =
-      await createEmailAttachmentsFromUrls(renamedAttachments, {
-        downloader: this.downloader,
-      })
+    const [
+      createEmailAttachmentsError,
+      emailAttachments,
+      emailAttachmentsWarn,
+    ] = await createEmailAttachmentsFromUrls(renamedAttachments, {
+      downloader: this.downloader,
+    })
 
     if (createEmailAttachmentsError) {
       return bad(createEmailAttachmentsError)
+    }
+
+    if (emailAttachmentsWarn) {
+      return warn(emailAttachments, emailAttachmentsWarn)
     }
 
     return nice(emailAttachments)
@@ -155,8 +178,8 @@ export class SendEmailUseCase {
     if (failedReasons.length > 0) {
       return bad({
         code: "ATTACHMENT_PROCESSING_ERROR",
-        message: "One or more attachments failed to be processed.",
-        details: failedReasons.map((r) => r.message),
+        message: "attachments failed to be processed.",
+        details: failedReasons.map((reason) => reason.message),
       })
     }
 

@@ -34,7 +34,9 @@ export class PrismaAttachmentRepository implements AttachmentRepository {
     return PrismaAttachmentMapper.toDomain(attachment)
   }
 
-  async findManyByMultipleIds(ids: string[]): Promise<Attachment[]> {
+  async findManyByMultipleIds(
+    ids: string[],
+  ): Promise<[Attachment[], missingIds: string[]]> {
     const attachments = await this.prisma.attachment.findMany({
       where: {
         id: {
@@ -43,7 +45,10 @@ export class PrismaAttachmentRepository implements AttachmentRepository {
       },
     })
 
-    return attachments.map(PrismaAttachmentMapper.toDomain)
+    const foundIds = attachments.map((a) => a.id)
+    const missingIds = ids.filter((id) => !foundIds.includes(id))
+
+    return [attachments.map(PrismaAttachmentMapper.toDomain), missingIds]
   }
 
   async update(attachment: Attachment): Promise<void> {

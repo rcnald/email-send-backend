@@ -10,6 +10,7 @@ import {
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 
+import { bad, nice } from "@/core/error"
 import { Downloader } from "@/domain/application/storage/downloader"
 import { Renamer, RenamerParams } from "@/domain/application/storage/renamer"
 import { Uploader, UploadParams } from "@/domain/application/storage/uploader"
@@ -65,20 +66,45 @@ export class TebiStorage implements Uploader, Renamer, Downloader {
     )
   }
 
-  async download(url: string): Promise<{ buffer: Buffer }> {
-    const signedUrl = await getSignedUrl(
-      this.tebiClient,
-      new GetObjectCommand({
-        Bucket: this.env.S3_BUCKET,
-        Key: url,
-      }),
-      { expiresIn: 300 },
-    )
+  async download(url: string): Promise<
+    | [undefined, { buffer: Buffer<ArrayBufferLike> }, undefined]
+    | [
+        {
+          code: "FAILED_TO_DOWNLOAD"
+          message: "Failed to download file"
+          file: string
+        },
+        undefined,
+        undefined,
+      ]
+  > {
+    try {
+      const signedUrl = await getSignedUrl(
+        this.tebiClient,
+        new GetObjectCommand({
+          Bucket: this.env.S3_BUCKET,
+          Key: url,
+        }),
+        { expiresIn: 300 },
+      )
 
-    const response = await fetch(signedUrl)
+      const response = await fetch(signedUrl)
 
-    return {
-      buffer: Buffer.from(await response.arrayBuffer()),
+      if (!response.ok) {
+        return bad({
+          code: "FAILED_TO_DOWNLOAD",
+          message: "Failed to download file",
+          file: url,
+        })
+      }
+
+      return nice({ buffer: Buffer.from(await response.arrayBuffer()) })
+    } catch {
+      return bad({
+        code: "FAILED_TO_DOWNLOAD",
+        message: "Failed to download file",
+        file: url,
+      })
     }
   }
 }

@@ -50,7 +50,7 @@ describe("Send Email E2E Tests", () => {
     await clientRepository.create(
       Client.create(
         {
-          name: "Test Client",
+          name: "Rcnald SA",
           CNPJ: "12345678000195",
           accountant: {
             email: "ronaldomjunio05@gmail.com",
@@ -60,7 +60,7 @@ describe("Send Email E2E Tests", () => {
         clientId,
       ),
     )
-    const [_error, result] = await uploadAndCreateAttachment.execute({
+    const [_, result] = await uploadAndCreateAttachment.execute({
       fileName: "test-file.zip",
       fileType: "application/zip",
       body: testFileBuffer,

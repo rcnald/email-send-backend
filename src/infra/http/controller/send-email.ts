@@ -26,13 +26,19 @@ export class SentEmailController {
 
     const { clientId, attachmentIds } = bodyValidation.data
 
-    const [error] = await this.sentEmailUseCase.execute({
+    const [error, _, warn] = await this.sentEmailUseCase.execute({
       attachmentIds,
       clientId,
     })
 
     if (error) {
       return response.status(400).json({ error: error.message })
+    }
+
+    if (warn) {
+      return response
+        .status(400)
+        .json({ warning: warn.message, details: warn.details })
     }
 
     return response.status(200).json({ message: "Email sent successfully" })

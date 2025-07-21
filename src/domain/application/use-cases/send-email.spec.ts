@@ -1,3 +1,5 @@
+import { makeAttachment } from "test/factories/make-attachment"
+import { makeClient } from "test/factories/make-client"
 import { makeSendEmailUseCase } from "test/factories/make-send-email-use-case"
 import { InMemoryAttachmentRepository } from "test/in-memory-repositories/in-memory-attachment-repository"
 import { InMemoryClientRepository } from "test/in-memory-repositories/in-memory-client-repository"
@@ -22,37 +24,21 @@ describe("SentEmailUseCase", () => {
   let sut: SendEmailUseCase
 
   beforeEach(() => {
-    const {
-      sendEmailUseCase,
-      attachmentRepository,
-      clientRepository,
-      mailRepository,
-      downloader,
-    } = makeSendEmailUseCase()
+    const setup = makeSendEmailUseCase()
 
-    sut = sendEmailUseCase
-    inMemoryAttachmentRepository = attachmentRepository
-    inMemoryClientRepository = clientRepository
-    inMemoryMailRepository = mailRepository
-    fakeDownloader = downloader
+    sut = setup.sendEmailUseCase
+    inMemoryAttachmentRepository = setup.attachmentRepository
+    inMemoryClientRepository = setup.clientRepository
+    inMemoryMailRepository = setup.mailRepository
+    fakeDownloader = setup.downloader
   })
 
   it("should send an email with valid data", async () => {
-    const client = Client.create(
-      {
-        name: "Test Client",
-        CNPJ: "123456789",
-        accountant: { email: "test@email.com", name: "Accountant Name" },
-      },
-      "client-1",
-    )
+    const client = makeClient()
 
     inMemoryClientRepository.create(client)
 
-    const attachment = Attachment.create(
-      { title: "file.zip", url: "http://example.com/file.zip" },
-      "attachment-1",
-    )
+    const attachment = makeAttachment()
 
     inMemoryAttachmentRepository.create(attachment)
 
@@ -60,35 +46,29 @@ describe("SentEmailUseCase", () => {
       undefined,
       [
         {
-          filename: "file.zip",
+          filename: attachment.title,
           content: Buffer.from("file-content"),
           type: "application/zip",
         },
       ],
     ])
 
-    const request = {
-      email: "accountant@example.com",
-      clientId: "client-1",
-      attachmentIds: ["attachment-1"],
-    }
-
-    await sut.execute(request)
+    await sut.execute({
+      clientId: client.id,
+      attachmentIds: [attachment.id],
+    })
 
     expect(createEmailAttachmentsFromUrls).toHaveBeenCalledWith([attachment], {
       downloader: fakeDownloader,
     })
-    expect(inMemoryMailRepository.find("client-1")).not.toBeNull()
+    expect(inMemoryMailRepository.find(client.id)).not.toBeNull()
   })
 
   it("should return error if client does not exist", async () => {
-    const request = {
-      email: "accountant@example.com",
+    const [error, result] = await sut.execute({
       clientId: "non-existent-client",
-      attachmentIds: ["attachment-1"],
-    }
-
-    const [error, result] = await sut.execute(request)
+      attachmentIds: ["attachment-id-1"],
+    })
 
     expect(error).toEqual({
       code: "CLIENT_NOT_FOUND",
@@ -98,21 +78,11 @@ describe("SentEmailUseCase", () => {
   })
 
   it("should filter out invalid attachments", async () => {
-    const client = Client.create(
-      {
-        name: "Test Client",
-        CNPJ: "123456789",
-        accountant: { email: "test@email.com", name: "Accountant Name" },
-      },
-      "client-1",
-    )
+    const client = makeClient()
 
     inMemoryClientRepository.create(client)
 
-    const validAttachment = Attachment.create(
-      { title: "file.zip", url: "http://example.com/file.zip" },
-      "attachment-1",
-    )
+    const validAttachment = makeAttachment()
 
     inMemoryAttachmentRepository.create(validAttachment)
 
@@ -120,20 +90,17 @@ describe("SentEmailUseCase", () => {
       undefined,
       [
         {
-          filename: "file.zip",
+          filename: validAttachment.title,
           content: Buffer.from("file-content"),
           type: "application/zip",
         },
       ],
     ])
 
-    const request = {
-      email: "accountant@example.com",
-      clientId: "client-1",
-      attachmentIds: ["attachment-1", "invalid-attachment"],
-    }
-
-    await sut.execute(request)
+    await sut.execute({
+      clientId: client.id,
+      attachmentIds: [validAttachment.id, "invalid-attachment-id"],
+    })
 
     expect(createEmailAttachmentsFromUrls).toHaveBeenCalledWith(
       [validAttachment],
@@ -144,21 +111,11 @@ describe("SentEmailUseCase", () => {
   })
 
   it("should rename attachments and update their URLs", async () => {
-    const client = Client.create(
-      {
-        name: "Test Client",
-        CNPJ: "123456789",
-        accountant: { email: "test@email.com", name: "Accountant Name" },
-      },
-      "client-1",
-    )
+    const client = makeClient({ name: "rcnald SA" })
 
     inMemoryClientRepository.create(client)
 
-    const attachment = Attachment.create(
-      { title: "file.zip", url: "http://example.com/file.zip" },
-      "attachment-1",
-    )
+    const attachment = makeAttachment()
 
     inMemoryAttachmentRepository.create(attachment)
 
@@ -166,24 +123,23 @@ describe("SentEmailUseCase", () => {
       undefined,
       [
         {
-          filename: "file.zip",
+          filename: attachment.title,
           content: Buffer.from("file-content"),
           type: "application/zip",
         },
       ],
     ])
 
-    const request = {
-      email: "accountant@example.com",
-      clientId: "client-1",
-      attachmentIds: ["attachment-1", "invalid-attachment"],
-    }
+    await sut.execute({
+      clientId: client.id,
+      attachmentIds: [attachment.id, "invalid-attachment"],
+    })
 
-    await sut.execute(request)
+    const clientName = client.name.toLowerCase().replace(/\s+/g, "-")
 
     expect(inMemoryAttachmentRepository.attachments[0]).toEqual(
       expect.objectContaining({
-        title: `arquivos-fiscais-test-client-do-mes-de-junho-0.zip`,
+        title: `arquivos-fiscais-${clientName}-do-mes-de-junho-0.zip`,
       }),
     )
   })

@@ -6,8 +6,6 @@ import { InMemoryClientRepository } from "test/in-memory-repositories/in-memory-
 import { InMemoryMailRepository } from "test/in-memory-repositories/in-memory-mail-repository"
 import { FakeDownloader } from "test/storage/fake-downloader"
 
-import { Attachment } from "@/domain/enterprise/entities/attachment"
-import { Client } from "@/domain/enterprise/entities/client"
 import { createEmailAttachmentsFromUrls } from "@/domain/enterprise/utils/create-email-attachment-from-url"
 
 import { SendEmailUseCase } from "./send-email"

@@ -13,7 +13,7 @@ import { config } from "dotenv"
 import { getEnv } from "@/infra/env"
 import { createS3Client } from "@/infra/lib/tebi"
 
-config({ path: ".env.test", override: true })
+config({ path: ".env.test", override: true, quiet: true })
 
 const env = getEnv()
 

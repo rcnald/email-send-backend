@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import z from "zod"
 import { fromZodError } from "zod-validation-error/v4"
 
-import { SentEmailUseCase } from "@/domain/application/use-cases/sent-email"
+import { SendEmailUseCase } from "@/domain/application/use-cases/send-email"
 
 const sentEmailControllerBodySchema = z.object({
   clientId: z.uuid(),
@@ -10,7 +10,7 @@ const sentEmailControllerBodySchema = z.object({
 })
 
 export class SentEmailController {
-  constructor(private sentEmailUseCase: SentEmailUseCase) {}
+  constructor(private sentEmailUseCase: SendEmailUseCase) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
     const bodyValidation = sentEmailControllerBodySchema.safeParse(request.body)

@@ -1,8 +1,5 @@
-import { Renamer, RenamerParams } from "@/domain/application/storage/renamer"
+import { Renamer } from "@/domain/application/storage/renamer"
 
 export class FakeRenamer implements Renamer {
-  async rename({
-    currentFileName,
-    newFileName,
-  }: RenamerParams): Promise<void> {}
+  async rename(): Promise<void> {}
 }

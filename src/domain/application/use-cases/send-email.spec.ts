@@ -6,11 +6,11 @@ import { InMemoryClientRepository } from "test/in-memory-repositories/in-memory-
 import { InMemoryMailRepository } from "test/in-memory-repositories/in-memory-mail-repository"
 import { FakeDownloader } from "test/storage/fake-downloader"
 
-import { createEmailAttachmentsFromUrls } from "@/domain/enterprise/utils/create-email-attachment-from-url"
+import { createEmailAttachmentsFromUrls } from "@/domain/application/utils/create-email-attachment-from-url"
 
 import { SendEmailUseCase } from "./send-email"
 
-vi.mock("@/domain/enterprise/utils/create-email-attachment-from-url", () => ({
+vi.mock("@/domain/application/utils/create-email-attachment-from-url", () => ({
   createEmailAttachmentsFromUrls: vi.fn(),
 }))
 
@@ -49,6 +49,7 @@ describe("SentEmailUseCase", () => {
           type: "application/zip",
         },
       ],
+      undefined,
     ])
 
     await sut.execute({
@@ -93,6 +94,11 @@ describe("SentEmailUseCase", () => {
           type: "application/zip",
         },
       ],
+      {
+        code: "ATTACHMENT_PROCESSING_ERROR",
+        message: "One or more attachments failed to be processed.",
+        details: ["invalid-attachment"],
+      },
     ])
 
     await sut.execute({
@@ -126,6 +132,7 @@ describe("SentEmailUseCase", () => {
           type: "application/zip",
         },
       ],
+      undefined,
     ])
 
     await sut.execute({

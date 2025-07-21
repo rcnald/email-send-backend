@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto"
 
 import { Optional } from "@/core/types/optional"
 
-import { generateMailContent } from "../utils/mail-generator"
+import { generateMailContent } from "../../application/utils/mail-generator"
 
 export interface MailProps {
   accountantEmail: string

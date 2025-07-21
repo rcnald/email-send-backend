@@ -17,9 +17,10 @@ export abstract class EmailSender {
   abstract send(
     params: SendEmailParams,
   ): Promise<
-    | [undefined, { ok: true }]
+    | [undefined, { ok: true }, undefined]
     | [
         { code: "EMAIL_TO_SENT_NOT_FOUND"; message: "Email not found" },
+        undefined,
         undefined,
       ]
   >

@@ -1,8 +1,8 @@
 import { bad, nice } from "@/core/error"
+import { createEmailAttachmentsFromUrls } from "@/domain/application/utils/create-email-attachment-from-url"
+import { generateFileName } from "@/domain/application/utils/file-name-generator"
 import { Attachment } from "@/domain/enterprise/entities/attachment"
 import { Mail } from "@/domain/enterprise/entities/mail"
-import { createEmailAttachmentsFromUrls } from "@/domain/enterprise/utils/create-email-attachment-from-url"
-import { generateFileName } from "@/domain/enterprise/utils/file-name-generator"
 
 import { EmailSender } from "../email/email-sender"
 import { AttachmentRepository } from "../repositories/attachment-repository"
@@ -100,7 +100,7 @@ export class SendEmailUseCase {
       return bad(renameAttachmentsError)
     }
 
-    const [createEmailAttachmentsError, emailAttachments] =
+    const [createEmailAttachmentsError, emailAttachments, warn] =
       await createEmailAttachmentsFromUrls(renamedAttachments, {
         downloader: this.downloader,
       })

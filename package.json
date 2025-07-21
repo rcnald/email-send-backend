@@ -5,7 +5,8 @@
   "scripts": {
     "test": "vitest run",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
-    "dev": "tsx watch src/infra/server.ts"
+    "dev": "tsx watch src/infra/server.ts",
+    "lint": "eslint"
   },
   "devDependencies": {
     "@rcnald/eslint-config": "^0.2.0",

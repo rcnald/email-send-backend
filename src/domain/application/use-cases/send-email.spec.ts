@@ -5,8 +5,6 @@ import { InMemoryAttachmentRepository } from "test/in-memory-repositories/in-mem
 import { InMemoryClientRepository } from "test/in-memory-repositories/in-memory-client-repository"
 import { InMemoryMailRepository } from "test/in-memory-repositories/in-memory-mail-repository"
 
-import { createEmailAttachmentsFromUrls } from "@/domain/application/utils/create-email-attachment-from-url"
-
 import { SendEmailUseCase } from "./send-email"
 
 describe("SentEmailUseCase", () => {

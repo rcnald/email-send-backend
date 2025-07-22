@@ -26,10 +26,24 @@ export class UploadAndCreateAttachmentUseCase {
     const isFileTypeValid = zipRegex.test(fileType)
 
     if (!isFileTypeValid) {
-      return bad({ CODE: "INVALID_FILE_TYPE", message: "Invalid file type" })
+      return bad({
+        code: "INVALID_FILE_TYPE",
+        message: "Invalid file type",
+        data: { invalidFileType: fileType },
+      })
     }
 
-    const { url } = await this.uploader.upload({ fileName, fileType, body })
+    const [error, result] = await this.uploader.upload({
+      fileName,
+      fileType,
+      body,
+    })
+
+    if (error) {
+      return bad(error)
+    }
+
+    const { url } = result
 
     const attachment = Attachment.create({ title: fileName, url })
 

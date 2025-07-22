@@ -30,7 +30,11 @@ export class SendEmailUseCase {
     const client = await this.clientRepository.find(clientId)
 
     if (!client)
-      return bad({ code: "CLIENT_NOT_FOUND", message: "Client not found" })
+      return bad({
+        code: "CLIENT_NOT_FOUND",
+        message: "Client not found",
+        data: { clientId },
+      })
 
     const mail = Mail.create({
       clientId,
@@ -49,15 +53,14 @@ export class SendEmailUseCase {
       return bad({
         code: "SOME_ATTACHMENTS_NOT_FOUND",
         message: "Some attachments were not found",
-        missingIds,
+        data: { missingIds },
       })
     }
 
-    const [attachmentsError, emailAttachments, emailAttachmentsWarn] =
-      await this._fetchAttachments({
-        attachments,
-        mail,
-      })
+    const [attachmentsError, emailAttachments] = await this._fetchAttachments({
+      attachments,
+      mail,
+    })
 
     if (attachmentsError) {
       mail.failed()
@@ -65,14 +68,6 @@ export class SendEmailUseCase {
       await this.mailRepository.update(mail)
 
       return bad(attachmentsError)
-    }
-
-    if (emailAttachmentsWarn) {
-      mail.failed()
-
-      await this.mailRepository.update(mail)
-
-      return warn(emailAttachments, emailAttachmentsWarn)
     }
 
     const [emailSenderError] = await this.emailSender.send({
@@ -96,7 +91,13 @@ export class SendEmailUseCase {
 
     await this.mailRepository.update(mail)
 
-    return nice({})
+    return nice({
+      mailId: mail.id,
+      data: {
+        recipientEmail: mail.accountantEmail,
+        attachmentIds: mail.attachmentIds,
+      },
+    })
   }
 
   private async _fetchAttachments({
@@ -116,20 +117,13 @@ export class SendEmailUseCase {
       return bad(renameAttachmentsError)
     }
 
-    const [
-      createEmailAttachmentsError,
-      emailAttachments,
-      emailAttachmentsWarn,
-    ] = await createEmailAttachmentsFromUrls(renamedAttachments, {
-      downloader: this.downloader,
-    })
+    const [createEmailAttachmentsError, emailAttachments] =
+      await createEmailAttachmentsFromUrls(renamedAttachments, {
+        downloader: this.downloader,
+      })
 
     if (createEmailAttachmentsError) {
       return bad(createEmailAttachmentsError)
-    }
-
-    if (emailAttachmentsWarn) {
-      return warn(emailAttachments, emailAttachmentsWarn)
     }
 
     return nice(emailAttachments)
@@ -179,7 +173,9 @@ export class SendEmailUseCase {
       return bad({
         code: "FAILED_TO_PROCESS_ATTACHMENTS",
         message: "attachments failed to be processed.",
-        details: failedReasons.map((reason) => reason.message),
+        data: {
+          details: failedReasons.map((reason) => reason.message),
+        },
       })
     }
 

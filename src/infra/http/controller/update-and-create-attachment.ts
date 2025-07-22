@@ -30,8 +30,10 @@ export class UpdateAndCreateAttachmentController {
       const formattedError = fromZodError(fileValidation.error)
 
       return response.status(400).json({
-        error: "Invalid file",
-        details: formattedError.details,
+        message: "Invalid file type or size",
+        data: {
+          field_errors: formattedError.details,
+        },
       })
     }
 
@@ -50,11 +52,25 @@ export class UpdateAndCreateAttachmentController {
     )
 
     if (error) {
-      if (error.CODE === "INVALID_FILE_TYPE") {
-        return response.status(400).json({ error: error.message })
+      if (error.code === "INVALID_FILE_TYPE") {
+        return response.status(400).json({
+          message: "Invalid file type",
+          data: {
+            accepted_types: ACCEPTED_MIME_TYPES,
+          },
+        })
       }
 
-      return response.status(400).send({ error: "Client Error" })
+      if (error.code === "FAILED_TO_UPLOAD") {
+        return response.status(400).json({
+          message: "Failed to upload file",
+          data: {},
+        })
+      }
+
+      return response
+        .status(400)
+        .send({ message: "An unexpected error occurred", data: {} })
     }
 
     return response.status(201).json(result.attachment)

@@ -48,6 +48,9 @@ describe("SentEmailUseCase", () => {
     expect(error).toEqual({
       code: "CLIENT_NOT_FOUND",
       message: "Client not found",
+      data: {
+        clientId: "non-existent-client-id",
+      },
     })
     expect(result).toBeUndefined()
   })
@@ -68,8 +71,10 @@ describe("SentEmailUseCase", () => {
 
     expect(error).toEqual({
       code: "SOME_ATTACHMENTS_NOT_FOUND",
+      data: {
+        missingIds: ["invalid-attachment-id"],
+      },
       message: "Some attachments were not found",
-      missingIds: ["invalid-attachment-id"],
     })
   })
 
@@ -84,31 +89,22 @@ describe("SentEmailUseCase", () => {
     inMemoryAttachmentRepository.create(validAttachment)
     inMemoryAttachmentRepository.create(invalidAttachment)
 
-    const [error, result, warn] = await sut.execute({
+    const [error] = await sut.execute({
       clientId: client.id,
       attachmentIds: [validAttachment.id, invalidAttachment.id],
     })
-
-    const updatedValidAttachment =
-      inMemoryAttachmentRepository.attachments.find(
-        (attachment) => attachment.id === validAttachment.id,
-      )
 
     const updatedInvalidAttachment =
       inMemoryAttachmentRepository.attachments.find(
         (attachment) => attachment.id === invalidAttachment.id,
       )
 
-    expect(error).toBeUndefined()
-    expect(result).toEqual([
-      expect.objectContaining({
-        filename: updatedValidAttachment?.title,
-      }),
-    ])
-    expect(warn).toEqual({
+    expect(error).toEqual({
       code: "ATTACHMENT_PROCESSING_ERROR",
       message: "One or more attachments failed to be processed.",
-      details: [updatedInvalidAttachment?.url],
+      data: {
+        details: [updatedInvalidAttachment?.url],
+      },
     })
   })
 

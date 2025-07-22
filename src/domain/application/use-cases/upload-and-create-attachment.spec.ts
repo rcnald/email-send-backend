@@ -13,34 +13,44 @@ const sut: UploadAndCreateAttachmentUseCase =
 
 describe("UploadAndCreateAttachmentUseCase", () => {
   it("should return null if file type is not valid", async () => {
-    const request = {
-      fileName: "test.txt",
-      fileType: "txt",
-      body: Buffer.from("test content"),
-    }
-
-    const [error] = await sut.execute(request)
+    const [error] = await sut.execute({
+      fileName: "file.txt",
+      fileType: "application/txt",
+      body: Buffer.from("file content"),
+    })
 
     expect(error).toEqual({
-      CODE: "INVALID_FILE_TYPE",
+      code: "INVALID_FILE_TYPE",
       message: "Invalid file type",
+      data: { invalidFileType: "application/txt" },
+    })
+  })
+
+  it("should return error if upload fails", async () => {
+    const [error] = await sut.execute({
+      fileName: "invalid.zip",
+      fileType: "application/zip",
+      body: Buffer.from("file content"),
+    })
+
+    expect(error).toEqual({
+      code: "FAILED_TO_UPLOAD",
+      message: "Failed to upload file",
     })
   })
 
   it("should upload the file and create an attachment if file type is valid", async () => {
-    const request = {
-      fileName: "test.zip",
-      fileType: "zip",
-      body: Buffer.from("test content"),
-    }
-
-    const [error, result] = await sut.execute(request)
+    const [error, result] = await sut.execute({
+      fileName: "file.zip",
+      fileType: "application/zip",
+      body: Buffer.from("file content"),
+    })
 
     expect(error).toBeUndefined()
     expect(result?.attachment).toEqual(
       expect.objectContaining({
-        title: "test.zip",
-        url: "http://fakeurl.com/test.zip",
+        title: "file.zip",
+        url: "http://fakeurl.com/file.zip",
       }),
     )
   })

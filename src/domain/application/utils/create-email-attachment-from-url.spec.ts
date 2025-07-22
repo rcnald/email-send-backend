@@ -28,7 +28,7 @@ describe("createEmailAttachmentsFromUrls", () => {
     expect(result && result[1].content).toEqual(Buffer.from("file content ok"))
   })
 
-  it("should filter out attachments that fail to download", async () => {
+  it("should not create email attachments from any invalid URLs", async () => {
     const attachmentsToProcess = [
       makeAttachment({ title: "file-ok.zip" }),
       makeAttachment({
@@ -37,21 +37,16 @@ describe("createEmailAttachmentsFromUrls", () => {
       }),
     ]
 
-    const [error, result, warn] = await createEmailAttachmentsFromUrls(
-      attachmentsToProcess,
-      {
-        downloader: fakeDownloader,
-      },
-    )
-
-    expect(error).toEqual(undefined)
-    expect(warn).toEqual({
-      code: "ATTACHMENT_PROCESSING_ERROR",
-      message: "One or more attachments failed to be processed.",
-      details: ["http://fake-storage/invalid-file.zip"],
+    const [error] = await createEmailAttachmentsFromUrls(attachmentsToProcess, {
+      downloader: fakeDownloader,
     })
 
-    expect(result).toHaveLength(1)
-    expect(result && result[0].filename).toBe("file-ok.zip")
+    expect(error).toEqual({
+      code: "ATTACHMENT_PROCESSING_ERROR",
+      data: {
+        details: ["http://fake-storage/invalid-file.zip"],
+      },
+      message: "One or more attachments failed to be processed.",
+    })
   })
 })

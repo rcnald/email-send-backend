@@ -1,4 +1,4 @@
-import { bad, nice, warn } from "@/core/error"
+import { bad, nice } from "@/core/error"
 import { Downloader } from "@/domain/application/storage/downloader"
 
 import { AttachmentProps } from "../../enterprise/entities/attachment"
@@ -41,10 +41,12 @@ export async function createEmailAttachmentsFromUrls(
   }
 
   if (failedReasons.length > 0) {
-    return warn(successfulAttachments, {
+    return bad({
       code: "ATTACHMENT_PROCESSING_ERROR",
       message: "One or more attachments failed to be processed.",
-      details: failedReasons.map((reason) => reason.file),
+      data: {
+        details: failedReasons.map((reason) => reason.file),
+      },
     })
   }
 

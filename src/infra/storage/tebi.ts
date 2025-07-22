@@ -27,7 +27,14 @@ export class TebiStorage implements Uploader, Renamer, Downloader {
     fileName,
     fileType,
     body,
-  }: UploadParams): Promise<{ url: string }> {
+  }: UploadParams): Promise<
+    | [undefined, { url: string }, undefined]
+    | [
+        { code: "FAILED_TO_UPLOAD"; message: "Failed to upload file" },
+        undefined,
+        undefined,
+      ]
+  > {
     const uuid = randomUUID()
 
     const extension = path.extname(fileName)
@@ -35,7 +42,8 @@ export class TebiStorage implements Uploader, Renamer, Downloader {
     const baseName = path.basename(fileName, extension)
 
     const uniqueFilename = `${baseName}-${uuid}${extension}`
-    await this.tebiClient.send(
+
+    const result = await this.tebiClient.send(
       new PutObjectCommand({
         Bucket: this.env.S3_BUCKET,
         Key: uniqueFilename,
@@ -44,9 +52,14 @@ export class TebiStorage implements Uploader, Renamer, Downloader {
       }),
     )
 
-    return {
-      url: uniqueFilename,
+    if (result.$metadata.httpStatusCode !== 200) {
+      return bad({
+        code: "FAILED_TO_UPLOAD",
+        message: "Failed to upload file",
+      })
     }
+
+    return nice({ url: uniqueFilename })
   }
 
   async rename({ currentFileUrl, newFileUrl }: RenamerParams): Promise<void> {

@@ -3,3 +3,5 @@ node_modules
 .yarn
 /generated/prisma
 .env
+
+dist

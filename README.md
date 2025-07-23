@@ -1,7 +1,7 @@
 # **Documento de Requisitos: Sistema de Envio de Documentos Fiscais**
 
-Versão: 1.1  
-Data: 06/06/2025
+Versão: 1.4  
+Data: 23/07/2025
 
 ## **Histórico de Revisões**
 
@@ -10,20 +10,29 @@ Data: 06/06/2025
 | 1.0 | 06/06/2025 | Ronaldo Junior | Documento inicial focado no fluxo de envio de e-mail |
 | 1.1 | 06/06/2025 | Ronaldo Junior | Escopo expandido e adição de RNs e RNFs |
 | 1.3 | 11/06/2025 | Ronaldo Junior | Atualização dos Requisitos Funcionais e Regras de Negócio |
+| 1.4 | 23/07/2025 | Ronaldo Junior | Reestruturação do documento: merge com documentação técnica, reorganização das seções para melhor experiência do desenvolvedor, padronização de comandos e configurações |
 
 ## **Índice**
 
-1. [Introdução](#1-propósito)  
+1. [Introdução](#1-introdução)  
    1.1. [Propósito](#11-propósito)   
    1.2. [Público-alvo](#12-público-alvo)    
    1.3. [Escopo](#13-escopo)  
 2. [Visão Geral do Produto](#2-visão-geral-do-produto)  
-3. [Requisitos Funcionais](#3-requisitos-funcionais)    
-   3.1. [Autenticação](#31-autenticação)       
-   3.2. [Gerenciamento de Clientes](#32-gerenciamento-de-clientes)    
-   3.3. [Envio de E-mail](#33-envio-de-e-mail)
-4. [Regras de Negócio](#4-regras-de-negócio)  
-5. [Requisitos Não Funcionais](#5-requisitos-não-funcionais)
+3. [Arquitetura e Tecnologias](#3-arquitetura-e-tecnologias)  
+4. [Setup e Desenvolvimento](#4-setup-e-desenvolvimento)  
+5. [Requisitos Funcionais](#5-requisitos-funcionais)    
+   5.1. [Autenticação](#51-autenticação)       
+   5.2. [Gerenciamento de Clientes](#52-gerenciamento-de-clientes)    
+   5.3. [Envio de E-mail](#53-envio-de-e-mail)
+6. [Regras de Negócio](#6-regras-de-negócio)  
+7. [Requisitos Não Funcionais](#7-requisitos-não-funcionais)
+8. [Estrutura do Projeto](#8-estrutura-do-projeto)
+9. [Configuração Detalhada](#9-configuração-detalhada)  
+   9.1. [Docker Services](#91-docker-services)  
+   9.2. [Variáveis de Ambiente](#92-variáveis-de-ambiente)  
+   9.3. [Comandos de Desenvolvimento](#93-comandos-de-desenvolvimento)  
+10. [Deploy](#10-deploy)
 
 ## **1. Introdução**
 
@@ -47,15 +56,69 @@ O escopo do projeto abrange o desenvolvimento de uma plataforma completa que inc
 
 O sistema é uma plataforma web projetada para otimizar o processo de envio de documentos fiscais. Usuários poderão se cadastrar, gerenciar uma base de clientes e contadores, e então utilizar a ferramenta principal para enviar arquivos .zip de forma padronizada e automatizada. O sistema notificará o usuário em tempo real sobre o status de cada envio, garantindo transparência e confiabilidade no processo.
 
-## **3. Requisitos Funcionais**
+Desenvolvido com **Clean Architecture** e **DDD**, organizando o código em camadas: domínio (entidades + regras), aplicação (use cases) e infraestrutura (implementações). Utiliza padrões como **Repository**, **Dependency Injection** e **Factory**, com sistema robusto de tratamento de erros via tuplas `[error, result, warning]`.
 
-### **3.1 Autenticação**
+## **3. Arquitetura e Tecnologias**
+
+- **[Node.js](https://nodejs.org)** + **[TypeScript](https://typescriptlang.org)** - Runtime e tipagem estática
+- **[Express](https://expressjs.com)** - Framework web minimalista
+- **[Prisma](https://prisma.io)** - ORM moderno com type-safety
+- **[PostgreSQL](https://postgresql.org)** - Banco de dados relacional
+- **[MinIO](https://min.io)** - Storage S3-compatible (desenvolvimento)
+- **[Tebi.io](https://tebi.io)** - S3-compatible storage (produção)
+- **[Resend](https://resend.com)** - Serviço de email transacional
+- **[Vitest](https://vitest.dev)** - Framework de testes rápido
+- **[Zod](https://zod.dev)** - Validação de schemas TypeScript-first
+
+## **4. Setup e Desenvolvimento**
+
+**Pré-requisitos:** [Node.js 18+](https://nodejs.org) e [Docker](https://docker.com) instalados no sistema.
+
+### **1. Clone o repositório:**
+```bash
+git clone https://github.com/rcnald/email-send-backend
+```
+
+### **2. Acesse a pasta do projeto:**
+```bash
+cd email-send-backend
+```
+
+### **3. Instale as dependências:**
+```bash
+yarn install
+# ou
+npm install
+```
+
+### **4. Configure o ambiente:**
+Crie um arquivo `.env` na raiz do projeto e configure as variáveis com base no `.env.example`. Emails só serão enviados quando `ENVIRONMENT=production`.
+
+### **5. Inicialize os serviços:**
+```bash
+yarn setup
+# ou
+npm run setup
+```
+
+### **6. Inicie o servidor:**
+```bash
+yarn dev
+# ou
+npm run dev
+```
+
+A aplicação estará disponível em: [http://localhost:3333](http://localhost:3333)
+
+## **5. Requisitos Funcionais**
+
+### **5.1 Autenticação**
 
 - [ ] **RF-12**: O sistema deve permitir que um novo usuário se cadastre fornecendo nome, email e senha.
 - [ ] **RF-13**: O sistema deve permitir que um usuário existente faça login utilizando email e senha.
 - [ ] **RF-14**: Após um login ou cadastro bem-sucedido, o sistema deve gerar e retornar um token de acesso (JWT) para autenticar as requisições subsequentes.
 
-### **3.2 Gerenciamento de Clientes**
+### **5.2 Gerenciamento de Clientes**
 
 - [ ] **RF-15**: O sistema deve permitir que um usuário autenticado cadastre um novo cliente, fornecendo os seguintes atributos:
   - Cliente: nome, CNPJ.
@@ -64,7 +127,7 @@ O sistema é uma plataforma web projetada para otimizar o processo de envio de d
 - [ ] **RF-17**: O sistema deve permitir que o usuário edite as informações de um cliente ou contador existente.
 - [ ] **RF-18**: O sistema deve permitir que o usuário remova o cadastro de um cliente.
 
-### **3.3 Envio de E-mail**
+### **5.3 Envio de E-mail**
 
 - [ ] **RF-01:** O sistema deve permitir que o usuário autenticado anexe um ou mais arquivos para envio.  
 - [ ] **RF-02:** O sistema deve permitir que o usuário selecione um cliente (previamente cadastrado) para associar ao envio dos arquivos.  
@@ -78,7 +141,7 @@ O sistema é uma plataforma web projetada para otimizar o processo de envio de d
 - [ ] **RF-10:** Se uma falha de envio persistir, o sistema deve sugerir o envio manual e fornecer um template de e-mail (com assunto e corpo) para o usuário copiar.  
 - [ ] **RF-11:** O sistema deve manter um histórico de envios com seus respectivos status (ex: enviado, falhou, pendente, etc.).
 
-## **4. Regras de Negócio**
+## **6. Regras de Negócio**
 
 * [x] **RN-01:** O arquivo anexado pelo usuário **deve**, obrigatoriamente, estar no formato **.zip**. O sistema deve validar a extensão do arquivo e rejeitar formatos diferentes.  
 * [x] **RN-02:** O assunto do e-mail **deve** seguir o padrão: "Arquivos fiscais de '[nome do cliente]' ('[cnpj]') referente ao mês '[mês referente]'".  
@@ -91,7 +154,7 @@ O sistema é uma plataforma web projetada para otimizar o processo de envio de d
 * [ ] **RN-09:** Um usuário só poderá visualizar o histórico dos **seus próprios** envios.  
 * [ ] **RN-10:** Na tela de envio, o usuário só poderá selecionar clientes que ele mesmo cadastrou.
 
-## **5. Requisitos Não Funcionais**
+## **7. Requisitos Não Funcionais**
 
 * [ ] **RNF-01 (Desempenho):** O upload do arquivo e o disparo do e-mail devem ser concluídos em um tempo de resposta rápido, idealmente em menos de 5 segundos sob condições normais de rede.  
 * [ ] **RNF-02 (Usabilidade):** A interface para anexar arquivos e selecionar clientes deve ser clara e intuitiva, minimizando a chance de erro do usuário.  
@@ -99,3 +162,148 @@ O sistema é uma plataforma web projetada para otimizar o processo de envio de d
 * [ ] **RNF-04 (Segurança):** Os arquivos fiscais anexados devem ser tratados de forma segura, com armazenamento temporário e exclusão automática após o período definido. O acesso à funcionalidade de envio deve ser restrito a usuários autenticados.  
 * [ ] **RNF-05 (Disponibilidade):** O serviço de envio de e-mail deve estar disponível 99.9% do tempo.  
 * [ ] **RNF-06 (Comunicação):** As notificações de sucesso e falha para o usuário devem ser exibidas em tempo real (via Socket.IO, conforme sugerido no diagrama), sem a necessidade de recarregar a página.
+
+## **8. Estrutura do Projeto**
+
+```
+src/
+├── core/                   # Tipos e utilitários base
+├── domain/
+│   ├── enterprise/         # Entidades e value objects
+│   └── application/        # Use cases e interfaces
+├── infra/
+│   ├── database/          # Prisma e repositórios
+│   ├── http/              # Controllers e rotas
+│   ├── storage/           # Implementação S3
+│   └── lib/               # Clientes externos
+test/                      # Utilitários de teste
+```
+
+## **9. Configuração Detalhada**
+
+### **9.1 Docker Services**
+```yaml
+# PostgreSQL - Banco de dados principal
+- Porta: 5432
+- User: docker
+- Password: docker
+- Database: email-send
+
+# MinIO - S3-compatible storage
+- API: http://localhost:9000
+- Console: http://localhost:9001
+- User: testuser
+- Password: testpassword
+```
+
+### **9.2 Variáveis de Ambiente**
+```bash
+DATABASE_URL="postgresql://docker:docker@localhost:5432/email-send"
+
+S3_URL="http://localhost:9000"
+S3_BUCKET="attachments"
+S3_ACCESS_KEY_ID="testuser"
+S3_SECRET_KEY="testpassword"
+S3_REGION="us-east-1"
+
+ENVIRONMENT="development"  # development | test | production
+
+RESEND_API_KEY="your-resend-key"  # Obrigatório apenas para production
+```
+
+### **9.3 Comandos de Desenvolvimento**
+
+#### **Testes**
+
+**1. Executar testes unitários:**
+```bash
+yarn test
+# ou
+npm test
+```
+
+**2. Executar testes E2E:**
+```bash
+yarn test:e2e
+# ou
+npm run test:e2e
+```
+
+**3. Executar linting:**
+```bash
+yarn lint
+# ou
+npm run lint
+```
+
+#### **Estrutura de Testes**
+```
+test/
+├── in-memory-repositories/    # Repositórios fake
+├── email/                     # Email sender fake
+├── storage/                   # Storage fake
+└── setup-test-environment.ts  # Setup de DI para testes
+```
+
+## **10. Deploy**
+
+### **Comportamento por Ambiente**
+
+**Desenvolvimento e Teste:**
+```bash
+ENVIRONMENT=development
+```
+Emails são simulados (fake sender) - não envia emails reais.
+
+**Produção:**
+```bash
+ENVIRONMENT=production
+```
+Emails são enviados via Resend API.
+
+### **Configuração de Produção**
+
+**1. Defina o ambiente:**
+```bash
+ENVIRONMENT=production
+```
+
+**2. Configure o banco de dados:**
+```bash
+DATABASE_URL=<prod-database-url>
+```
+
+**3. Configure o storage S3:**
+```bash
+S3_URL=<prod-s3-endpoint>
+S3_BUCKET=<prod-bucket>
+S3_ACCESS_KEY_ID=<prod-access-key>
+S3_SECRET_KEY=<prod-secret-key>
+S3_REGION="global"
+```
+
+**4. Configure o serviço de email:**
+```bash
+RESEND_API_KEY=<prod-resend-key>
+```
+⚠️ **Obrigatório para production**
+
+### **Build e Deploy**
+
+**1. Build da aplicação:**
+```bash
+yarn build
+# ou
+npm run build
+```
+
+**2. Inicie o servidor:**
+```bash
+yarn start
+# ou
+npm start
+```
+
+---
+
+**Desenvolvido com Clean Architecture, DDD e TypeScript** 🚀

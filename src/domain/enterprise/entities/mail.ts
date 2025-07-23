@@ -91,6 +91,24 @@ export class Mail {
     return this.props.referenceMonth
   }
 
+  get failedAt(): Date | null | undefined {
+    return this.props.failedAt
+  }
+
+  set failedAt(date: Date | null) {
+    this.props.failedAt = date
+    this.touch()
+  }
+
+  get sentAt(): Date | null | undefined {
+    return this.props.sentAt
+  }
+
+  set sentAt(date: Date | null) {
+    this.props.sentAt = date
+    this.touch()
+  }
+
   failed() {
     this.props.failedAt = new Date()
     this.touch()

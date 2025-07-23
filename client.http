@@ -1,7 +1,6 @@
-### Variáveis do Ambiente
 @baseUrl = http://localhost:3333
 
-### Upload de Arquivo .zip
+### Upload Files
 # @name uploadAttachment
 POST {{baseUrl}}/attachments
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -16,3 +15,15 @@ Content-Type: application/zip
 
 < ./test/test-file.zip
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Send Email
+# @name sendEmail
+POST {{baseUrl}}/emails
+Content-Type: application/json
+
+{
+  "clientId": "f9b5d9e4-e8e9-4a0d-90d7-77ccda364af8",
+  "attachmentIds": [
+    "{{uploadAttachment.response.body.attachment_id}}"
+  ]
+}

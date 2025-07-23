@@ -18,6 +18,10 @@ export class PrismaMailMapper {
       clientId: mail.clientId,
       clientName: mail.clientName,
       referenceMonth: mail.referenceMonth,
+      failedAt: mail.failedAt,
+      sentAt: mail.sentAt,
+      createdAt: mail.createdAt,
+      updatedAt: mail.updatedAt,
     }
   }
 

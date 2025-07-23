@@ -93,9 +93,6 @@ export class SentEmailController {
       message: "Email sent successfully",
       data: {
         email_id: result.mailId,
-        recipient: result.data.recipientEmail,
-        attachment_count: result.data.attachmentIds.length,
-        sent_at: new Date().toISOString(),
       },
     })
   }

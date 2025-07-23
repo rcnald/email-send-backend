@@ -73,6 +73,6 @@ export class UpdateAndCreateAttachmentController {
         .send({ message: "An unexpected error occurred", data: {} })
     }
 
-    return response.status(201).json(result.attachment)
+    return response.status(201).json({ attachment_id: result.attachment.id })
   }
 }

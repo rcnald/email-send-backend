@@ -23,8 +23,8 @@ export class RendEmailSender implements EmailSender {
   > {
     if (env.ENVIRONMENT === "production") {
       const response = await resend.emails.send({
-        from: "Seu App de Testes <onboarding@resend.dev>",
-        to: ["ronaldomjunior05@gmail.com"],
+        from: "New Support <newsupport@rcnald.dev>",
+        to: params.to,
         subject: params.subject,
         html: params.html,
         text: params.text,

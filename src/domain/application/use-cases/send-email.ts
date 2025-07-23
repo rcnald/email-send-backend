@@ -1,4 +1,4 @@
-import { bad, nice, warn } from "@/core/error"
+import { bad, nice } from "@/core/error"
 import { createEmailAttachmentsFromUrls } from "@/domain/application/utils/create-email-attachment-from-url"
 import { generateFileName } from "@/domain/application/utils/file-name-generator"
 import { Attachment } from "@/domain/enterprise/entities/attachment"
@@ -44,7 +44,7 @@ export class SendEmailUseCase {
       clientName: client.name,
     })
 
-    this.mailRepository.create(mail)
+    await this.mailRepository.create(mail)
 
     const [attachments, missingIds] =
       await this.attachmentRepository.findManyByMultipleIds(mail.attachmentIds)
@@ -56,6 +56,11 @@ export class SendEmailUseCase {
         data: { missingIds },
       })
     }
+
+    attachments.forEach((attachment) => {
+      attachment.mailId = mail.id
+      this.attachmentRepository.update(attachment)
+    })
 
     const [attachmentsError, emailAttachments] = await this._fetchAttachments({
       attachments,
@@ -93,10 +98,6 @@ export class SendEmailUseCase {
 
     return nice({
       mailId: mail.id,
-      data: {
-        recipientEmail: mail.accountantEmail,
-        attachmentIds: mail.attachmentIds,
-      },
     })
   }
 

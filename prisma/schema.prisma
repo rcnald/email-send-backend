@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Client {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
 
   name String
   CNPJ String @unique
@@ -28,7 +28,7 @@ model Client {
 }
 
 model Mail {
-  id         String @id @default(cuid())
+  id         String @id @default(uuid())
   clientName String @map("client_name")
 
   subject String
@@ -54,7 +54,7 @@ model Mail {
 }
 
 model Attachment {
-  id String @id @default(cuid())
+  id String @id @default(uuid())
 
   title String
   url   String

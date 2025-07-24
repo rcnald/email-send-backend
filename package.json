@@ -3,7 +3,7 @@
   "packageManager": "yarn@4.7.0",
   "scripts": {
     "dev": "tsx watch src/infra/server.ts",
-    "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json && prisma generate",
+    "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json && prisma generate --no-hints",
     "start": "node dist/infra/server.js",
     "lint": "eslint",
     "test": "vitest run",

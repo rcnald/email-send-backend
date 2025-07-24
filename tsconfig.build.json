@@ -4,17 +4,25 @@
     "noEmit": false,
     "allowImportingTsExtensions": false,
     "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
+  "include": [
+    "src/**/*"
+  ],
   "exclude": [
     "**/*.spec.ts",
-    "**/*.test.ts",
+    "**/*.test.ts", 
     "**/*.e2e-spec.ts",
     "test/**/*",
     "vitest.config.ts",
-    "vitest.config.e2e.ts"
+    "vitest.config.e2e.ts",
+    "dist/**/*",
+    "node_modules/**/*"
   ]
 }

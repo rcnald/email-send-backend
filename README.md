@@ -306,4 +306,3 @@ npm start
 
 ---
 
-**Desenvolvido com Clean Architecture, DDD e TypeScript** 🚀

@@ -983,6 +983,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@faker-js/faker@npm:^9.9.0":
+  version: 9.9.0
+  resolution: "@faker-js/faker@npm:9.9.0"
+  checksum: 10c0/02107cb6915217b4831fa4b261603165972eb7f09d2ab2e1d4b75807df2d425a2bac8621cddbfdcc158c2c447c2bce2e14939d51c4a63fbd832df55452e7f73c
+  languageName: node
+  linkType: hard
+
 "@humanfs/core@npm:^0.19.1":
   version: 0.19.1
   resolution: "@humanfs/core@npm:0.19.1"
@@ -3698,6 +3705,7 @@ __metadata:
   dependencies:
     "@aws-sdk/client-s3": "npm:^3.848.0"
     "@aws-sdk/s3-request-presigner": "npm:^3.848.0"
+    "@faker-js/faker": "npm:^9.9.0"
     "@prisma/client": "npm:^6.11.1"
     "@rcnald/eslint-config": "npm:^0.2.0"
     "@swc/core": "npm:^1.12.5"

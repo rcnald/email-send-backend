@@ -11,6 +11,7 @@
     "setup": "docker compose up -d && sleep 2 && prisma migrate deploy && prisma generate"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
     "@rcnald/eslint-config": "^0.2.0",
     "@swc/core": "^1.12.5",
     "@types/express": "^5",

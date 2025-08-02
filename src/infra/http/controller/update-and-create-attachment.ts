@@ -5,7 +5,11 @@ import { fromZodError } from "zod-validation-error/v4"
 import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/upload-and-create-attachment"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
-const ACCEPTED_MIME_TYPES = ["application/zip"]
+const ACCEPTED_MIME_TYPES = [
+  "application/zip",
+  "application/x-zip-compressed",
+  "application/x-zip",
+]
 
 const attachmentFileSchema = z.object({
   originalname: z.string(),

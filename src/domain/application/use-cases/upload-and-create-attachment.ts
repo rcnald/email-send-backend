@@ -22,7 +22,7 @@ export class UploadAndCreateAttachmentUseCase {
     fileType,
     body,
   }: UploadAndCreateAttachmentUseCaseRequest) {
-    const zipRegex = /zip$/i
+    const zipRegex = /^application\/(zip|x-zip-compressed|x-zip)$/
 
     const isFileTypeValid = zipRegex.test(fileType)
 

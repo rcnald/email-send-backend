@@ -40,12 +40,12 @@ export class Attachment {
     return this.props.mailId
   }
 
-  set mailId(value: string) {
+  set mailId(value: string | undefined) {
     this.props.mailId = value
   }
 
-  static create({ title, url }: AttachmentProps, id?: string) {
-    const attachment = new Attachment({ title, url }, id)
+  static create({ title, url, mailId }: AttachmentProps, id?: string) {
+    const attachment = new Attachment({ title, url, mailId }, id)
 
     return attachment
   }

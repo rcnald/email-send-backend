@@ -7,4 +7,5 @@ export abstract class AttachmentRepository {
     ids: string[],
   ): Promise<[Attachment[], missingIds: string[]]>
   abstract update(attachment: Attachment): Promise<void>
+  abstract delete(id: string): Promise<void>
 }

@@ -9,15 +9,17 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import { file } from "zod"
 
 import { bad, nice } from "@/core/error"
+import { Deleter, DeleterParams } from "@/domain/application/storage/deleter"
 import { Downloader } from "@/domain/application/storage/downloader"
 import { Renamer, RenamerParams } from "@/domain/application/storage/renamer"
 import { Uploader, UploadParams } from "@/domain/application/storage/uploader"
 
 import { Env } from "../env"
 
-export class TebiStorage implements Uploader, Renamer, Downloader {
+export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
   constructor(
     private tebiClient: S3Client,
     private env: Env,
@@ -117,6 +119,61 @@ export class TebiStorage implements Uploader, Renamer, Downloader {
         code: "FAILED_TO_DOWNLOAD",
         message: "Failed to download file",
         file: url,
+      })
+    }
+  }
+
+  async delete(params: DeleterParams): Promise<
+    | [undefined, void, undefined]
+    | [
+        { code: "FAILED_TO_DELETE"; message: "Failed to delete file" },
+        undefined,
+        undefined,
+      ]
+    | [
+        {
+          code: "ATTACHMENT_NOT_FOUND_ON_SERVER"
+          message: "Attachment not found on server"
+        },
+        undefined,
+        undefined,
+      ]
+  > {
+    const { url } = params
+
+    try {
+      await this.tebiClient.send(
+        new GetObjectCommand({
+          Bucket: this.env.S3_BUCKET,
+          Key: url,
+        }),
+      )
+
+      await this.tebiClient.send(
+        new DeleteObjectCommand({
+          Bucket: this.env.S3_BUCKET,
+          Key: url,
+        }),
+      )
+
+      return nice()
+    } catch (error) {
+      console.error("Error deleting file:", error)
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "name" in error &&
+        (error as { name?: unknown }).name === "NoSuchKey"
+      ) {
+        return bad({
+          code: "ATTACHMENT_NOT_FOUND_ON_SERVER",
+          message: "Attachment not found on server",
+        })
+      }
+
+      return bad({
+        code: "FAILED_TO_DELETE",
+        message: "Failed to delete file",
       })
     }
   }

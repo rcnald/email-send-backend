@@ -16,7 +16,6 @@ services:
       - "9000:9000" 
       - "9001:9001"  
     environment:
-      # Credenciais de teste. NUNCA use em produção.
       MINIO_ROOT_USER: "testuser"
       MINIO_ROOT_PASSWORD: "testpassword"
     volumes:

@@ -75,7 +75,7 @@ export class SentEmailController {
       }
 
       if (error.code === "FAILED_TO_SEND_EMAIL") {
-        return response.status(500).json({
+        return response.status(503).json({
           message: "Failed to send email",
           data: {
             retry_after: "5 minutes",

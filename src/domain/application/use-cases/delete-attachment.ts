@@ -32,7 +32,7 @@ export class DeleteAttachmentUseCase {
       })
     }
 
-    const [error] = await this.deleter.delete({ attachmentId: attachment.id })
+    const [error] = await this.deleter.delete({ url: attachment.url })
 
     if (error) {
       return bad({ ...error, data: { attachmentId: attachment.id } })

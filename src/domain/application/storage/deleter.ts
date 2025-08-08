@@ -1,5 +1,5 @@
 export interface DeleterParams {
-  attachmentId: string
+  url: string
 }
 
 export abstract class Deleter {

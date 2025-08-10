@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "nodemon -q --watch src --watch docs --ext ts,json --exec tsx src/infra/server.ts",
     "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json && prisma generate --no-hints",
+    "build:docs": "scalar to-html -i ./docs/swagger.json -o ./public",
     "start": "node dist/infra/server.js",
     "lint": "eslint",
     "test": "vitest run",
@@ -13,6 +14,7 @@
   "devDependencies": {
     "@faker-js/faker": "^9.9.0",
     "@rcnald/eslint-config": "^0.2.0",
+    "@scalar/cli": "^1.2.9",
     "@swc/core": "^1.12.5",
     "@types/cors": "^2.8.19",
     "@types/express": "^5",

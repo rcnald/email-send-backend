@@ -9,7 +9,6 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-import { file } from "zod"
 
 import { bad, nice } from "@/core/error"
 import { Deleter, DeleterParams } from "@/domain/application/storage/deleter"
@@ -158,13 +157,7 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
 
       return nice()
     } catch (error) {
-      console.error("Error deleting file:", error)
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "name" in error &&
-        (error as { name?: unknown }).name === "NoSuchKey"
-      ) {
+      if ((error as { name?: unknown }).name === "NoSuchKey") {
         return bad({
           code: "ATTACHMENT_NOT_FOUND_ON_SERVER",
           message: "Attachment not found on server",

@@ -16,7 +16,7 @@ export const createAttachmentRoutes = () => {
 
   attachmentsRoutes.post(
     "/",
-    upload.single("attachmentFile"),
+    upload.single("file"),
     async (request: Request, response: Response) => {
       await updateAndCreateAttachmentController.handle(request, response)
     },

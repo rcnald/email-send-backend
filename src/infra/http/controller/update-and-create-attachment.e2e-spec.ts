@@ -18,7 +18,7 @@ describe("Update and Create Attachment E2E Tests", () => {
 
     const response = await request(app)
       .post("/attachments")
-      .attach("attachmentFile", testFileBuffer, {
+      .attach("file", testFileBuffer, {
         filename: "test-file.zip",
         contentType: "application/zip",
       })

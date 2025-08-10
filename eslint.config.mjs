@@ -10,6 +10,7 @@ export default [
         ...globals.vitest,
       },
     },
+    ignores: ["**/dist/**", "**/node_modules/**", "**/prisma/**", "**/docs/**"],
     plugins: {
       "simple-import-sort": simpleImportSort,
     },

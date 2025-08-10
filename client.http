@@ -10,7 +10,7 @@ Content-Disposition: form-data; name="fileName"
 
 test-file.zip
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="attachmentFile"; filename="test-file.zip"
+Content-Disposition: form-data; name="file"; filename="test-file.zip"
 Content-Type: application/zip
 
 < ./test/test-file.zip
@@ -27,3 +27,7 @@ Content-Type: application/json
     "{{uploadAttachment.response.body.attachment_id}}"
   ]
 }
+
+### Delete Attachment
+# @name deleteAttachment
+DELETE {{baseUrl}}/attachments/{{uploadAttachment.response.body.attachment_id}}/delete

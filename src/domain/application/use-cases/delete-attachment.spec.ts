@@ -26,7 +26,7 @@ describe("DeleteAttachmentUseCase", () => {
   })
 
   it("should return an error if attachment failed to be deleted", async () => {
-    const attachment = makeAttachment({}, "fail-delete-id")
+    const attachment = makeAttachment({ url: "fail-delete-url" })
 
     await inMemoryAttachmentRepository.create(attachment)
 
@@ -36,13 +36,13 @@ describe("DeleteAttachmentUseCase", () => {
       code: "FAILED_TO_DELETE",
       message: "Failed to delete file",
       data: {
-        attachmentId: "fail-delete-id",
+        attachmentId: attachment.id,
       },
     })
   })
 
   it("should return an error if attachment is in use", async () => {
-    const attachment = makeAttachment({ mailId: "mail-id" }, "in-use-id")
+    const attachment = makeAttachment({ mailId: "mail-id" })
 
     await inMemoryAttachmentRepository.create(attachment)
 
@@ -51,12 +51,12 @@ describe("DeleteAttachmentUseCase", () => {
     expect(error).toEqual({
       code: "ATTACHMENT_IN_USE",
       message: "Attachment is in use",
-      data: { attachmentId: "in-use-id", attachmentTitle: attachment.title },
+      data: { attachmentId: attachment.id, attachmentTitle: attachment.title },
     })
   })
 
   it("should return an error if attachment is not found on server", async () => {
-    const attachment = makeAttachment({}, "non-existent-on-server-id")
+    const attachment = makeAttachment({ url: "non-existent-on-server-url" })
 
     await inMemoryAttachmentRepository.create(attachment)
 

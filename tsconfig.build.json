@@ -8,6 +8,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
+    "resolveJsonModule": true,
     "paths": {
       "@/*": ["./src/*"]
     }

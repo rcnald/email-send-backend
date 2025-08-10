@@ -69,6 +69,8 @@ Desenvolvido com **Clean Architecture** e **DDD**, organizando o código em cama
 - **[Resend](https://resend.com)** - Serviço de email transacional
 - **[Vitest](https://vitest.dev)** - Framework de testes rápido
 - **[Zod](https://zod.dev)** - Validação de schemas TypeScript-first
+- **[Swagger/OpenAPI](https://swagger.io)** - Documentação interativa da API
+- **[Scalar](https://scalar.com)** - Interface moderna para documentação API
 
 ## **4. Setup e Desenvolvimento**
 

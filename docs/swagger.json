@@ -1,0 +1,755 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Send Email API",
+    "version": "1.0",
+    "description": "API para envio automatizado de documentos fiscais por email"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3333",
+      "description": "Servidor local de desenvolvimento"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Attachments",
+      "description": "Endpoints para gerenciamento de anexos"
+    },
+    {
+      "name": "Emails",
+      "description": "Endpoints para envio de emails"
+    }
+  ],
+  "paths": {
+    "/attachments": {
+      "post": {
+        "tags": [
+          "Attachments"
+        ],
+        "summary": "Upload de anexo",
+        "description": "Faz upload de um arquivo ZIP para ser anexado em emails",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Arquivo ZIP (apenas arquivos .zip são aceitos)"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Anexo criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "attachment_id": {
+                      "$ref": "#/components/schemas/UUID"
+                    }
+                  },
+                  "required": [
+                    "attachment_id"
+                  ]
+                },
+                "example": {
+                  "attachment_id": "123e4567-e89b-12d3-a456-426614174000"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação ou upload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Invalid file type"
+                          ]
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "accepted_types": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Failed to upload file"
+                          ]
+                        },
+                        "data": {
+                          "type": "object"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "An unexpected error occurred"
+                          ]
+                        },
+                        "data": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "invalid_file_type": {
+                    "summary": "Tipo de arquivo inválido",
+                    "value": {
+                      "message": "Invalid file type",
+                      "data": {
+                        "accepted_types": [
+                          "application/zip"
+                        ]
+                      }
+                    }
+                  },
+                  "upload_failed": {
+                    "summary": "Falha no upload",
+                    "value": {
+                      "message": "Failed to upload file",
+                      "data": {}
+                    }
+                  },
+                  "unexpected_error": {
+                    "summary": "Erro inesperado",
+                    "value": {
+                      "message": "An unexpected error occurred",
+                      "data": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attachments/{id}/delete": {
+      "delete": {
+        "tags": [
+          "Attachments"
+        ],
+        "summary": "Deletar anexo",
+        "description": "Remove um anexo do sistema e do storage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único do anexo a ser deletado",
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            },
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Anexo deletado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Attachment deleted successfully"
+                      ]
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Attachment deleted successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos ou erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Invalid request body"
+                          ]
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "field_errors": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "An unexpected error occurred"
+                          ]
+                        },
+                        "data": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "invalid_uuid": {
+                    "summary": "UUID inválido",
+                    "value": {
+                      "message": "Invalid request body",
+                      "data": {
+                        "field_errors": [
+                          "Invalid uuid"
+                        ]
+                      }
+                    }
+                  },
+                  "unexpected_error": {
+                    "summary": "Erro inesperado",
+                    "value": {
+                      "message": "An unexpected error occurred",
+                      "data": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Anexo não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Attachment not found"
+                          ]
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "attachment_id": {
+                              "type": "string",
+                              "format": "uuid"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Attachment is not found on server"
+                          ]
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "attachment_id": {
+                              "type": "string",
+                              "format": "uuid"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "not_found_db": {
+                    "summary": "Anexo não encontrado no banco",
+                    "value": {
+                      "message": "Attachment not found",
+                      "data": {
+                        "attachment_id": "123e4567-e89b-12d3-a456-426614174000"
+                      }
+                    }
+                  },
+                  "not_found_server": {
+                    "summary": "Anexo não encontrado no storage",
+                    "value": {
+                      "message": "Attachment is not found on server",
+                      "data": {
+                        "attachment_id": "123e4567-e89b-12d3-a456-426614174000"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Anexo em uso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Attachment is in use and cannot be deleted"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "attachment_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Attachment is in use and cannot be deleted",
+                  "data": {
+                    "attachment_id": "123e4567-e89b-12d3-a456-426614174000"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Falha no serviço de storage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Failed to delete attachment"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "attachment_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Failed to delete attachment",
+                  "data": {
+                    "attachment_id": "123e4567-e89b-12d3-a456-426614174000"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emails": {
+      "post": {
+        "tags": [
+          "Emails"
+        ],
+        "summary": "Enviar email",
+        "description": "Envia um email para o contador do cliente com os anexos especificados",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "clientId": {
+                    "$ref": "#/components/schemas/UUID"
+                  },
+                  "attachmentIds": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UUID"
+                    },
+                    "description": "Lista de IDs dos anexos a serem enviados",
+                    "minItems": 1,
+                    "maxItems": 10
+                  }
+                },
+                "required": [
+                  "clientId",
+                  "attachmentIds"
+                ],
+                "additionalProperties": false
+              },
+              "examples": {
+                "exemplo_basico": {
+                  "summary": "Envio básico com um anexo",
+                  "value": {
+                    "clientId": "f9b5d9e4-e8e9-4a0d-90d7-77ccda364af8",
+                    "attachmentIds": [
+                      "987fcdeb-51a2-43d1-9f12-123456789000"
+                    ]
+                  }
+                },
+                "exemplo_multiplos_anexos": {
+                  "summary": "Envio com múltiplos anexos",
+                  "value": {
+                    "clientId": "f9b5d9e4-e8e9-4a0d-90d7-77ccda364af8",
+                    "attachmentIds": [
+                      "987fcdeb-51a2-43d1-9f12-123456789000",
+                      "876fedcb-42b1-54e2-8e23-234567890111",
+                      "765edcba-33c2-65f3-7d34-345678901222"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email enviado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Email sent successfully"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "email_id": {
+                          "$ref": "#/components/schemas/UUID"
+                        }
+                      },
+                      "required": [
+                        "email_id"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "message": "Email sent successfully",
+                  "data": {
+                    "email_id": "456f7890-a1b2-34c5-d678-901234567890"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação ou erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Invalid request body"
+                          ]
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "field_errors": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "An unexpected error occurred"
+                          ]
+                        },
+                        "data": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "validation_error": {
+                    "summary": "Erro de validação",
+                    "value": {
+                      "message": "Invalid request body",
+                      "data": {
+                        "field_errors": [
+                          "clientId must be a valid UUID",
+                          "attachmentIds must contain at least 1 element"
+                        ]
+                      }
+                    }
+                  },
+                  "unexpected_error": {
+                    "summary": "Erro inesperado",
+                    "value": {
+                      "message": "An unexpected error occurred",
+                      "data": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cliente ou anexos não encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Client not found"
+                          ]
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "client_id": {
+                              "type": "string",
+                              "format": "uuid"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Some attachments were not found"
+                          ]
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "missing_attachment_ids": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "format": "uuid"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "client_not_found": {
+                    "summary": "Cliente não encontrado",
+                    "value": {
+                      "message": "Client not found",
+                      "data": {
+                        "client_id": "f9b5d9e4-e8e9-4a0d-90d7-77ccda364af8"
+                      }
+                    }
+                  },
+                  "attachments_not_found": {
+                    "summary": "Anexos não encontrados",
+                    "value": {
+                      "message": "Some attachments were not found",
+                      "data": {
+                        "missing_attachment_ids": [
+                          "987fcdeb-51a2-43d1-9f12-123456789000"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Falha no processamento dos anexos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Failed to process some attachments"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "failed_attachments": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "attachment_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "error": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "retry_recommended": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Failed to process some attachments",
+                  "data": {
+                    "failed_attachments": [
+                      {
+                        "attachment_id": "987fcdeb-51a2-43d1-9f12-123456789000",
+                        "error": "File corrupted or inaccessible"
+                      }
+                    ],
+                    "retry_recommended": true
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Falha no serviço de email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Failed to send email"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "retry_after": {
+                          "type": "string",
+                          "description": "Tempo recomendado para retry"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Failed to send email",
+                  "data": {
+                    "retry_after": "5 minutes"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UUID": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+        "example": "123e4567-e89b-12d3-a456-426614174000"
+      }
+    }
+  }
+}

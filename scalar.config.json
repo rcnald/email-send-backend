@@ -1,0 +1,19 @@
+{
+  "$schema": "https://cdn.scalar.com/schema/scalar-config.json",
+  "subdomain": "rcnald-email-send",
+  "guides": [
+    {
+      "name": "My awesome documentation",
+      "sidebar": [
+        {
+          "path": "docs/introduction.md",
+          "type": "page"
+        }
+      ]
+    }
+  ],
+  "references": [{
+    "name": "Planets",
+    "path": "./docs/swagger.json"
+  }]
+}

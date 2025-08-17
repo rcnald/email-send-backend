@@ -19,6 +19,10 @@
     {
       "name": "Emails",
       "description": "Endpoints para envio de emails"
+    },
+    {
+      "name": "Clients",
+      "description": "Endpoints para gerenciamento de clientes"
     }
   ],
   "paths": {
@@ -734,6 +738,144 @@
                   "data": {
                     "retry_after": "5 minutes"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/clients": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Listar clientes",
+        "description": "Retorna a lista de todos os clientes cadastrados no sistema",
+        "responses": {
+          "200": {
+            "description": "Lista de clientes retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "clients": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "$ref": "#/components/schemas/UUID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Nome da empresa cliente"
+                          },
+                          "CNPJ": {
+                            "type": "string",
+                            "pattern": "^\\d{14}$",
+                            "description": "CNPJ sem formatação (14 dígitos)"
+                          },
+                          "accountant": {
+                            "type": "object",
+                            "description": "Dados do contador",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "description": "Nome do contador"
+                              },
+                              "email": {
+                                "type": "string",
+                                "format": "email",
+                                "description": "Email do contador"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "email"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "CNPJ",
+                          "accountant"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "clients"
+                  ]
+                },
+                "examples": {
+                  "success_with_clients": {
+                    "summary": "Lista com clientes",
+                    "value": {
+                      "clients": [
+                        {
+                          "id": "b17efe6b-1928-480d-82d8-d80c855e9744",
+                          "name": "Ratke - Wiza",
+                          "CNPJ": "68005723093680",
+                          "accountant": {
+                            "name": "Maria Santos",
+                            "email": "maria.santos@ratke-wiza.com"
+                          }
+                        },
+                        {
+                          "id": "60d77bdc-3fac-495e-a777-2ad94ad36286",
+                          "name": "Yundt - Tremblay",
+                          "CNPJ": "95178895288596",
+                          "accountant": {
+                            "name": "João Silva",
+                            "email": "joao.silva@yundt-tremblay.com"
+                          }
+                        },
+                        {
+                          "id": "22d4f4f4-4cb2-4597-b2e9-e809a66f2ca0",
+                          "name": "McDermott, Doyle and Nienow",
+                          "CNPJ": "66796588643891",
+                          "accountant": {
+                            "name": "Ana Costa",
+                            "email": "ana.costa@mcdermott-doyle.com"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "success_empty": {
+                    "summary": "Lista vazia",
+                    "value": {
+                      "clients": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Internal server error"
+                      ]
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Internal server error",
+                  "data": {}
                 }
               }
             }

@@ -1,6 +1,3 @@
-import { readFileSync } from "node:fs"
-import { resolve } from "node:path"
-
 import { PrismaClient } from "@prisma/client"
 import request from "supertest"
 import { ClientFactory } from "test/factories/make-client"

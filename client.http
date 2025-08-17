@@ -31,3 +31,7 @@ Content-Type: application/json
 ### Delete Attachment
 # @name deleteAttachment
 DELETE {{baseUrl}}/attachments/{{uploadAttachment.response.body.attachment_id}}/delete
+
+### Fetch Clients
+# @name fetchClients
+GET {{baseUrl}}/clients

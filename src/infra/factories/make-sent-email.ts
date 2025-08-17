@@ -7,7 +7,7 @@ import { PrismaClientRepository } from "../database/prisma/repositories/prisma-c
 import { PrismaMailRepository } from "../database/prisma/repositories/prisma-mail-repository"
 import { RendEmailSender } from "../email/resend"
 import { getEnv } from "../env"
-import { SentEmailController } from "../http/controller/send-email"
+import { SentEmailController } from "../http/controllers/send-email"
 import { createS3Client } from "../lib/tebi"
 import { TebiStorage } from "../storage/tebi"
 

@@ -11,4 +11,8 @@ export class InMemoryClientRepository implements ClientRepository {
   async create(client: Client) {
     this.clients.push(client)
   }
+
+  async fetchAll(): Promise<Client[]> {
+    return this.clients
+  }
 }

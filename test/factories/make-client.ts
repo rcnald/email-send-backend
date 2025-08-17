@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker"
+import { PrismaClient } from "@prisma/client"
 
 import { Client, ClientProps } from "@/domain/enterprise/entities/client"
 
@@ -19,4 +20,27 @@ export const makeClient = (
   )
 
   return client
+}
+
+export class ClientFactory {
+  constructor(private prisma: PrismaClient) {}
+
+  async makePrismaClient(
+    props: Partial<ClientProps> = {},
+    id?: string,
+  ): Promise<Client> {
+    const client = makeClient(props, id)
+
+    await this.prisma.client.create({
+      data: {
+        id: client.id,
+        name: client.name,
+        CNPJ: client.CNPJ,
+        accountantName: client.accountant.name,
+        accountantEmail: client.accountant.email,
+      },
+    })
+
+    return client
+  }
 }

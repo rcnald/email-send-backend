@@ -1,6 +1,7 @@
 import { Router } from "express"
 
 import { createAttachmentRoutes } from "./attachment"
+import { createClientRoutes } from "./client"
 import { createEmailRoutes } from "./email"
 
 export function createRouter() {
@@ -8,6 +9,7 @@ export function createRouter() {
 
   router.use("/attachments", createAttachmentRoutes())
   router.use("/emails", createEmailRoutes())
+  router.use("/clients", createClientRoutes())
 
   return router
 }

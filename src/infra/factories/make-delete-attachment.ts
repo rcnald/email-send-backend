@@ -4,7 +4,7 @@ import { DeleteAttachmentUseCase } from "@/domain/application/use-cases/delete-a
 
 import { PrismaAttachmentRepository } from "../database/prisma/repositories/prisma-attachment-repository"
 import { getEnv } from "../env"
-import { DeleteAttachmentController } from "../http/controller/delete-attachment"
+import { DeleteAttachmentController } from "../http/controllers/delete-attachment"
 import { createS3Client } from "../lib/tebi"
 import { TebiStorage } from "../storage/tebi"
 

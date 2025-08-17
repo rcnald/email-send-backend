@@ -125,7 +125,7 @@ A aplicação estará disponível em: [http://localhost:3333](http://localhost:3
 - [ ] **RF-15**: O sistema deve permitir que um usuário autenticado cadastre um novo cliente, fornecendo os seguintes atributos:
   - Cliente: nome, CNPJ.
   - Contador: nome do contador, email do contador.
-- [ ] **RF-16**: O sistema deve permitir que o usuário visualize uma lista de todos os clientes que ele cadastrou.
+- [x] **RF-16**: O sistema deve permitir que o usuário visualize uma lista de todos os clientes que ele cadastrou.
 - [ ] **RF-17**: O sistema deve permitir que o usuário edite as informações de um cliente ou contador existente.
 - [ ] **RF-18**: O sistema deve permitir que o usuário remova o cadastro de um cliente.
 

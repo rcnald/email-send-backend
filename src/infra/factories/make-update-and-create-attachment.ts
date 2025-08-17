@@ -4,7 +4,7 @@ import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases
 
 import { PrismaAttachmentRepository } from "../database/prisma/repositories/prisma-attachment-repository"
 import { getEnv } from "../env"
-import { UpdateAndCreateAttachmentController } from "../http/controller/update-and-create-attachment"
+import { UpdateAndCreateAttachmentController } from "../http/controllers/update-and-create-attachment"
 import { createS3Client } from "../lib/tebi"
 import { TebiStorage } from "../storage/tebi"
 

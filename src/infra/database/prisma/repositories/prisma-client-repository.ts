@@ -26,7 +26,7 @@ export class PrismaClientRepository implements ClientRepository {
     return PrismaClientMapper.toDomain(client)
   }
 
-  async fetchAll(): Promise<Client[]> {
+  async findMany(): Promise<Client[]> {
     const clients = await this.prisma.client.findMany()
 
     return clients.map(PrismaClientMapper.toDomain)

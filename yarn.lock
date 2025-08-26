@@ -4127,6 +4127,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dayjs@npm:^1.11.13":
+  version: 1.11.13
+  resolution: "dayjs@npm:1.11.13"
+  checksum: 10c0/a3caf6ac8363c7dade9d1ee797848ddcf25c1ace68d9fe8678ecf8ba0675825430de5d793672ec87b24a69bf04a1544b176547b2539982275d5542a7955f35b7
+  languageName: node
+  linkType: hard
+
 "debug@npm:4, debug@npm:^4, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4, debug@npm:^4.3.5, debug@npm:^4.4.0, debug@npm:^4.4.1":
   version: 4.4.1
   resolution: "debug@npm:4.4.1"
@@ -4326,6 +4333,7 @@ __metadata:
     "@types/node": "npm:^22.15.30"
     "@types/supertest": "npm:^6.0.3"
     cors: "npm:^2.8.5"
+    dayjs: "npm:^1.11.13"
     dotenv: "npm:^17.2.0"
     eslint: "npm:^9.28.0"
     eslint-plugin-simple-import-sort: "npm:^12.1.1"

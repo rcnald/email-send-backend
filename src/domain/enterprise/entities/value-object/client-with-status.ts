@@ -28,6 +28,10 @@ export class ClientWithStatus extends ValueObject<ClientWithStatusProps> {
     return this.props.status
   }
 
+  get clientId() {
+    return this.props.clientId
+  }
+
   static create(props: ClientWithStatusProps) {
     return new ClientWithStatus(props)
   }

@@ -4,6 +4,9 @@ import { ClientRepository } from "@/domain/application/repositories/client-repos
 import { Client } from "@/domain/enterprise/entities/client"
 
 import { PrismaClientMapper } from "../mappers/prisma-client-mapper"
+import { ClientWithStatus } from "@/domain/enterprise/entities/value-object/client-with-status"
+import { PrismaClientWithStatusMapper } from "../mappers/prisma-client-with-status-mapper"
+import dayjs from "dayjs"
 
 export class PrismaClientRepository implements ClientRepository {
   constructor(private prisma: PrismaClient) {}
@@ -30,5 +33,27 @@ export class PrismaClientRepository implements ClientRepository {
     const clients = await this.prisma.client.findMany()
 
     return clients.map(PrismaClientMapper.toDomain)
+  }
+
+  async findManyWithStatus(): Promise<ClientWithStatus[]> {
+    const startOfMonth = dayjs().startOf("month").toDate()
+    const endOfMonth = dayjs().endOf("month").toDate()
+
+    const clients = await this.prisma.client.findMany({
+      include: {
+        Mail: {
+          where: {
+            sentAt: {
+              gte: startOfMonth,
+              lte: endOfMonth,
+            },
+          },
+        },
+      },
+    })
+
+    return clients.map((client) =>
+      PrismaClientWithStatusMapper.toDomain(client),
+    )
   }
 }

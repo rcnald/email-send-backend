@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 
 import { FetchClientsUseCase } from "@/domain/application/use-cases/fetch-clients"
 
-import { ClientPresenter } from "../presenters/client-presenter"
+import { ClientWithStatusPresenter } from "../presenters/client-with-status-presenter"
 
 export class FetchClientsController {
   constructor(private fetchClientsUseCase: FetchClientsUseCase) {}
@@ -18,7 +18,7 @@ export class FetchClientsController {
     }
 
     return response.status(200).json({
-      clients: result.clients.map(ClientPresenter.toHTTP),
+      clients: result.clients.map(ClientWithStatusPresenter.toHTTP),
     })
   }
 }

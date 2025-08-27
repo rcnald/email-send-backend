@@ -136,6 +136,9 @@ export class Mail {
       subject,
       createdAt,
       updatedAt,
+      failedAt,
+      sentAt,
+      message,
     }: Optional<
       MailProps,
       | "message"
@@ -173,6 +176,9 @@ export class Mail {
         subject: subject ?? mailContent.subject,
         createdAt: createdAt ?? new Date(),
         updatedAt: updatedAt ?? new Date(),
+        sentAt: sentAt ?? undefined,
+        failedAt: failedAt ?? undefined,
+        message: message ?? undefined,
       },
       id,
     )

@@ -6,7 +6,7 @@ export class FetchClientsUseCase {
   constructor(private readonly clientRepository: ClientRepository) {}
 
   async execute() {
-    const clients = await this.clientRepository.fetchAll()
+    const clients = await this.clientRepository.findManyWithStatus()
 
     return nice({ clients })
   }

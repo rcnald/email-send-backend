@@ -44,6 +44,7 @@
     "@prisma/client": "^6.11.1",
     "@scalar/express-api-reference": "^0.8.13",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.13",
     "express": "^5.1.0",
     "install": "^0.13.0",
     "multer": "^2.0.1",

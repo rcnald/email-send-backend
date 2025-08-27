@@ -1,6 +1,9 @@
 import { faker } from "@faker-js/faker"
+import { PrismaClient } from "@prisma/client"
 
+import { Client } from "@/domain/enterprise/entities/client"
 import { Mail, MailProps } from "@/domain/enterprise/entities/mail"
+import { PrismaMailMapper } from "@/infra/database/prisma/mappers/prisma-mail-mapper"
 
 export const makeMail = (
   {
@@ -42,4 +45,21 @@ export const makeMail = (
   )
 
   return mail
+}
+
+export class MailFactory {
+  constructor(private prisma: PrismaClient) {}
+
+  async makePrismaMail(
+    props: Partial<MailProps> = {},
+    id?: string,
+  ): Promise<Mail> {
+    const mail = makeMail(props, id)
+
+    await this.prisma.mail.create({
+      data: PrismaMailMapper.toPrisma(mail),
+    })
+
+    return mail
+  }
 }

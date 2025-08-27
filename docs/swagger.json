@@ -795,13 +795,19 @@
                               "name",
                               "email"
                             ]
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["sent", "not_sent"],
+                            "description": "Status do envio de email para o cliente no mês atual"
                           }
                         },
                         "required": [
                           "id",
                           "name",
                           "CNPJ",
-                          "accountant"
+                          "accountant",
+                          "status"
                         ]
                       }
                     }
@@ -822,7 +828,8 @@
                           "accountant": {
                             "name": "Maria Santos",
                             "email": "maria.santos@ratke-wiza.com"
-                          }
+                          },
+                          "status": "sent"
                         },
                         {
                           "id": "60d77bdc-3fac-495e-a777-2ad94ad36286",
@@ -831,7 +838,8 @@
                           "accountant": {
                             "name": "João Silva",
                             "email": "joao.silva@yundt-tremblay.com"
-                          }
+                          },
+                          "status": "not_sent"
                         },
                         {
                           "id": "22d4f4f4-4cb2-4597-b2e9-e809a66f2ca0",
@@ -840,7 +848,8 @@
                           "accountant": {
                             "name": "Ana Costa",
                             "email": "ana.costa@mcdermott-doyle.com"
-                          }
+                          },
+                          "status": "not_sent"
                         }
                       ]
                     }

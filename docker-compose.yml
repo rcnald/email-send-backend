@@ -1,11 +1,11 @@
 services:
   postgres:
-      image: bitnami/postgresql:latest
+      image: postgres:latest
       restart: unless-stopped
       environment:
-        - POSTGRESQL_USERNAME=docker
-        - POSTGRESQL_PASSWORD=docker
-        - POSTGRESQL_DATABASE=email-send
+        - POSTGRES_USER=docker
+        - POSTGRES_PASSWORD=docker
+        - POSTGRES_DB=email-send
       ports:
         - "5432:5432"
       volumes:

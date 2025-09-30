@@ -428,10 +428,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "clientId": {
+                  "client_id": {
                     "$ref": "#/components/schemas/UUID"
                   },
-                  "attachmentIds": {
+                  "attachment_ids": {
                     "type": "array",
                     "items": {
                       "$ref": "#/components/schemas/UUID"
@@ -442,8 +442,8 @@
                   }
                 },
                 "required": [
-                  "clientId",
-                  "attachmentIds"
+                  "client_id",
+                  "attachment_ids"
                 ],
                 "additionalProperties": false
               },
@@ -451,8 +451,8 @@
                 "exemplo_basico": {
                   "summary": "Envio básico com um anexo",
                   "value": {
-                    "clientId": "f9b5d9e4-e8e9-4a0d-90d7-77ccda364af8",
-                    "attachmentIds": [
+                    "client_id": "f9b5d9e4-e8e9-4a0d-90d7-77ccda364af8",
+                    "attachment_ids": [
                       "987fcdeb-51a2-43d1-9f12-123456789000"
                     ]
                   }
@@ -460,8 +460,8 @@
                 "exemplo_multiplos_anexos": {
                   "summary": "Envio com múltiplos anexos",
                   "value": {
-                    "clientId": "f9b5d9e4-e8e9-4a0d-90d7-77ccda364af8",
-                    "attachmentIds": [
+                    "client_id": "f9b5d9e4-e8e9-4a0d-90d7-77ccda364af8",
+                    "attachment_ids": [
                       "987fcdeb-51a2-43d1-9f12-123456789000",
                       "876fedcb-42b1-54e2-8e23-234567890111",
                       "765edcba-33c2-65f3-7d34-345678901222"
@@ -563,8 +563,8 @@
                       "message": "Invalid request body",
                       "data": {
                         "field_errors": [
-                          "clientId must be a valid UUID",
-                          "attachmentIds must contain at least 1 element"
+                          "client_id must be a valid UUID",
+                          "attachment_ids must contain at least 1 element"
                         ]
                       }
                     }

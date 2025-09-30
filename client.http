@@ -22,8 +22,8 @@ POST {{baseUrl}}/emails
 Content-Type: application/json
 
 {
-  "clientId": "f9b5d9e4-e8e9-4a0d-90d7-77ccda364af8",
-  "attachmentIds": [
+  "client_id": "0e26f8cb-b18c-43ee-89d4-44b1b8fc115b",
+  "attachment_ids": [
     "{{uploadAttachment.response.body.attachment_id}}"
   ]
 }

@@ -5,8 +5,8 @@ import { fromZodError } from "zod-validation-error/v4"
 import { SendEmailUseCase } from "@/domain/application/use-cases/send-email"
 
 const sentEmailControllerBodySchema = z.object({
-  clientId: z.uuid(),
-  attachmentIds: z.array(z.uuid()),
+  client_id: z.uuid(),
+  attachment_ids: z.array(z.uuid()),
 })
 
 export class SentEmailController {
@@ -26,11 +26,11 @@ export class SentEmailController {
       })
     }
 
-    const { clientId, attachmentIds } = bodyValidation.data
+    const { attachment_ids, client_id } = bodyValidation.data
 
     const [error, result] = await this.sentEmailUseCase.execute({
-      attachmentIds,
-      clientId,
+      attachmentIds: attachment_ids,
+      clientId: client_id,
     })
 
     if (error) {
@@ -48,8 +48,8 @@ export class SentEmailController {
           message: "Some attachments were not found",
           data: {
             missing_attachment_ids: error.data.missingIds,
-            total_requested: attachmentIds.length,
-            found_count: attachmentIds.length - error.data.missingIds.length,
+            total_requested: attachment_ids.length,
+            found_count: attachment_ids.length - error.data.missingIds.length,
           },
         })
       }
@@ -58,7 +58,7 @@ export class SentEmailController {
         return response.status(410).json({
           message: "All attachments have expired or are no longer accessible",
           data: {
-            attachment_count: attachmentIds.length,
+            attachment_count: attachment_ids.length,
             suggestion: "Please re-upload the attachments",
           },
         })

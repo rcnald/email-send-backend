@@ -7,7 +7,7 @@ const envSchema = z.object({
     .url()
     .startsWith("postgres://")
     .or(z.url().startsWith("postgresql://")),
-  PORT: z.coerce.number().default(3333).optional(),
+  PORT: z.coerce.number().default(3333),
   S3_ACCESS_KEY_ID: z.string().min(1),
   S3_SECRET_KEY: z.string().min(1),
   S3_URL: z.url(),

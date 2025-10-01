@@ -37,7 +37,6 @@ COPY package.json yarn.lock .yarnrc.yml ./
 
 # Copia também assets/docs/public
 COPY --from=build /app/docs ./docs
-COPY --from=build /app/public ./public
 
 
 # Porta esperada pelo Render

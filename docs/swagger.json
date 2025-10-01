@@ -9,6 +9,10 @@
     {
       "url": "http://localhost:3333",
       "description": "Servidor local de desenvolvimento"
+    },
+    {
+      "url": "https://email-sender-api.rcnald.dev",
+      "description": "Servidor de produção"
     }
   ],
   "tags": [

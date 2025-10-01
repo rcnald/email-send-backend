@@ -7,16 +7,19 @@ RUN apk add --no-cache libc6-compat openssl
 # Ativa corepack e força Yarn 4.x
 RUN corepack enable && corepack prepare yarn@4.4.0 --activate
 
-# Copia só manifestos primeiro (cache eficiente)
+# Copia apenas manifestos (cache eficiente)
 COPY package.json yarn.lock .yarnrc.yml ./
 
 # Instala dependências
 RUN yarn install --immutable
 
-# Copia o restante do código depois
+# Copia todo o projeto
 COPY . .
 
-# Agora sim, builda
+# Gera os tipos do Prisma antes do build
+RUN yarn prisma generate
+
+# Agora sim, builda o TS
 RUN yarn build
 
 # Etapa 2: Runtime
@@ -26,12 +29,14 @@ WORKDIR /app
 RUN apk add --no-cache libc6-compat openssl
 RUN corepack enable && corepack prepare yarn@4.4.0 --activate
 
-# Copia dependências já resolvidas
+# Copia dependências e artefatos
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 COPY package.json yarn.lock .yarnrc.yml ./
 
+# Porta esperada pelo Render
 EXPOSE 8080
 
+# Rodar migrations antes de iniciar a API
 CMD ["sh", "-c", "yarn prisma migrate deploy && yarn start"]

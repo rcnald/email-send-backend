@@ -50,6 +50,6 @@
     "multer": "^2.0.1",
     "resend": "^4.7.0",
     "zod": "^4.0.5",
-    "zod-validation-error": "^3.5.3"
+    "zod-validation-error": "^4.0.2"
   }
 }

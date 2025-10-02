@@ -4355,7 +4355,7 @@ __metadata:
     vite-tsconfig-paths: "npm:^5.1.4"
     vitest: "npm:^3.2.3"
     zod: "npm:^4.0.5"
-    zod-validation-error: "npm:^3.5.3"
+    zod-validation-error: "npm:^4.0.2"
   languageName: unknown
   linkType: soft
 
@@ -9187,12 +9187,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod-validation-error@npm:^3.5.3":
-  version: 3.5.3
-  resolution: "zod-validation-error@npm:3.5.3"
+"zod-validation-error@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "zod-validation-error@npm:4.0.2"
   peerDependencies:
     zod: ^3.25.0 || ^4.0.0
-  checksum: 10c0/4a1054f49049a5414857a4a85ae7b853d59be83dedb89942d4966345a58bd26d939beb574f0f5592fe4cc9963b26ac306d5b0950f6905651569059ef3517c803
+  checksum: 10c0/0ccfec48c46de1be440b719cd02044d4abb89ed0e14c13e637cd55bf29102f67ccdba373f25def0fc7130e5f15025be4d557a7edcc95d5a3811599aade689e1b
   languageName: node
   linkType: hard
 

@@ -3,14 +3,16 @@ import cors from "cors"
 import express from "express"
 
 import * as swaggerDocs from "../../docs/swagger.json"
+import { getEnv } from "./env"
 import { createRouter } from "./http/routes"
 
 export function createApp() {
   const app = express()
+  const env = getEnv()
 
   app.use(
     cors({
-      origin: "http://localhost:5173",
+      origin: env.APP_URL,
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE"],
       allowedHeaders: ["Content-Type", "Authorization"],

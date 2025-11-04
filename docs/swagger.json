@@ -834,26 +834,6 @@
                             "email": "maria.santos@ratke-wiza.com"
                           },
                           "status": "sent"
-                        },
-                        {
-                          "id": "60d77bdc-3fac-495e-a777-2ad94ad36286",
-                          "name": "Yundt - Tremblay",
-                          "CNPJ": "95178895288596",
-                          "accountant": {
-                            "name": "João Silva",
-                            "email": "joao.silva@yundt-tremblay.com"
-                          },
-                          "status": "not_sent"
-                        },
-                        {
-                          "id": "22d4f4f4-4cb2-4597-b2e9-e809a66f2ca0",
-                          "name": "McDermott, Doyle and Nienow",
-                          "CNPJ": "66796588643891",
-                          "accountant": {
-                            "name": "Ana Costa",
-                            "email": "ana.costa@mcdermott-doyle.com"
-                          },
-                          "status": "not_sent"
                         }
                       ]
                     }
@@ -889,6 +869,209 @@
                 "example": {
                   "message": "Internal server error",
                   "data": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Criar cliente",
+        "description": "Cria um novo cliente com dados do contador",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 100
+                  },
+                  "CNPJ": {
+                    "type": "string",
+                    "pattern": "^\\d{14}$",
+                    "description": "CNPJ sem formatação (14 dígitos)"
+                  },
+                  "accountant_name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 100
+                  },
+                  "accountant_email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                },
+                "required": [
+                  "name",
+                  "CNPJ",
+                  "accountant_name",
+                  "accountant_email"
+                ],
+                "additionalProperties": false
+              },
+              "examples": {
+                "exemplo_criacao": {
+                  "summary": "Exemplo de criação de cliente",
+                  "value": {
+                    "name": "Empresa Exemplo LTDA",
+                    "CNPJ": "12345678000195",
+                    "accountant_name": "João Contador",
+                    "accountant_email": "joao@contador.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cliente criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação ou erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Invalid request body"
+                          ]
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "field_errors": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "An unexpected error occurred"
+                          ]
+                        },
+                        "data": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "validation_error": {
+                    "summary": "Erro de validação",
+                    "value": {
+                      "message": "Invalid request body",
+                      "data": {
+                        "field_errors": [
+                          "name must be at least 2 characters",
+                          "CNPJ must be 14 digits"
+                        ]
+                      }
+                    }
+                  },
+                  "unexpected_error": {
+                    "summary": "Erro inesperado",
+                    "value": {
+                      "message": "An unexpected error occurred",
+                      "data": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Cliente já existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Client already exists"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "CNPJ": {
+                          "type": "string",
+                          "pattern": "^\\d{14}$"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Client already exists",
+                  "data": {
+                    "CNPJ": "12345678000195"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Email do contador inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Invalid email provided"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "format": "email"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Invalid email provided",
+                  "data": {
+                    "email": "invalid-email@"
+                  }
                 }
               }
             }

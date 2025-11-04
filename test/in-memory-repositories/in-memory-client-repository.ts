@@ -4,14 +4,14 @@ import { Mail } from "@/domain/enterprise/entities/mail"
 import { ClientWithStatus } from "@/domain/enterprise/entities/value-object/client-with-status"
 
 export class InMemoryClientRepository implements ClientRepository {
-  private clients: Client[] = []
+  public clients: Client[] = []
   public mails: Mail[] = []
 
   async find(id: string): Promise<Client | null> {
     return this.clients.find((client) => client.id === id) || null
   }
 
-  async create(client: Client) {
+  async create(client: Client): Promise<void> {
     this.clients.push(client)
   }
 
@@ -35,5 +35,15 @@ export class InMemoryClientRepository implements ClientRepository {
         status: mail ? "sent" : "not_sent",
       })
     })
+  }
+
+  async findByCNPJ(CNPJ: string): Promise<Client | null> {
+    const client = this.clients.find((client) => client.CNPJ === CNPJ)
+
+    if (!client) {
+      return null
+    }
+
+    return client
   }
 }

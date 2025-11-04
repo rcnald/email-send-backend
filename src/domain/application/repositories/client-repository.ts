@@ -6,4 +6,5 @@ export abstract class ClientRepository {
   abstract find(id: string): Promise<Client | null>
   abstract findMany(): Promise<Client[]>
   abstract findManyWithStatus(): Promise<ClientWithStatus[]>
+  abstract findByCNPJ(CNPJ: string): Promise<Client | null>
 }

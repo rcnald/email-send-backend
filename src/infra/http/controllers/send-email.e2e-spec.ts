@@ -9,6 +9,7 @@ import request from "supertest"
 import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/upload-and-create-attachment"
 import { Client } from "@/domain/enterprise/entities/client"
 import { createApp } from "@/infra/app"
+import { PrismaAttachmentMapper } from "@/infra/database/prisma/mappers/prisma-attachment-mapper"
 import { PrismaAttachmentRepository } from "@/infra/database/prisma/repositories/prisma-attachment-repository"
 import { PrismaClientRepository } from "@/infra/database/prisma/repositories/prisma-client-repository"
 import { getEnv } from "@/infra/env"
@@ -69,8 +70,8 @@ describe("Send Email E2E Tests", () => {
     const response = await request(app)
       .post("/emails")
       .send({
-        clientId,
-        attachmentIds: [result?.attachment.id],
+        client_id: clientId,
+        attachment_ids: [result?.attachment.id],
       })
 
     expect(response.status).toBe(200)

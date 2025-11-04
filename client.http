@@ -35,3 +35,15 @@ DELETE {{baseUrl}}/attachments/{{uploadAttachment.response.body.attachment_id}}/
 ### Fetch Clients
 # @name fetchClients
 GET {{baseUrl}}/clients
+
+### Create Client
+# @name createClient
+POST {{baseUrl}}/clients
+Content-Type: application/json
+
+{
+  "name": "Empresa Exemplo LTDA",
+  "CNPJ": "12345678000195",
+  "accountant_name": "João Contador",
+  "accountant_email": "joao@contador.com"
+}

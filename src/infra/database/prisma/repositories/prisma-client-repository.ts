@@ -56,4 +56,16 @@ export class PrismaClientRepository implements ClientRepository {
       PrismaClientWithStatusMapper.toDomain(client),
     )
   }
+
+  async findByCNPJ(CNPJ: string): Promise<Client | null> {
+    const client = await this.prisma.client.findFirst({
+      where: { CNPJ },
+    })
+
+    if (!client) {
+      return null
+    }
+
+    return PrismaClientMapper.toDomain(client)
+  }
 }

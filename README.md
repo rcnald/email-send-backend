@@ -122,7 +122,7 @@ A aplicação estará disponível em: [http://localhost:3333](http://localhost:3
 
 ### **5.2 Gerenciamento de Clientes**
 
-- [ ] **RF-15**: O sistema deve permitir que um usuário autenticado cadastre um novo cliente, fornecendo os seguintes atributos:
+- [X] **RF-15**: O sistema deve permitir que um usuário autenticado cadastre um novo cliente, fornecendo os seguintes atributos:
   - Cliente: nome, CNPJ.
   - Contador: nome do contador, email do contador.
 - [x] **RF-16**: O sistema deve permitir que o usuário visualize uma lista de todos os clientes que ele cadastrou.
@@ -131,15 +131,15 @@ A aplicação estará disponível em: [http://localhost:3333](http://localhost:3
 
 ### **5.3 Envio de E-mail**
 
-- [ ] **RF-01:** O sistema deve permitir que o usuário autenticado anexe um ou mais arquivos para envio.  
-- [ ] **RF-02:** O sistema deve permitir que o usuário selecione um cliente (previamente cadastrado) para associar ao envio dos arquivos.  
-- [ ] **RF-03:** Após a seleção do cliente, o sistema deve exibir automaticamente o e-mail do contador associado a ele.  
+- [X] **RF-01:** O sistema deve permitir que o usuário autenticado anexe um ou mais arquivos para envio.  
+- [X] **RF-02:** O sistema deve permitir que o usuário selecione um cliente (previamente cadastrado) para associar ao envio dos arquivos.  
+- [X] **RF-03:** Após a seleção do cliente, o sistema deve exibir automaticamente o e-mail do contador associado a ele.  
 - [ ] **RF-04:** O sistema deve permitir que o usuário especifique o mês de referência dos documentos fiscais.  
-- [ ] **RF-05:** O sistema deve permitir que o usuário envie os dados para o sistema enviar o  e-mail para o contador do cliente selecionado.  
+- [X] **RF-05:** O sistema deve permitir que o usuário envie os dados para o sistema enviar o  e-mail para o contador do cliente selecionado.  
 - [ ] **RF-06:** O sistema deve permitir que o usuário salve um envio preparado como "standby" (rascunho) para enviar posteriormente.  
-- [ ] **RF-07:** O sistema deve notificar o usuário com uma mensagem de confirmação instantânea (toast) após o disparo bem-sucedido do e-mail.  
-- [ ] **RF-08:** O sistema deve exibir uma notificação detalhada ao usuário (via Socket.IO ou HTTP) informando o sucesso do envio e para qual destinatário foi enviado.  
-- [ ] **RF-09:** Em caso de falha no envio, o sistema deve notificar o usuário, informando o motivo da falha.  
+- [X] **RF-07:** O sistema deve notificar o usuário com uma mensagem de confirmação instantânea (toast) após o disparo bem-sucedido do e-mail.  
+- [X] **RF-08:** O sistema deve exibir uma notificação detalhada ao usuário (via Socket.IO ou HTTP) informando o sucesso do envio e para qual destinatário foi enviado.  
+- [X] **RF-09:** Em caso de falha no envio, o sistema deve notificar o usuário, informando o motivo da falha.  
 - [ ] **RF-10:** Se uma falha de envio persistir, o sistema deve sugerir o envio manual e fornecer um template de e-mail (com assunto e corpo) para o usuário copiar.  
 - [ ] **RF-11:** O sistema deve manter um histórico de envios com seus respectivos status (ex: enviado, falhou, pendente, etc.).
 
@@ -148,7 +148,7 @@ A aplicação estará disponível em: [http://localhost:3333](http://localhost:3
 * [x] **RN-01:** O arquivo anexado pelo usuário **deve**, obrigatoriamente, estar no formato **.zip**. O sistema deve validar a extensão do arquivo e rejeitar formatos diferentes.  
 * [x] **RN-02:** O assunto do e-mail **deve** seguir o padrão: "Arquivos fiscais de '[nome do cliente]' ('[cnpj]') referente ao mês '[mês referente]'".  
 * [x] **RN-03:** O arquivo .zip anexado ao e-mail **deve** ser renomeado para o formato: "arquivos-fiscais-[cliente]-do-mes-de-[mês referente]'.zip".  
-* [ ] **RN-04:** É obrigatório selecionar um cliente da lista para que o envio do e-mail seja habilitado.  
+* [X] **RN-04:** É obrigatório selecionar um cliente da lista para que o envio do e-mail seja habilitado.  
 * [x] **RN-05:** Todo cliente cadastrado **deve** possuir um contador com um endereço de e-mail válido para ser o destinatário.  
 * [x] **RN-06:** O processo de envio só pode ser iniciado se houver um arquivo válido (.zip) anexado e um cliente selecionado.  
 * [x] **RN-07:** Os arquivos armazenados temporariamente para envio (mencionando S3/Tebi.io) **devem** ser excluídos permanentemente após 3 dias.  
@@ -158,10 +158,10 @@ A aplicação estará disponível em: [http://localhost:3333](http://localhost:3
 
 ## **7. Requisitos Não Funcionais**
 
-* [ ] **RNF-01 (Desempenho):** O upload do arquivo e o disparo do e-mail devem ser concluídos em um tempo de resposta rápido, idealmente em menos de 5 segundos sob condições normais de rede.  
-* [ ] **RNF-02 (Usabilidade):** A interface para anexar arquivos e selecionar clientes deve ser clara e intuitiva, minimizando a chance de erro do usuário.  
+* [X] **RNF-01 (Desempenho):** O upload do arquivo e o disparo do e-mail devem ser concluídos em um tempo de resposta rápido, idealmente em menos de 5 segundos sob condições normais de rede.  
+* [X] **RNF-02 (Usabilidade):** A interface para anexar arquivos e selecionar clientes deve ser clara e intuitiva, minimizando a chance de erro do usuário.  
 * [ ] **RNF-03 (Confiabilidade):** O sistema deve garantir a entrega dos e-mails utilizando um serviço externo confiável (como o Resend). Falhas na comunicação com o serviço devem ser tratadas de forma elegante, sem perda de dados.  
-* [ ] **RNF-04 (Segurança):** Os arquivos fiscais anexados devem ser tratados de forma segura, com armazenamento temporário e exclusão automática após o período definido. O acesso à funcionalidade de envio deve ser restrito a usuários autenticados.  
+* [X] **RNF-04 (Segurança):** Os arquivos fiscais anexados devem ser tratados de forma segura, com armazenamento temporário e exclusão automática após o período definido. O acesso à funcionalidade de envio deve ser restrito a usuários autenticados.  
 * [ ] **RNF-05 (Disponibilidade):** O serviço de envio de e-mail deve estar disponível 99.9% do tempo.  
 * [ ] **RNF-06 (Comunicação):** As notificações de sucesso e falha para o usuário devem ser exibidas em tempo real (via Socket.IO, conforme sugerido no diagrama), sem a necessidade de recarregar a página.
 
@@ -307,4 +307,5 @@ npm start
 ```
 
 ---
+
 

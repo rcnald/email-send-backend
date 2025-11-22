@@ -47,3 +47,14 @@ Content-Type: application/json
   "accountant_name": "João Contador",
   "accountant_email": "joao@contador.com"
 }
+
+### Register Helper
+# @name registerHelper
+POST {{baseUrl}}/helpers
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joao.silva@example.com",
+  "password": "senha123456"
+}

@@ -64,3 +64,16 @@ model Attachment {
 
   @@map("attachments")
 }
+
+model Helper {
+  id String @id @default(uuid())
+
+  name  String
+  email String @unique
+  password String @map("password")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}

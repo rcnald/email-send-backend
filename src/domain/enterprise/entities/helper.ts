@@ -1,9 +1,13 @@
 import { randomUUID } from "crypto"
 
+import { Optional } from "@/core/types/optional"
+
 export interface HelperProps {
   name: string
   email: string
   password: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 export class Helper {
@@ -32,8 +36,34 @@ export class Helper {
     return this.props.password
   }
 
-  static create({ name, email, password }: HelperProps, id?: string) {
-    const helper = new Helper({ name, email, password }, id)
+  get createdAt() {
+    return this.props.createdAt
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt
+  }
+
+  static create(
+    {
+      name,
+      email,
+      password,
+      createdAt,
+      updatedAt,
+    }: Optional<HelperProps, "createdAt" | "updatedAt">,
+    id?: string,
+  ) {
+    const helper = new Helper(
+      {
+        name,
+        email,
+        password,
+        createdAt: createdAt ?? new Date(),
+        updatedAt: updatedAt ?? new Date(),
+      },
+      id,
+    )
 
     return helper
   }

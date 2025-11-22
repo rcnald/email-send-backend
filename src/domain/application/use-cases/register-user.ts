@@ -37,7 +37,7 @@ export class RegisterUserUseCase {
       })
     }
 
-    const hashedPassword = await this.hashGenerator.generate(password)
+    const hashedPassword = await this.hashGenerator.hash(password)
 
     const helper = Helper.create({
       email,

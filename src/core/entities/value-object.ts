@@ -5,7 +5,7 @@ export abstract class ValueObject<Props> {
     this.props = props
   }
 
-  public equals(vo: ValueObject<unknown>) {
+  public equals(vo: ValueObject<Props>) {
     if (vo === null || vo === undefined) {
       return false
     }

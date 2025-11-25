@@ -42,4 +42,8 @@ export class Email extends ValueObject<EmailProps> {
     const normalized = this.normalize(email)
     return new Email({ value: normalized })
   }
+
+  static fromPersistence(email: string): Email {
+    return new Email({ value: email })
+  }
 }

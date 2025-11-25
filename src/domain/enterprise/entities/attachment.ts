@@ -32,7 +32,7 @@ export class Attachment extends Entity<AttachmentProps> {
     this.props.mailId = value
   }
 
-  static create({ title, url, mailId }: AttachmentProps, id?: string) {
+  static create({ title, url, mailId }: AttachmentProps, id?: UniqueId) {
     const attachment = new Attachment({ title, url, mailId }, id)
 
     return attachment

@@ -1,4 +1,5 @@
 import { Entity } from "@/core/entities/entity"
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { Optional } from "@/core/types/optional"
 
 import { Email } from "./value-object/email"
@@ -40,7 +41,7 @@ export class Helper extends Entity<HelperProps> {
       createdAt,
       updatedAt,
     }: Optional<HelperProps, "createdAt" | "updatedAt">,
-    id?: string,
+    id?: UniqueId,
   ) {
     const helper = new Helper(
       {

@@ -1,4 +1,5 @@
 import { Entity } from "@/core/entities/entity"
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 
 import { Email } from "./value-object/email"
 
@@ -24,7 +25,7 @@ export class Client extends Entity<ClientProps> {
     return this.props.accountant
   }
 
-  static create({ name, CNPJ, accountant }: ClientProps, id?: string) {
+  static create({ name, CNPJ, accountant }: ClientProps, id?: UniqueId) {
     const client = new Client({ name, CNPJ, accountant }, id)
 
     return client

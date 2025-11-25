@@ -1,11 +1,11 @@
-import { randomUUID } from "node:crypto"
-
+import { Entity } from "@/core/entities/entity"
 import { Optional } from "@/core/types/optional"
 
 import { generateMailContent } from "../../application/utils/mail-generator"
+import { Email } from "./value-object/email"
 
 export interface MailProps {
-  accountantEmail: string
+  accountantEmail: Email
   attachmentIds: string[]
   clientId: string
   clientCNPJ: string
@@ -21,20 +21,7 @@ export interface MailProps {
   message?: string
 }
 
-export class Mail {
-  private _id: string
-
-  constructor(
-    private props: MailProps,
-    id?: string,
-  ) {
-    this._id = id ?? randomUUID()
-  }
-
-  get id() {
-    return this._id
-  }
-
+export class Mail extends Entity<MailProps> {
   get accountantEmail() {
     return this.props.accountantEmail
   }

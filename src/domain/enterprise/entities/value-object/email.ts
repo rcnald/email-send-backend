@@ -1,28 +1,37 @@
 import { ValueObject } from "@/core/entities/value-object"
+import { bad, nice } from "@/core/error"
 
-export class Email extends ValueObject<string> {
-  private readonly value: string
+export interface EmailProps {
+  value: string
+}
 
-  private constructor(email: string) {
-    super()
-    this.value = email
+export class Email extends ValueObject<EmailProps> {
+  get value() {
+    return this.props.value
   }
 
-  static create(email: string): [Error | undefined, Email | undefined] {
+  private static isValid(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
 
-    if (!emailRegex.test(email)) {
-      return [new Error("Invalid email format"), undefined]
+  private static normalize(email: string): string {
+    return email.toLowerCase().trim()
+  }
+
+  static create(email: string) {
+    const normalized = this.normalize(email)
+
+    if (!this.isValid(normalized)) {
+      return bad({
+        code: "INVALID_EMAIL",
+        message: `Invalid email format`,
+        data: { email },
+      })
     }
 
-    return [undefined, new Email(email)]
-  }
+    const emailVO = new Email({ value: normalized })
 
-  getValue(): string {
-    return this.value
-  }
-
-  equals(other: Email): boolean {
-    return this.value === other.value
+    return nice(emailVO)
   }
 }

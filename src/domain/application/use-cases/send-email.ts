@@ -58,7 +58,7 @@ export class SendEmailUseCase {
     }
 
     attachments.forEach((attachment) => {
-      attachment.mailId = mail.id
+      attachment.mailId = mail.id.value
       this.attachmentRepository.update(attachment)
     })
 
@@ -76,7 +76,7 @@ export class SendEmailUseCase {
     }
 
     const [emailSenderError] = await this.emailSender.send({
-      to: mail.accountantEmail,
+      to: mail.accountantEmail.value,
       from: "email@email.com",
       html: mail.html,
       text: mail.text,

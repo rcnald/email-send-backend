@@ -13,14 +13,19 @@ describe("CreateClientUseCase", () => {
   })
 
   it("should return an error if client already exists", async () => {
-    const client = makeClient({})
+    const [clientError, client] = makeClient()
+
+    if (clientError) return
 
     inMemoryClientRepository.clients.push(client)
 
     const [error] = await sut.execute({
       name: client.name,
       CNPJ: client.CNPJ,
-      accountant: client.accountant,
+      accountant: {
+        name: client.accountant.name,
+        email: client.accountant.email.value, // ← Extrai o valor do VO
+      },
     })
 
     expect(error).toEqual({
@@ -31,33 +36,55 @@ describe("CreateClientUseCase", () => {
   })
 
   it("should return an error if email is not valid", async () => {
-    const client = makeClient({
-      accountant: { email: "invalid-email", name: "invalid-name" },
-    })
-
     const [error] = await sut.execute({
-      name: client.name,
-      CNPJ: client.CNPJ,
-      accountant: client.accountant,
+      name: "Test Company",
+      CNPJ: "12345678000195",
+      accountant: {
+        name: "Invalid Name",
+        email: "invalid-email",
+      },
     })
 
     expect(error).toEqual({
       code: "INVALID_EMAIL",
       message: "The accountant email provided is invalid",
-      data: { email: client.accountant.email },
+      data: { email: "invalid-email" },
     })
   })
 
   it("should create a client with valid data", async () => {
-    const client = makeClient()
+    const [_, validClient] = makeClient()
+
+    if (_) return
 
     const [error, result] = await sut.execute({
-      name: client.name,
-      CNPJ: client.CNPJ,
-      accountant: client.accountant,
+      name: validClient.name,
+      CNPJ: validClient.CNPJ,
+      accountant: {
+        name: validClient.accountant.name,
+        email: validClient.accountant.email.value, // ← Extrai o valor do VO
+      },
     })
 
     expect(error).toBeUndefined()
     expect(result).toEqual({ clientId: expect.any(String) })
+    expect(inMemoryClientRepository.clients).toHaveLength(1)
+  })
+
+  it("should normalize email to lowercase", async () => {
+    const [error, result] = await sut.execute({
+      name: "Test Company",
+      CNPJ: "12345678000195",
+      accountant: {
+        name: "João Silva",
+        email: "JOAO@EMAIL.COM",
+      },
+    })
+
+    expect(error).toBeUndefined()
+    expect(result).toEqual({ clientId: expect.any(String) })
+
+    const createdClient = inMemoryClientRepository.clients[0]
+    expect(createdClient.accountant.email.value).toBe("joao@email.com")
   })
 })

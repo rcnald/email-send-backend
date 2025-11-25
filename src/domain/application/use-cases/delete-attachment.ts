@@ -38,7 +38,7 @@ export class DeleteAttachmentUseCase {
       return bad({ ...error, data: { attachmentId: attachment.id } })
     }
 
-    await this.attachmentRepository.delete(attachment.id)
+    await this.attachmentRepository.delete(attachment.id.value)
 
     return nice()
   }

@@ -1,29 +1,17 @@
-import { randomUUID } from "crypto"
-
+import { Entity } from "@/core/entities/entity"
 import { Optional } from "@/core/types/optional"
+
+import { Email } from "./value-object/email"
 
 export interface HelperProps {
   name: string
-  email: string
+  email: Email
   password: string
   createdAt: Date
   updatedAt: Date
 }
 
-export class Helper {
-  private _id: string
-
-  constructor(
-    private props: HelperProps,
-    id?: string,
-  ) {
-    this._id = id ?? randomUUID()
-  }
-
-  get id() {
-    return this._id
-  }
-
+export class Helper extends Entity<HelperProps> {
   get name() {
     return this.props.name
   }
@@ -66,11 +54,5 @@ export class Helper {
     )
 
     return helper
-  }
-
-  static validateEmail(email: string) {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-
-    return emailRegex.test(email)
   }
 }

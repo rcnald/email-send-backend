@@ -1,5 +1,6 @@
 import { bad, nice } from "@/core/error"
 import { Helper } from "@/domain/enterprise/entities/helper"
+import { Email } from "@/domain/enterprise/entities/value-object/email"
 
 import { HashGenerator } from "../cryptography/hash-generator"
 import { HelperRepository } from "../repositories/helper-repository"
@@ -17,30 +18,28 @@ export class RegisterUserUseCase {
   ) {}
 
   async execute({ email, name, password }: RegisterUserRequest) {
-    const isEmailValid = Helper.validateEmail(email)
+    const [emailError, helperEmail] = Email.create(email)
 
-    if (!isEmailValid) {
-      return bad({
-        code: "INVALID_EMAIL",
-        message: "The email provided is invalid",
-        data: { email },
-      })
+    if (emailError) {
+      return bad(emailError)
     }
 
-    const existingHelper = await this.helperRepository.findByEmail(email)
+    const existingHelper = await this.helperRepository.findByEmail(
+      helperEmail.value,
+    )
 
     if (existingHelper) {
       return bad({
         code: "HELPER_ALREADY_EXISTS",
         message: "Helper with this email already exists",
-        data: { email },
+        data: { email: helperEmail.value },
       })
     }
 
     const hashedPassword = await this.hashGenerator.hash(password)
 
     const helper = Helper.create({
-      email,
+      email: helperEmail,
       name,
       password: hashedPassword,
     })

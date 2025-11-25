@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto"
+import { Entity } from "@/core/entities/entity"
 
 export interface AttachmentProps {
   title: string
@@ -6,20 +6,7 @@ export interface AttachmentProps {
   mailId?: string
 }
 
-export class Attachment {
-  private _id: string
-
-  constructor(
-    private props: AttachmentProps,
-    id?: string,
-  ) {
-    this._id = id ?? randomUUID()
-  }
-
-  get id() {
-    return this._id
-  }
-
+export class Attachment extends Entity<AttachmentProps> {
   get title() {
     return this.props.title
   }

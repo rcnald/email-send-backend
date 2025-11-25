@@ -1,5 +1,6 @@
 import { bad, nice } from "@/core/error"
 import { Client } from "@/domain/enterprise/entities/client"
+import { Email } from "@/domain/enterprise/entities/value-object/email"
 
 import { ClientRepository } from "../repositories/client-repository"
 
@@ -26,22 +27,24 @@ export class CreateClientUseCase {
       })
     }
 
-    const isEmailValid = Client.validateEmail(accountant.email)
+    const [accountantEmailError, accountantEmail] = Email.create(
+      accountant.email,
+    )
 
-    if (!isEmailValid) {
-      return bad({
-        code: "INVALID_EMAIL",
-        message: "The accountant email provided is invalid",
-        data: { email: accountant.email },
-      })
+    if (accountantEmailError) {
+      return bad(accountantEmailError)
     }
 
-    const client = Client.create({ name, CNPJ, accountant })
+    const client = Client.create({
+      name,
+      CNPJ,
+      accountant: { ...accountant, email: accountantEmail },
+    })
 
     await this.clientRepository.create(client)
 
     return nice({
-      clientId: client.id,
+      clientId: client.id.value,
     })
   }
 }

@@ -1,12 +1,14 @@
 import { ValueObject } from "@/core/entities/value-object"
 
+import { Email } from "./email"
+
 export interface ClientWithStatusProps {
   clientId: string
   name: string
   CNPJ: string
   accountant: {
     name: string
-    email: string
+    email: Email
   }
   status: "sent" | "not_sent"
 }

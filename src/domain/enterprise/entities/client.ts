@@ -1,28 +1,17 @@
-import { randomUUID } from "node:crypto"
+import { Entity } from "@/core/entities/entity"
+
+import { Email } from "./value-object/email"
 
 export interface ClientProps {
   name: string
   CNPJ: string
   accountant: {
     name: string
-    email: string
+    email: Email
   }
 }
 
-export class Client {
-  private _id: string
-
-  constructor(
-    private props: ClientProps,
-    id?: string,
-  ) {
-    this._id = id ?? randomUUID()
-  }
-
-  get id() {
-    return this._id
-  }
-
+export class Client extends Entity<ClientProps> {
   get name() {
     return this.props.name
   }
@@ -39,11 +28,5 @@ export class Client {
     const client = new Client({ name, CNPJ, accountant }, id)
 
     return client
-  }
-
-  static validateEmail(email: string) {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-
-    return emailRegex.test(email)
   }
 }

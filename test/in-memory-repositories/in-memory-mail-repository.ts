@@ -18,6 +18,6 @@ export class InMemoryMailRepository implements MailRepository {
   }
 
   async find(id: string): Promise<Mail | null> {
-    return this.mails.find((mail) => mail.id === id) || null
+    return this.mails.find((mail) => mail.id.value === id) || null
   }
 }

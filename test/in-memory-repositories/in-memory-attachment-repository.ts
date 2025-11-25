@@ -10,7 +10,7 @@ export class InMemoryAttachmentRepository implements AttachmentRepository {
 
   async find(id: string): Promise<Attachment | null> {
     const attachment = this.attachments.find(
-      (attachment) => attachment.id === id,
+      (attachment) => attachment.id.value === id,
     )
 
     return attachment || null
@@ -20,9 +20,9 @@ export class InMemoryAttachmentRepository implements AttachmentRepository {
     ids: string[],
   ): Promise<[Attachment[], missingIds: string[]]> {
     const foundAttachments = this.attachments.filter((attachment) =>
-      ids.includes(attachment.id),
+      ids.includes(attachment.id.value),
     )
-    const foundIds = foundAttachments.map((attachment) => attachment.id)
+    const foundIds = foundAttachments.map((attachment) => attachment.id.value)
     const missingIds = ids.filter((id) => !foundIds.includes(id))
 
     return [foundAttachments, missingIds]
@@ -40,7 +40,7 @@ export class InMemoryAttachmentRepository implements AttachmentRepository {
 
   async delete(id: string): Promise<void> {
     this.attachments = this.attachments.filter(
-      (attachment) => attachment.id !== id,
+      (attachment) => attachment.id.value !== id,
     )
   }
 }

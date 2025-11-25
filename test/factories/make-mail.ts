@@ -1,8 +1,10 @@
 import { faker } from "@faker-js/faker"
 import { PrismaClient } from "@prisma/client"
 
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { Client } from "@/domain/enterprise/entities/client"
 import { Mail, MailProps } from "@/domain/enterprise/entities/mail"
+import { Email } from "@/domain/enterprise/entities/value-object/email"
 import { PrismaMailMapper } from "@/infra/database/prisma/mappers/prisma-mail-mapper"
 
 export const makeMail = (
@@ -22,12 +24,13 @@ export const makeMail = (
     createdAt,
     updatedAt,
   }: Partial<MailProps> = {},
-  id?: string,
+  id?: UniqueId,
 ) => {
   const mail = Mail.create(
     {
       subject: subject ?? faker.lorem.sentence(),
-      accountantEmail: accountantEmail ?? faker.internet.email(),
+      accountantEmail:
+        accountantEmail ?? Email.unsafeCreate(faker.internet.email()),
       attachmentIds: attachmentIds ?? [],
       clientCNPJ: clientCNPJ ?? faker.string.numeric(14),
       clientName: clientName ?? faker.company.name(),
@@ -36,7 +39,7 @@ export const makeMail = (
       message: message ?? faker.lorem.sentence(),
       referenceMonth: referenceMonth ?? undefined,
       text: text ?? faker.lorem.paragraph(),
-      clientId: clientId ?? faker.string.uuid(),
+      clientId: clientId ?? new UniqueId(),
       createdAt: createdAt ?? new Date(),
       updatedAt: updatedAt ?? undefined,
       sentAt: sentAt ?? undefined,
@@ -52,7 +55,7 @@ export class MailFactory {
 
   async makePrismaMail(
     props: Partial<MailProps> = {},
-    id?: string,
+    id?: UniqueId,
   ): Promise<Mail> {
     const mail = makeMail(props, id)
 

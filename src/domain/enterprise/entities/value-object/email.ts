@@ -34,4 +34,12 @@ export class Email extends ValueObject<EmailProps> {
 
     return nice(emailVO)
   }
+
+  /*
+   * Use with caution: skips validation
+   */
+  static unsafeCreate(email: string) {
+    const normalized = this.normalize(email)
+    return new Email({ value: normalized })
+  }
 }

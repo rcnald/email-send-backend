@@ -32,11 +32,11 @@ describe("SentEmailUseCase", () => {
     inMemoryAttachmentRepository.create(attachment)
 
     await sut.execute({
-      clientId: client.id,
-      attachmentIds: [attachment.id],
+      clientId: client.id.value,
+      attachmentIds: [attachment.id.value],
     })
 
-    expect(inMemoryMailRepository.find(client.id)).not.toBeNull()
+    expect(inMemoryMailRepository.find(client.id.value)).not.toBeNull()
   })
 
   it("should return error if client does not exist", async () => {
@@ -65,8 +65,8 @@ describe("SentEmailUseCase", () => {
     inMemoryAttachmentRepository.create(validAttachment)
 
     const [error] = await sut.execute({
-      clientId: client.id,
-      attachmentIds: [validAttachment.id, "invalid-attachment-id"],
+      clientId: client.id.value,
+      attachmentIds: [validAttachment.id.value, "invalid-attachment-id"],
     })
 
     expect(error).toEqual({
@@ -90,13 +90,13 @@ describe("SentEmailUseCase", () => {
     inMemoryAttachmentRepository.create(invalidAttachment)
 
     const [error] = await sut.execute({
-      clientId: client.id,
-      attachmentIds: [validAttachment.id, invalidAttachment.id],
+      clientId: client.id.value,
+      attachmentIds: [validAttachment.id.value, invalidAttachment.id.value],
     })
 
     const updatedInvalidAttachment =
       inMemoryAttachmentRepository.attachments.find(
-        (attachment) => attachment.id === invalidAttachment.id,
+        (attachment) => attachment.id.value === invalidAttachment.id.value,
       )
 
     expect(error).toEqual({
@@ -118,8 +118,8 @@ describe("SentEmailUseCase", () => {
     inMemoryAttachmentRepository.create(attachment)
 
     await sut.execute({
-      clientId: client.id,
-      attachmentIds: [attachment.id],
+      clientId: client.id.value,
+      attachmentIds: [attachment.id.value],
     })
 
     const clientName = client.name.toLowerCase().replace(/\s+/g, "-")

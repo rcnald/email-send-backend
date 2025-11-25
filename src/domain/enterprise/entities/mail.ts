@@ -1,4 +1,5 @@
 import { Entity } from "@/core/entities/entity"
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { Optional } from "@/core/types/optional"
 
 import { generateMailContent } from "../../application/utils/mail-generator"
@@ -6,8 +7,8 @@ import { Email } from "./value-object/email"
 
 export interface MailProps {
   accountantEmail: Email
-  attachmentIds: string[]
-  clientId: string
+  attachmentIds: UniqueId[]
+  clientId: UniqueId
   clientCNPJ: string
   clientName: string
   referenceMonth: number
@@ -136,7 +137,7 @@ export class Mail extends Entity<MailProps> {
       | "createdAt"
       | "updatedAt"
     >,
-    id?: string,
+    id?: UniqueId,
   ) {
     const previousCurrentMonth = new Date().getMonth() - 1
 

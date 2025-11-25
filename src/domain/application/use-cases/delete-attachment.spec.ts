@@ -2,6 +2,8 @@ import { makeAttachment } from "test/factories/make-attachment"
 import { InMemoryAttachmentRepository } from "test/in-memory-repositories/in-memory-attachment-repository"
 import { FakeDeleter } from "test/storage/fake-deleter"
 
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
+
 import { DeleteAttachmentUseCase } from "./delete-attachment"
 
 let inMemoryAttachmentRepository: InMemoryAttachmentRepository
@@ -30,7 +32,7 @@ describe("DeleteAttachmentUseCase", () => {
 
     await inMemoryAttachmentRepository.create(attachment)
 
-    const [error] = await sut.execute({ attachmentId: attachment.id })
+    const [error] = await sut.execute({ attachmentId: attachment.id.value })
 
     expect(error).toEqual({
       code: "FAILED_TO_DELETE",
@@ -42,16 +44,19 @@ describe("DeleteAttachmentUseCase", () => {
   })
 
   it("should return an error if attachment is in use", async () => {
-    const attachment = makeAttachment({ mailId: "mail-id" })
+    const attachment = makeAttachment({ mailId: new UniqueId("mail-id") })
 
     await inMemoryAttachmentRepository.create(attachment)
 
-    const [error] = await sut.execute({ attachmentId: attachment.id })
+    const [error] = await sut.execute({ attachmentId: attachment.id.value })
 
     expect(error).toEqual({
       code: "ATTACHMENT_IN_USE",
       message: "Attachment is in use",
-      data: { attachmentId: attachment.id, attachmentTitle: attachment.title },
+      data: {
+        attachmentId: attachment.id.value,
+        attachmentTitle: attachment.title,
+      },
     })
   })
 
@@ -60,7 +65,7 @@ describe("DeleteAttachmentUseCase", () => {
 
     await inMemoryAttachmentRepository.create(attachment)
 
-    const [error] = await sut.execute({ attachmentId: attachment.id })
+    const [error] = await sut.execute({ attachmentId: attachment.id.value })
 
     expect(error).toEqual({
       code: "ATTACHMENT_NOT_FOUND_ON_SERVER",
@@ -74,7 +79,7 @@ describe("DeleteAttachmentUseCase", () => {
 
     await inMemoryAttachmentRepository.create(attachment)
 
-    const [error] = await sut.execute({ attachmentId: attachment.id })
+    const [error] = await sut.execute({ attachmentId: attachment.id.value })
 
     expect(error).toBeUndefined()
     expect(inMemoryAttachmentRepository.attachments).toHaveLength(0)

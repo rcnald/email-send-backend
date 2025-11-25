@@ -1,9 +1,10 @@
 import { Entity } from "@/core/entities/entity"
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 
 export interface AttachmentProps {
   title: string
   url: string
-  mailId?: string
+  mailId?: UniqueId
 }
 
 export class Attachment extends Entity<AttachmentProps> {
@@ -23,11 +24,11 @@ export class Attachment extends Entity<AttachmentProps> {
     this.props.url = value
   }
 
-  get mailId(): string | undefined {
+  get mailId(): UniqueId | undefined {
     return this.props.mailId
   }
 
-  set mailId(value: string | undefined) {
+  set mailId(value: UniqueId | undefined) {
     this.props.mailId = value
   }
 

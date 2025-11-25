@@ -1,3 +1,4 @@
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { bad, nice } from "@/core/error"
 import { createEmailAttachmentsFromUrls } from "@/domain/application/utils/create-email-attachment-from-url"
 import { generateFileName } from "@/domain/application/utils/file-name-generator"
@@ -37,8 +38,8 @@ export class SendEmailUseCase {
       })
 
     const mail = Mail.create({
-      clientId,
-      attachmentIds,
+      clientId: new UniqueId(clientId),
+      attachmentIds: attachmentIds.map((id) => new UniqueId(id)),
       accountantEmail: client.accountant.email,
       clientCNPJ: client.CNPJ,
       clientName: client.name,
@@ -47,7 +48,9 @@ export class SendEmailUseCase {
     await this.mailRepository.create(mail)
 
     const [attachments, missingIds] =
-      await this.attachmentRepository.findManyByMultipleIds(mail.attachmentIds)
+      await this.attachmentRepository.findManyByMultipleIds(
+        mail.attachmentIds.map((id) => id.value),
+      )
 
     if (missingIds.length > 0) {
       return bad({
@@ -58,7 +61,7 @@ export class SendEmailUseCase {
     }
 
     attachments.forEach((attachment) => {
-      attachment.mailId = mail.id.value
+      attachment.mailId = mail.id
       this.attachmentRepository.update(attachment)
     })
 

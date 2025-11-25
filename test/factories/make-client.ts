@@ -9,38 +9,28 @@ export const makeClient = (
   { name, CNPJ, accountant }: Partial<ClientProps> = {},
   id?: string,
 ) => {
-  const [emailError, email] = Email.create(
-    accountant?.email.value ?? `${faker.person.firstName()}@email.com`,
-  )
-
-  if (emailError) {
-    return bad(emailError)
-  }
-
   const client = Client.create(
     {
       name: name ?? faker.company.name(),
       CNPJ: CNPJ ?? faker.string.numeric(14),
       accountant: {
         name: accountant?.name ?? faker.person.firstName(),
-        email,
+        email:
+          accountant?.email ??
+          Email.unsafeCreate(`${faker.person.firstName()}@email.com`),
       },
     },
     id,
   )
 
-  return nice(client)
+  return client
 }
 
 export class ClientFactory {
   constructor(private prisma: PrismaClient) {}
 
   async makePrismaClient(props: Partial<ClientProps> = {}, id?: string) {
-    const [clientError, client] = makeClient(props, id)
-
-    if (clientError) {
-      return bad(clientError)
-    }
+    const client = makeClient(props, id)
 
     await this.prisma.client.create({
       data: {

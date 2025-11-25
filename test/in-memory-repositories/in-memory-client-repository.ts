@@ -8,7 +8,7 @@ export class InMemoryClientRepository implements ClientRepository {
   public mails: Mail[] = []
 
   async find(id: string): Promise<Client | null> {
-    return this.clients.find((client) => client.id === id) || null
+    return this.clients.find((client) => client.id.value === id) || null
   }
 
   async create(client: Client): Promise<void> {
@@ -24,7 +24,7 @@ export class InMemoryClientRepository implements ClientRepository {
       const mail = this.mails.find((mail) => {
         const isCurrentMonth = new Date().getMonth() === mail.sentAt?.getMonth()
 
-        return mail.clientId === client.id && isCurrentMonth
+        return mail.clientId.equals(client.id) && isCurrentMonth
       })
 
       return ClientWithStatus.create({

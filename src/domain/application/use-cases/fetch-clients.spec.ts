@@ -55,9 +55,9 @@ describe("FetchClientsUseCase", () => {
     const client2 = makeClient()
     const client3 = makeClient()
 
-    inMemoryClientRepository.create(client1)
-    inMemoryClientRepository.create(client2)
-    inMemoryClientRepository.create(client3)
+    await inMemoryClientRepository.create(client1)
+    await inMemoryClientRepository.create(client2)
+    await inMemoryClientRepository.create(client3)
 
     const mail1 = makeMail({
       clientId: client1.id,
@@ -98,9 +98,9 @@ describe("FetchClientsUseCase", () => {
     const client2 = makeClient()
     const client3 = makeClient()
 
-    inMemoryClientRepository.create(client1)
-    inMemoryClientRepository.create(client2)
-    inMemoryClientRepository.create(client3)
+    await inMemoryClientRepository.create(client1)
+    await inMemoryClientRepository.create(client2)
+    await inMemoryClientRepository.create(client3)
 
     const mail1 = makeMail({
       clientId: client1.id,

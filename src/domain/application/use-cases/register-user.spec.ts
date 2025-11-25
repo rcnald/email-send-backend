@@ -3,6 +3,7 @@ import { makeHelper } from "test/factories/make-helper"
 import { InMemoryHelperRepository } from "test/in-memory-repositories/in-memory-helper-repository"
 
 import { UniqueId } from "@/core/entities/value-objects/unique-id"
+import { Email } from "@/domain/enterprise/entities/value-object/email"
 
 import { RegisterUserUseCase } from "./register-user"
 
@@ -38,13 +39,15 @@ describe("RegisterUserUseCase", () => {
   })
 
   it("should return an error if email is not valid", async () => {
-    const [helperError, helper] = makeHelper()
+    const [helperError, helper] = makeHelper({
+      email: Email.unsafeCreate("invalid-email"),
+    })
 
     if (helperError) return
 
     const [error] = await sut.execute({
       name: helper.name,
-      email: "invalid-email",
+      email: helper.email.value,
       password: helper.password,
     })
 

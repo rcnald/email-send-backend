@@ -1,9 +1,10 @@
 import { ValueObject } from "@/core/entities/value-object"
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 
 import { Email } from "./email"
 
 export interface ClientWithStatusProps {
-  clientId: string
+  clientId: UniqueId
   name: string
   CNPJ: string
   accountant: {

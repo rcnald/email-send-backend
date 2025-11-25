@@ -13,9 +13,7 @@ describe("CreateClientUseCase", () => {
   })
 
   it("should return an error if client already exists", async () => {
-    const [clientError, client] = makeClient()
-
-    if (clientError) return
+    const client = makeClient()
 
     inMemoryClientRepository.clients.push(client)
 
@@ -47,15 +45,13 @@ describe("CreateClientUseCase", () => {
 
     expect(error).toEqual({
       code: "INVALID_EMAIL",
-      message: "The accountant email provided is invalid",
+      message: "Invalid email format",
       data: { email: "invalid-email" },
     })
   })
 
   it("should create a client with valid data", async () => {
-    const [_, validClient] = makeClient()
-
-    if (_) return
+    const validClient = makeClient()
 
     const [error, result] = await sut.execute({
       name: validClient.name,

@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker"
 import { PrismaClient } from "@prisma/client"
 
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { bad, nice } from "@/core/error"
 import { Client, ClientProps } from "@/domain/enterprise/entities/client"
 import { Email } from "@/domain/enterprise/entities/value-object/email"
@@ -20,7 +21,7 @@ export const makeClient = (
           Email.unsafeCreate(`${faker.person.firstName()}@email.com`),
       },
     },
-    id,
+    new UniqueId(id),
   )
 
   return client
@@ -42,6 +43,6 @@ export class ClientFactory {
       },
     })
 
-    return nice(client)
+    return client
   }
 }

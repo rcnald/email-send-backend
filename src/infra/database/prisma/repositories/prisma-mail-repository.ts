@@ -16,7 +16,7 @@ export class PrismaMailRepository implements MailRepository {
 
   async update(mail: Mail): Promise<void> {
     await this.prisma.mail.update({
-      where: { id: mail.id },
+      where: { id: mail.id.value },
       data: PrismaMailMapper.toPrisma(mail),
     })
   }

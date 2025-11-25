@@ -3,6 +3,7 @@ import request from "supertest"
 import { ClientFactory } from "test/factories/make-client"
 import { MailFactory } from "test/factories/make-mail"
 
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { createApp } from "@/infra/app"
 
 let app: ReturnType<typeof createApp>
@@ -23,7 +24,7 @@ describe("Update and Create Attachment E2E Tests", () => {
     await clientFactory.makePrismaClient({})
 
     await mailFactory.makePrismaMail({
-      clientId: client.id,
+      clientId: new UniqueId(client.id.value),
       sentAt: new Date(),
     })
 

@@ -5,9 +5,12 @@ import { resolve } from "node:path"
 import { S3Client } from "@aws-sdk/client-s3"
 import { PrismaClient } from "@prisma/client"
 import request from "supertest"
+import { ClientFactory } from "test/factories/make-client"
 
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/upload-and-create-attachment"
 import { Client } from "@/domain/enterprise/entities/client"
+import { Email } from "@/domain/enterprise/entities/value-object/email"
 import { createApp } from "@/infra/app"
 import { PrismaAttachmentMapper } from "@/infra/database/prisma/mappers/prisma-attachment-mapper"
 import { PrismaAttachmentRepository } from "@/infra/database/prisma/repositories/prisma-attachment-repository"
@@ -20,7 +23,7 @@ let app: ReturnType<typeof createApp>
 
 let uploadAndCreateAttachment: UploadAndCreateAttachmentUseCase
 let attachmentRepository: PrismaAttachmentRepository
-let clientRepository: PrismaClientRepository
+let clientFactory: ClientFactory
 let uploader: TebiStorage
 let prisma: PrismaClient
 let tebiClient: S3Client
@@ -30,7 +33,8 @@ describe("Send Email E2E Tests", () => {
     const env = getEnv()
     tebiClient = createS3Client()
     prisma = new PrismaClient()
-    clientRepository = new PrismaClientRepository(prisma)
+    clientFactory = new ClientFactory(prisma)
+
     attachmentRepository = new PrismaAttachmentRepository(prisma)
     uploader = new TebiStorage(tebiClient, env)
 
@@ -46,21 +50,8 @@ describe("Send Email E2E Tests", () => {
     const testFilePath = resolve(__dirname, "../../../../test/test-file.zip")
     const testFileBuffer = readFileSync(testFilePath)
 
-    const clientId = randomUUID()
+    const client = await clientFactory.makePrismaClient({})
 
-    await clientRepository.create(
-      Client.create(
-        {
-          name: "Rcnald SA",
-          CNPJ: "12345678000195",
-          accountant: {
-            email: "ronaldomjunio05@gmail.com",
-            name: "Ronaldo Junior",
-          },
-        },
-        clientId,
-      ),
-    )
     const [_, result] = await uploadAndCreateAttachment.execute({
       fileName: "test-file.zip",
       fileType: "application/zip",
@@ -70,8 +61,8 @@ describe("Send Email E2E Tests", () => {
     const response = await request(app)
       .post("/emails")
       .send({
-        client_id: clientId,
-        attachment_ids: [result?.attachment.id],
+        client_id: client.id.value,
+        attachment_ids: [result?.attachment.id.value],
       })
 
     expect(response.status).toBe(200)

@@ -31,7 +31,7 @@ describe("Delete attachment E2E Tests", () => {
     const attachment = await attachmentFactory.makePrismaAttachment()
 
     const response = await request(app).delete(
-      `/attachments/${attachment.id}/delete`,
+      `/attachments/${attachment.id.value}/delete`,
     )
 
     expect(response.status).toBe(204)

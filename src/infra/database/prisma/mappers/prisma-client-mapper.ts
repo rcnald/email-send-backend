@@ -1,15 +1,17 @@
 import { Client as PrismaClient, Prisma } from "@prisma/client"
 
 import { Client } from "@/domain/enterprise/entities/client"
+import { Email } from "@/domain/enterprise/entities/value-object/email"
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 
 export class PrismaClientMapper {
   static toPrisma(client: Client): Prisma.ClientUncheckedCreateInput {
     return {
-      id: client.id,
+      id: client.id.value,
       name: client.name,
       CNPJ: client.CNPJ,
       accountantName: client.accountant.name,
-      accountantEmail: client.accountant.email,
+      accountantEmail: client.accountant.email.value,
     }
   }
 
@@ -20,10 +22,10 @@ export class PrismaClientMapper {
         CNPJ: data.CNPJ,
         accountant: {
           name: data.accountantName,
-          email: data.accountantEmail,
+          email: Email.fromPersistence(data.accountantEmail),
         },
       },
-      data.id,
+      new UniqueId(data.id),
     )
   }
 }

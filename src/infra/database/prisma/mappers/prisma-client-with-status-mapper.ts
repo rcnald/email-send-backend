@@ -6,6 +6,8 @@ import {
 
 import { Client } from "@/domain/enterprise/entities/client"
 import { ClientWithStatus } from "@/domain/enterprise/entities/value-object/client-with-status"
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
+import { Email } from "@/domain/enterprise/entities/value-object/email"
 
 export type PrismaClientWithStatus = PrismaClient & {
   Mail: PrismaMail[]
@@ -14,11 +16,11 @@ export type PrismaClientWithStatus = PrismaClient & {
 export class PrismaClientWithStatusMapper {
   static toPrisma(client: Client): Prisma.ClientUncheckedCreateInput {
     return {
-      id: client.id,
+      id: client.id.value,
       name: client.name,
       CNPJ: client.CNPJ,
       accountantName: client.accountant.name,
-      accountantEmail: client.accountant.email,
+      accountantEmail: client.accountant.email.value,
     }
   }
 
@@ -28,9 +30,9 @@ export class PrismaClientWithStatusMapper {
       CNPJ: data.CNPJ,
       accountant: {
         name: data.accountantName,
-        email: data.accountantEmail,
+        email: Email.fromPersistence(data.accountantEmail),
       },
-      clientId: data.id,
+      clientId: new UniqueId(data.id),
       status: data.Mail.length > 0 ? "sent" : "not_sent",
     })
   }

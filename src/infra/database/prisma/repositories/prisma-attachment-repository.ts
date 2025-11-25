@@ -55,7 +55,7 @@ export class PrismaAttachmentRepository implements AttachmentRepository {
     const data = PrismaAttachmentMapper.toPrisma(attachment)
 
     await this.prisma.attachment.update({
-      where: { id: attachment.id },
+      where: { id: attachment.id.value },
       data,
     })
   }

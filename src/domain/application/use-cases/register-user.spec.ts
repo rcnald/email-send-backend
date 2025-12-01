@@ -19,9 +19,7 @@ describe("RegisterUserUseCase", () => {
   })
 
   it("should return an error if client already exists", async () => {
-    const [helperError, helper] = makeHelper()
-
-    if (helperError) return
+    const helper = makeHelper()
 
     inMemoryHelperRepository.helpers.push(helper)
 
@@ -39,11 +37,9 @@ describe("RegisterUserUseCase", () => {
   })
 
   it("should return an error if email is not valid", async () => {
-    const [helperError, helper] = makeHelper({
+    const helper = makeHelper({
       email: Email.unsafeCreate("invalid-email"),
     })
-
-    if (helperError) return
 
     const [error] = await sut.execute({
       name: helper.name,
@@ -59,9 +55,7 @@ describe("RegisterUserUseCase", () => {
   })
 
   it("should create a helper with valid data", async () => {
-    const [helperError, helper] = makeHelper()
-
-    if (helperError) return
+    const helper = makeHelper()
 
     const [error, result] = await sut.execute({
       name: helper.name,

@@ -8,6 +8,16 @@ export class InMemoryHelperRepository implements HelperRepository {
     this.helpers.push(helper)
   }
 
+  async findById(id: string): Promise<Helper | null> {
+    const helper = this.helpers.find((helper) => helper.id.toString() === id)
+
+    if (!helper) {
+      return null
+    }
+
+    return helper
+  }
+
   async findByEmail(email: string): Promise<Helper | null> {
     const helper = this.helpers.find((helper) => helper.email.value === email)
 

@@ -53,11 +53,13 @@ export class AuthenticateUseCase {
 
     const accessToken = await this.encrypter.encrypt({
       sub: helper.id.toString(),
+      type: "access",
       expiresIn: "15m",
     })
 
     const refreshToken = await this.encrypter.encrypt({
       sub: helper.id.toString(),
+      type: "refresh",
       expiresIn: "7d",
     })
 

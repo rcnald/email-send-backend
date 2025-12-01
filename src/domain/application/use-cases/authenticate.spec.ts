@@ -3,7 +3,6 @@ import { FakeHasher } from "test/criptography/fake-hasher"
 import { makeHelper } from "test/factories/make-helper"
 import { InMemoryHelperRepository } from "test/in-memory-repositories/in-memory-helper-repository"
 
-import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { Email } from "@/domain/enterprise/entities/value-object/email"
 
 import { AuthenticateUseCase } from "./authenticate"

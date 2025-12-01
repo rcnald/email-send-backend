@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import z from "zod"
 import { fromZodError } from "zod-validation-error/v4"
 
-import { DeleteAttachmentUseCase } from "@/domain/application/use-cases/delete-attachment"
+import { DeleteAttachmentUseCase } from "@/domain/application/use-cases/attachment/delete-attachment"
 
 const deleteAttachmentControllerRouteParamsSchema = z.object({
   id: z.uuid(),

@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto"
 import { readFileSync } from "node:fs"
 import { resolve } from "node:path"
 
@@ -7,14 +6,9 @@ import { PrismaClient } from "@prisma/client"
 import request from "supertest"
 import { ClientFactory } from "test/factories/make-client"
 
-import { UniqueId } from "@/core/entities/value-objects/unique-id"
-import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/upload-and-create-attachment"
-import { Client } from "@/domain/enterprise/entities/client"
-import { Email } from "@/domain/enterprise/entities/value-object/email"
+import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/attachment/upload-and-create-attachment"
 import { createApp } from "@/infra/app"
-import { PrismaAttachmentMapper } from "@/infra/database/prisma/mappers/prisma-attachment-mapper"
 import { PrismaAttachmentRepository } from "@/infra/database/prisma/repositories/prisma-attachment-repository"
-import { PrismaClientRepository } from "@/infra/database/prisma/repositories/prisma-client-repository"
 import { getEnv } from "@/infra/env"
 import { createS3Client } from "@/infra/lib/tebi"
 import { TebiStorage } from "@/infra/storage/tebi"
@@ -47,7 +41,7 @@ describe("Send Email E2E Tests", () => {
   })
 
   it("should sent an email", async () => {
-    const testFilePath = resolve(__dirname, "../../../../test/test-file.zip")
+    const testFilePath = resolve(__dirname, "../../../../../test/test-file.zip")
     const testFileBuffer = readFileSync(testFilePath)
 
     const client = await clientFactory.makePrismaClient({})

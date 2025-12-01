@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client"
 
-import { CreateClientUseCase } from "@/domain/application/use-cases/create-client"
+import { CreateClientUseCase } from "@/domain/application/use-cases/client/create-client"
 
 import { PrismaClientRepository } from "../database/prisma/repositories/prisma-client-repository"
-import { CreateClientController } from "../http/controllers/create-client"
+import { CreateClientController } from "../http/controllers/client/create-client"
 
 export const makeCreateClient = () => {
   const prisma = new PrismaClient()

@@ -1,8 +1,8 @@
 import { bad, nice } from "@/core/error"
 import { Attachment } from "@/domain/enterprise/entities/attachment"
 
-import { AttachmentRepository } from "../repositories/attachment-repository"
-import { Uploader } from "../storage/uploader"
+import { AttachmentRepository } from "../../repositories/attachment-repository"
+import { Uploader } from "../../storage/uploader"
 
 // TODO: Create an use case for creating an pre signed URL for uploading files
 export interface UploadAndCreateAttachmentUseCaseRequest {

@@ -1,8 +1,8 @@
 import { Request, Response } from "express"
 
-import { FetchClientsUseCase } from "@/domain/application/use-cases/fetch-clients"
+import { FetchClientsUseCase } from "@/domain/application/use-cases/client/fetch-clients"
 
-import { ClientWithStatusPresenter } from "../presenters/client-with-status-presenter"
+import { ClientWithStatusPresenter } from "../../presenters/client-with-status-presenter"
 
 export class FetchClientsController {
   constructor(private fetchClientsUseCase: FetchClientsUseCase) {}

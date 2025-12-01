@@ -2,8 +2,8 @@ import { bad, nice } from "@/core/error"
 import { Helper } from "@/domain/enterprise/entities/helper"
 import { Email } from "@/domain/enterprise/entities/value-object/email"
 
-import { HashGenerator } from "../cryptography/hash-generator"
-import { HelperRepository } from "../repositories/helper-repository"
+import { HashGenerator } from "../../cryptography/hash-generator"
+import { HelperRepository } from "../../repositories/helper-repository"
 
 export interface RegisterUserRequest {
   email: string

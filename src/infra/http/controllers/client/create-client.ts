@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import z from "zod"
 import { fromZodError } from "zod-validation-error/v4"
 
-import { CreateClientUseCase } from "@/domain/application/use-cases/create-client"
+import { CreateClientUseCase } from "@/domain/application/use-cases/client/create-client"
 
 const createClientControllerBodySchema = z.object({
   name: z.string().min(2).max(100),

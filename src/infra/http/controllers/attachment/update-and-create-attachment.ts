@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import z from "zod"
 import { fromZodError } from "zod-validation-error/v4"
 
-import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/upload-and-create-attachment"
+import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/attachment/upload-and-create-attachment"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ACCEPTED_MIME_TYPES = [

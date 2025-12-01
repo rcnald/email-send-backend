@@ -1,7 +1,7 @@
 import { bad, nice } from "@/core/error"
 
-import { AttachmentRepository } from "../repositories/attachment-repository"
-import { Deleter } from "../storage/deleter"
+import { AttachmentRepository } from "../../repositories/attachment-repository"
+import { Deleter } from "../../storage/deleter"
 
 export interface DeleteAttachmentRequest {
   attachmentId: string

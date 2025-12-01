@@ -2,7 +2,7 @@ import { bad, nice } from "@/core/error"
 import { Client } from "@/domain/enterprise/entities/client"
 import { Email } from "@/domain/enterprise/entities/value-object/email"
 
-import { ClientRepository } from "../repositories/client-repository"
+import { ClientRepository } from "../../repositories/client-repository"
 
 export interface CreateClientRequest {
   name: string

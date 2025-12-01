@@ -1,9 +1,9 @@
 import { bad, nice } from "@/core/error"
 import { Email } from "@/domain/enterprise/entities/value-object/email"
 
-import { Encrypter } from "../cryptography/encrypter"
-import { HashComparator } from "../cryptography/hash-comparator"
-import { HelperRepository } from "../repositories/helper-repository"
+import { Encrypter } from "../../cryptography/encrypter"
+import { HashComparator } from "../../cryptography/hash-comparator"
+import { HelperRepository } from "../../repositories/helper-repository"
 
 export interface AuthenticateUseCaseRequest {
   email: string

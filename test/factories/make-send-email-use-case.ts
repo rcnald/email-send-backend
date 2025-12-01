@@ -5,7 +5,7 @@ import { InMemoryMailRepository } from "test/in-memory-repositories/in-memory-ma
 import { FakeDownloader } from "test/storage/fake-downloader"
 import { FakeRenamer } from "test/storage/fake-renamer"
 
-import { SendEmailUseCase } from "@/domain/application/use-cases/send-email"
+import { SendEmailUseCase } from "@/domain/application/use-cases/email/send-email"
 
 export const makeSendEmailUseCase = () => {
   const mailRepository = new InMemoryMailRepository()

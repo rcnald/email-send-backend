@@ -1,6 +1,6 @@
 import { nice } from "@/core/error"
 
-import { ClientRepository } from "../repositories/client-repository"
+import { ClientRepository } from "../../repositories/client-repository"
 
 export class FetchClientsUseCase {
   constructor(private readonly clientRepository: ClientRepository) {}

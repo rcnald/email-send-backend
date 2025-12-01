@@ -13,7 +13,7 @@ describe("Update and Create Attachment E2E Tests", () => {
   })
 
   it("should update and create an attachment", async () => {
-    const testFilePath = resolve(__dirname, "../../../../test/test-file.zip")
+    const testFilePath = resolve(__dirname, "../../../../../test/test-file.zip")
     const testFileBuffer = readFileSync(testFilePath)
 
     const response = await request(app)

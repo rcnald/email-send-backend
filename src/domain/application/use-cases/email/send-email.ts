@@ -5,12 +5,12 @@ import { generateFileName } from "@/domain/application/utils/file-name-generator
 import { Attachment } from "@/domain/enterprise/entities/attachment"
 import { Mail } from "@/domain/enterprise/entities/mail"
 
-import { EmailSender } from "../email/email-sender"
-import { AttachmentRepository } from "../repositories/attachment-repository"
-import { ClientRepository } from "../repositories/client-repository"
-import { MailRepository } from "../repositories/mail-repository"
-import { Downloader } from "../storage/downloader"
-import { Renamer } from "../storage/renamer"
+import { EmailSender } from "../../email/email-sender"
+import { AttachmentRepository } from "../../repositories/attachment-repository"
+import { ClientRepository } from "../../repositories/client-repository"
+import { MailRepository } from "../../repositories/mail-repository"
+import { Downloader } from "../../storage/downloader"
+import { Renamer } from "../../storage/renamer"
 
 export interface SendEmailUseCaseRequest {
   clientId: string

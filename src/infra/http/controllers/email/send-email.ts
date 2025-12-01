@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import z from "zod"
 import { fromZodError } from "zod-validation-error/v4"
 
-import { SendEmailUseCase } from "@/domain/application/use-cases/send-email"
+import { SendEmailUseCase } from "@/domain/application/use-cases/email/send-email"
 
 const sentEmailControllerBodySchema = z.object({
   client_id: z.uuid(),

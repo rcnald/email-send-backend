@@ -1,13 +1,13 @@
 import { PrismaClient } from "@prisma/client"
 
-import { SendEmailUseCase } from "@/domain/application/use-cases/send-email"
+import { SendEmailUseCase } from "@/domain/application/use-cases/email/send-email"
 
 import { PrismaAttachmentRepository } from "../database/prisma/repositories/prisma-attachment-repository"
 import { PrismaClientRepository } from "../database/prisma/repositories/prisma-client-repository"
 import { PrismaMailRepository } from "../database/prisma/repositories/prisma-mail-repository"
 import { RendEmailSender } from "../email/resend"
 import { getEnv } from "../env"
-import { SentEmailController } from "../http/controllers/send-email"
+import { SentEmailController } from "../http/controllers/email/send-email"
 import { createS3Client } from "../lib/tebi"
 import { TebiStorage } from "../storage/tebi"
 

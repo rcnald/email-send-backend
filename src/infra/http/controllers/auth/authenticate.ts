@@ -2,7 +2,8 @@ import { Request, Response } from "express"
 import { z } from "zod"
 import { fromZodError } from "zod-validation-error"
 
-import { AuthenticateUseCase } from "@/domain/application/use-cases/user/authenticate"
+import { AuthenticateUseCase } from "@/domain/application/use-cases/auth/authenticate"
+import { Env, getEnv } from "@/infra/env"
 
 const authenticateControllerBodySchema = z.object({
   email: z.email(),
@@ -10,7 +11,10 @@ const authenticateControllerBodySchema = z.object({
 })
 
 export class AuthenticateController {
-  constructor(private authenticateUseCase: AuthenticateUseCase) {}
+  constructor(
+    private authenticateUseCase: AuthenticateUseCase,
+    private env: Env = getEnv(),
+  ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
     const bodyValidation = authenticateControllerBodySchema.safeParse(
@@ -58,20 +62,18 @@ export class AuthenticateController {
 
     response.cookie("accessToken", result.accessToken, {
       httpOnly: true,
-      secure: process.env.ENVIRONMENT === "production",
+      secure: this.env.ENVIRONMENT === "production",
       sameSite: "strict",
-      maxAge: 15 * 60 * 1000, // 15 minutes
+      maxAge: this.env.JWT_ACCESS_TOKEN_MAX_AGE,
     })
 
     response.cookie("refreshToken", result.refreshToken, {
       httpOnly: true,
-      secure: process.env.ENVIRONMENT === "production",
+      secure: this.env.ENVIRONMENT === "production",
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: this.env.JWT_REFRESH_TOKEN_MAX_AGE,
     })
 
-    return response.status(200).json({
-      accessToken: result.accessToken,
-    })
+    return response.status(200).json()
   }
 }

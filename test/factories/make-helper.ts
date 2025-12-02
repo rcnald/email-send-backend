@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker"
+import { PrismaClient } from "@prisma/client"
 
 import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { Helper, HelperProps } from "@/domain/enterprise/entities/helper"
@@ -19,4 +20,23 @@ export const makeHelper = (
   )
 
   return helper
+}
+
+export class HelperFactory {
+  constructor(private prisma: PrismaClient) {}
+
+  async makePrismaHelper(props: Partial<HelperProps> = {}, id?: string) {
+    const helper = makeHelper(props, id ? new UniqueId(id) : undefined)
+
+    await this.prisma.helper.create({
+      data: {
+        id: helper.id.value,
+        name: helper.name,
+        email: helper.email.value,
+        password: helper.password,
+      },
+    })
+
+    return helper
+  }
 }

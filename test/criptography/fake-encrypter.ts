@@ -1,26 +1,21 @@
 import {
+  DecryptResponse,
   Encrypter,
   EncryptPayload,
 } from "@/domain/application/cryptography/encrypter"
 
 export class FakeEncrypter implements Encrypter {
-  async encrypt(payload: EncryptPayload): Promise<string> {
+  encrypt(payload: EncryptPayload): string {
     return JSON.stringify({
       sub: payload.sub,
       type: payload.type,
-      expiresIn: payload.expiresIn,
+      expiresIn: payload.expiresIn ?? "13d",
     })
   }
 
-  async decrypt(
-    token: string,
-  ): Promise<{ sub: string; type: "access" | "refresh" } | null> {
+  decrypt(token: string): DecryptResponse | null {
     try {
-      const payload = JSON.parse(token) as {
-        sub: string
-        type: "access" | "refresh"
-        expiresIn: string
-      }
+      const payload = JSON.parse(token) as DecryptResponse
 
       return {
         sub: payload.sub,

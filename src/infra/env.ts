@@ -16,6 +16,11 @@ const envSchema = z.object({
   S3_REGION: z.string().min(1),
   S3_BUCKET: z.string().min(1),
   RESEND_API_KEY: z.string().min(1),
+  JWT_SECRET: z.string().min(32),
+  JWT_ACCESS_TOKEN_EXPIRATION: z.string().min(1),
+  JWT_REFRESH_TOKEN_EXPIRATION: z.string().min(1),
+  JWT_ACCESS_TOKEN_MAX_AGE: z.coerce.number().default(15 * 60 * 1000), // 15 minutes
+  JWT_REFRESH_TOKEN_MAX_AGE: z.coerce.number().default(7 * 24 * 60 * 60 * 1000), // 7 days
   ENVIRONMENT: z
     .enum(["development", "production", "test"])
     .default("development"),

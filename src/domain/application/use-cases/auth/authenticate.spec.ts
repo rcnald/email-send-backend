@@ -4,12 +4,14 @@ import { makeHelper } from "test/factories/make-helper"
 import { InMemoryHelperRepository } from "test/in-memory-repositories/in-memory-helper-repository"
 
 import { Email } from "@/domain/enterprise/entities/value-object/email"
+import { Env, getEnv } from "@/infra/env"
 
 import { AuthenticateUseCase } from "./authenticate"
 
 let inMemoryHelperRepository: InMemoryHelperRepository
 let fakeHasher: FakeHasher
 let fakeEncrypter: FakeEncrypter
+let env: Env
 let sut: AuthenticateUseCase
 
 describe("AuthenticateUseCase", () => {
@@ -17,10 +19,12 @@ describe("AuthenticateUseCase", () => {
     inMemoryHelperRepository = new InMemoryHelperRepository()
     fakeHasher = new FakeHasher()
     fakeEncrypter = new FakeEncrypter()
+    env = getEnv()
     sut = new AuthenticateUseCase(
       inMemoryHelperRepository,
       fakeHasher,
       fakeEncrypter,
+      env,
     )
   })
 

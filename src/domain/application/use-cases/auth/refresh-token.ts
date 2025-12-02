@@ -14,7 +14,7 @@ export class RefreshTokenUseCase {
   ) {}
 
   async execute({ refreshToken }: RefreshTokenUseCaseRequest) {
-    const payload = await this.encrypter.decrypt(refreshToken)
+    const payload = this.encrypter.decrypt(refreshToken)
 
     if (!payload) {
       return bad({
@@ -42,7 +42,7 @@ export class RefreshTokenUseCase {
       })
     }
 
-    const accessToken = await this.encrypter.encrypt({
+    const accessToken = this.encrypter.encrypt({
       sub: helper.id.toString(),
       type: "access",
       expiresIn: "15m",

@@ -1,5 +1,6 @@
 import { bad, nice } from "@/core/error"
 import { Email } from "@/domain/enterprise/entities/value-object/email"
+import { Env } from "@/infra/env"
 
 import { Encrypter } from "../../cryptography/encrypter"
 import { HashComparator } from "../../cryptography/hash-comparator"
@@ -15,6 +16,7 @@ export class AuthenticateUseCase {
     private helperRepository: HelperRepository,
     private hashComparator: HashComparator,
     private encrypter: Encrypter,
+    private env: Env,
   ) {}
 
   async execute({ email, password }: AuthenticateUseCaseRequest) {
@@ -51,16 +53,16 @@ export class AuthenticateUseCase {
       })
     }
 
-    const accessToken = await this.encrypter.encrypt({
-      sub: helper.id.toString(),
+    const accessToken = this.encrypter.encrypt({
+      sub: helper.id.value,
       type: "access",
-      expiresIn: "15m",
+      expiresIn: this.env.JWT_ACCESS_TOKEN_EXPIRATION,
     })
 
-    const refreshToken = await this.encrypter.encrypt({
-      sub: helper.id.toString(),
+    const refreshToken = this.encrypter.encrypt({
+      sub: helper.id.value,
       type: "refresh",
-      expiresIn: "7d",
+      expiresIn: this.env.JWT_REFRESH_TOKEN_EXPIRATION,
     })
 
     return nice({ accessToken, refreshToken })

@@ -1,4 +1,5 @@
 import { apiReference } from "@scalar/express-api-reference"
+import cookieParser from "cookie-parser"
 import cors from "cors"
 import express from "express"
 
@@ -29,6 +30,7 @@ export function createApp() {
   )
 
   app.use(express.json())
+  app.use(cookieParser())
 
   app.use(createRouter())
 

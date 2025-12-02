@@ -13,6 +13,20 @@ export class PrismaHelperRepository implements HelperRepository {
     })
   }
 
+  async findById(id: string): Promise<Helper | null> {
+    const helper = await this.prisma.helper.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    if (!helper) {
+      return null
+    }
+
+    return PrismaHelperMapper.toDomain(helper)
+  }
+
   async findByEmail(email: string): Promise<Helper | null> {
     const helper = await this.prisma.helper.findUnique({
       where: {

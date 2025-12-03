@@ -19,7 +19,7 @@ describe("Authenticate (E2E)", () => {
   })
 
   it("should authenticate a helper", async () => {
-    const helper = await helperFactory.makePrismaHelper({
+    const { helper } = await helperFactory.makePrismaHelper({
       password: await hasher.hash("valid-password"),
     })
 

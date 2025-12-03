@@ -10,7 +10,7 @@ describe("Register Helper E2E Tests", () => {
   })
 
   it("should register a helper", async () => {
-    const response = await request(app).post("/helpers").send({
+    const response = await request(app).post("/auth/register").send({
       name: "João Silva",
       email: "joao.silva@example.com",
       password: "senha123456",

@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client"
 
-import { RegisterUserUseCase } from "@/domain/application/use-cases/user/register-user"
+import { RegisterUserUseCase } from "@/domain/application/use-cases/auth/register-user"
 
 import { BcryptHasher } from "../cryptography/bcrypt-hasher"
 import { PrismaHelperRepository } from "../database/prisma/repositories/prisma-helper-repository"
-import { RegisterUserController } from "../http/controllers/user/register-user"
+import { RegisterUserController } from "../http/controllers/auth/register-user"
 
 export const makeRegisterUser = () => {
   const prisma = new PrismaClient()

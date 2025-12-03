@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { z } from "zod"
 import { fromZodError } from "zod-validation-error"
 
-import { RegisterUserUseCase } from "@/domain/application/use-cases/user/register-user"
+import { RegisterUserUseCase } from "@/domain/application/use-cases/auth/register-user"
 
 const registerUserControllerBodySchema = z.object({
   name: z.string().min(3).max(30),

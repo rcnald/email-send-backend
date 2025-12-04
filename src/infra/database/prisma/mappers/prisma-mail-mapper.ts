@@ -12,6 +12,7 @@ export class PrismaMailMapper {
   static toPrisma(mail: Mail): Prisma.MailUncheckedCreateInput {
     return {
       id: mail.id.value,
+      helperId: mail.helperId.value,
       accountantEmail: mail.accountantEmail.value,
       html: mail.html,
       text: mail.text,
@@ -39,6 +40,7 @@ export class PrismaMailMapper {
         ),
         clientCNPJ: raw.clientCNPJ,
         clientId: new UniqueId(raw.clientId),
+        helperId: new UniqueId(raw.helperId),
         clientName: raw.clientName,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,

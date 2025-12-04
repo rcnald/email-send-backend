@@ -12,7 +12,7 @@ let clientFactory: ClientFactory
 let mailFactory: MailFactory
 let helperFactory: HelperFactory
 
-describe("Update and Create Attachment E2E Tests", () => {
+describe("Fetch Clients E2E Tests", () => {
   beforeEach(async () => {
     app = createApp()
     const prisma = new PrismaClient()
@@ -22,15 +22,19 @@ describe("Update and Create Attachment E2E Tests", () => {
   })
 
   it("should update and create an attachment", async () => {
-    const { token } = await helperFactory.makePrismaHelper(
+    const { token, helper } = await helperFactory.makePrismaHelper(
       {},
       { authenticated: true },
     )
-    const client = await clientFactory.makePrismaClient({})
-    await clientFactory.makePrismaClient({})
-    await clientFactory.makePrismaClient({})
+
+    const client = await clientFactory.makePrismaClient({
+      helperId: helper.id,
+    })
+    await clientFactory.makePrismaClient({ helperId: helper.id })
+    await clientFactory.makePrismaClient({ helperId: helper.id })
 
     await mailFactory.makePrismaMail({
+      helperId: new UniqueId(helper.id.value),
       clientId: new UniqueId(client.id.value),
       sentAt: new Date(),
     })

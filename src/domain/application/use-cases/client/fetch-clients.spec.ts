@@ -31,7 +31,7 @@ describe("FetchClientsUseCase", () => {
     await inMemoryClientRepository.create(client2)
     await inMemoryClientRepository.create(client3)
 
-    const [_, result] = await sut.execute({ userId: helper.id.value })
+    const [_, result] = await sut.execute({ helperId: helper.id.value })
 
     expect(result.clients).toHaveLength(3)
     expect(result.clients).toEqual(
@@ -78,7 +78,7 @@ describe("FetchClientsUseCase", () => {
 
     inMemoryClientRepository.mails.push(mail1)
 
-    const [_, result] = await sut.execute({ userId: helper.id.value })
+    const [_, result] = await sut.execute({ helperId: helper.id.value })
 
     expect(result.clients).toHaveLength(3)
     expect(result.clients).toEqual(
@@ -131,7 +131,7 @@ describe("FetchClientsUseCase", () => {
     inMemoryClientRepository.mails.push(mail1)
     inMemoryClientRepository.mails.push(mail2)
 
-    const [_, result] = await sut.execute({ userId: helper.id.value })
+    const [_, result] = await sut.execute({ helperId: helper.id.value })
 
     expect(result.clients).toHaveLength(3)
     expect(result.clients).toEqual(

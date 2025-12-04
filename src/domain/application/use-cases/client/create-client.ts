@@ -7,7 +7,7 @@ import { ClientRepository } from "../../repositories/client-repository"
 import { HelperRepository } from "../../repositories/helper-repository"
 
 export interface CreateClientRequest {
-  userId: string
+  helperId: string
   name: string
   CNPJ: string
   accountant: {
@@ -22,7 +22,7 @@ export class CreateClientUseCase {
     private helperRepository: HelperRepository,
   ) {}
 
-  async execute({ name, CNPJ, accountant, userId }: CreateClientRequest) {
+  async execute({ name, CNPJ, accountant, helperId }: CreateClientRequest) {
     const clientExists = await this.clientRepository.findByCNPJ(CNPJ)
 
     if (clientExists) {
@@ -33,13 +33,13 @@ export class CreateClientUseCase {
       })
     }
 
-    const helperExists = await this.helperRepository.findById(userId)
+    const helperExists = await this.helperRepository.findById(helperId)
 
     if (!helperExists) {
       return bad({
         code: "HELPER_NOT_FOUND",
         message: "Helper not found",
-        data: { userId },
+        data: { helperId },
       })
     }
 
@@ -52,7 +52,7 @@ export class CreateClientUseCase {
     }
 
     const client = Client.create({
-      helperId: new UniqueId(userId),
+      helperId: new UniqueId(helperId),
       name,
       CNPJ,
       accountant: { ...accountant, email: accountantEmail },

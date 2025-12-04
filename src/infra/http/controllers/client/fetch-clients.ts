@@ -1,4 +1,5 @@
 import { Request, Response } from "express"
+import z from "zod"
 
 import { FetchClientsUseCase } from "@/domain/application/use-cases/client/fetch-clients"
 
@@ -7,8 +8,19 @@ import { ClientWithStatusPresenter } from "../../presenters/client-with-status-p
 export class FetchClientsController {
   constructor(private fetchClientsUseCase: FetchClientsUseCase) {}
 
-  async handle(_: Request, response: Response): Promise<Response> {
-    const [error, result] = await this.fetchClientsUseCase.execute()
+  async handle(request: Request, response: Response): Promise<Response> {
+    const userId = request.userId
+
+    if (!userId || typeof userId !== "string") {
+      return response.status(400).json({
+        message: "Invalid or missing user ID",
+        data: {},
+      })
+    }
+
+    const [error, result] = await this.fetchClientsUseCase.execute({
+      helperId: userId,
+    })
 
     if (error) {
       return response.status(500).json({

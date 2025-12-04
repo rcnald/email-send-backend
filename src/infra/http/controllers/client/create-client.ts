@@ -15,6 +15,15 @@ export class CreateClientController {
   constructor(private createClientUseCase: CreateClientUseCase) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
+    const userId = request.userId
+
+    if (!userId || typeof userId !== "string") {
+      return response.status(400).json({
+        message: "Invalid or missing user ID",
+        data: {},
+      })
+    }
+
     const bodyValidation = createClientControllerBodySchema.safeParse(
       request.body,
     )
@@ -34,6 +43,7 @@ export class CreateClientController {
       bodyValidation.data
 
     const [error] = await this.createClientUseCase.execute({
+      helperId: userId,
       name,
       CNPJ,
       accountant: {

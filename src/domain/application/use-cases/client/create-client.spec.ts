@@ -28,7 +28,7 @@ describe("CreateClientUseCase", () => {
     inMemoryClientRepository.clients.push(client)
 
     const [error] = await sut.execute({
-      userId: helper.id.value,
+      helperId: helper.id.value,
       name: client.name,
       CNPJ: client.CNPJ,
       accountant: {
@@ -46,7 +46,7 @@ describe("CreateClientUseCase", () => {
 
   it("should return an error if email is not valid", async () => {
     const [error] = await sut.execute({
-      userId: helper.id.value,
+      helperId: helper.id.value,
       name: "Test Company",
       CNPJ: "12345678000195",
       accountant: {
@@ -66,7 +66,7 @@ describe("CreateClientUseCase", () => {
     const validClient = makeClient()
 
     const [error, result] = await sut.execute({
-      userId: helper.id.value,
+      helperId: helper.id.value,
       name: validClient.name,
       CNPJ: validClient.CNPJ,
       accountant: {
@@ -82,7 +82,7 @@ describe("CreateClientUseCase", () => {
 
   it("should normalize email to lowercase", async () => {
     const [error, result] = await sut.execute({
-      userId: helper.id.value,
+      helperId: helper.id.value,
       name: "Test Company",
       CNPJ: "12345678000195",
       accountant: {

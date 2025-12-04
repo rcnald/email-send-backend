@@ -18,6 +18,7 @@ export class PrismaClientWithStatusMapper {
     return {
       id: client.id.value,
       name: client.name,
+      helperId: client.helperId.value,
       CNPJ: client.CNPJ,
       accountantName: client.accountant.name,
       accountantEmail: client.accountant.email.value,

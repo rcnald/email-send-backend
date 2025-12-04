@@ -57,6 +57,31 @@ export class PrismaClientRepository implements ClientRepository {
     )
   }
 
+  async findManyWithStatusByHelperId(
+    helperId: string,
+  ): Promise<ClientWithStatus[]> {
+    const startOfMonth = dayjs().startOf("month").toDate()
+    const endOfMonth = dayjs().endOf("month").toDate()
+
+    const clients = await this.prisma.client.findMany({
+      include: {
+        Mail: {
+          where: {
+            sentAt: {
+              gte: startOfMonth,
+              lte: endOfMonth,
+            },
+            helperId,
+          },
+        },
+      },
+    })
+
+    return clients.map((client) =>
+      PrismaClientWithStatusMapper.toDomain(client),
+    )
+  }
+
   async findByCNPJ(CNPJ: string): Promise<Client | null> {
     const client = await this.prisma.client.findFirst({
       where: { CNPJ },

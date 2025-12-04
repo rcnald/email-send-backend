@@ -37,8 +37,8 @@ export class InMemoryClientRepository implements ClientRepository {
     })
   }
 
-  async findManyWithStatusByUserId(
-    userId: string,
+  async findManyWithStatusByHelperId(
+    helperId: string,
   ): Promise<ClientWithStatus[]> {
     return this.clients.map((client) => {
       const mail = this.mails.find((mail) => {
@@ -47,7 +47,7 @@ export class InMemoryClientRepository implements ClientRepository {
         return (
           mail.clientId.equals(client.id) &&
           isCurrentMonth &&
-          client.helperId.value === userId
+          client.helperId.value === helperId
         )
       })
 

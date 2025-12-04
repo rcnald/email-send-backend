@@ -3,15 +3,15 @@ import { nice } from "@/core/error"
 import { ClientRepository } from "../../repositories/client-repository"
 
 export interface FetchClientsUseCaseRequest {
-  userId: string
+  helperId: string
 }
 
 export class FetchClientsUseCase {
   constructor(private readonly clientRepository: ClientRepository) {}
 
-  async execute({ userId }: FetchClientsUseCaseRequest) {
+  async execute({ helperId }: FetchClientsUseCaseRequest) {
     const clients =
-      await this.clientRepository.findManyWithStatusByUserId(userId)
+      await this.clientRepository.findManyWithStatusByHelperId(helperId)
 
     return nice({ clients })
   }

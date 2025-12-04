@@ -47,12 +47,11 @@ describe("Send Email E2E Tests", () => {
     const testFilePath = resolve(__dirname, "../../../../../test/test-file.zip")
     const testFileBuffer = readFileSync(testFilePath)
 
-    const { token } = await helperFactory.makePrismaHelper(
+    const { token, helper } = await helperFactory.makePrismaHelper(
       {},
       { authenticated: true },
     )
-    const client = await clientFactory.makePrismaClient({})
-
+    const client = await clientFactory.makePrismaClient({ helperId: helper.id })
     const [_, result] = await uploadAndCreateAttachment.execute({
       fileName: "test-file.zip",
       fileType: "application/zip",

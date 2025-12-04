@@ -13,6 +13,15 @@ export class SentEmailController {
   constructor(private sentEmailUseCase: SendEmailUseCase) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
+    const userId = request.userId
+
+    if (!userId || typeof userId !== "string") {
+      return response.status(400).json({
+        message: "Invalid or missing user ID",
+        data: {},
+      })
+    }
+
     const bodyValidation = sentEmailControllerBodySchema.safeParse(request.body)
 
     if (!bodyValidation.success) {
@@ -29,6 +38,7 @@ export class SentEmailController {
     const { attachment_ids, client_id } = bodyValidation.data
 
     const [error, result] = await this.sentEmailUseCase.execute({
+      helperId: userId,
       attachmentIds: attachment_ids,
       clientId: client_id,
     })

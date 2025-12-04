@@ -8,6 +8,7 @@ export class PrismaClientMapper {
   static toPrisma(client: Client): Prisma.ClientUncheckedCreateInput {
     return {
       id: client.id.value,
+      helperId: client.helperId.value,
       name: client.name,
       CNPJ: client.CNPJ,
       accountantName: client.accountant.name,
@@ -19,6 +20,7 @@ export class PrismaClientMapper {
     return Client.create(
       {
         name: data.name,
+        helperId: new UniqueId(data.helperId),
         CNPJ: data.CNPJ,
         accountant: {
           name: data.accountantName,

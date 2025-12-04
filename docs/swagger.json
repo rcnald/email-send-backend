@@ -1377,6 +1377,38 @@
               }
             }
           },
+          "404": {
+            "description": "Helper não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Helper not found"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "helperId": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Helper not found",
+                  "data": {
+                    "helperId": "non-existent-id"
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Erro interno do servidor",
             "content": {

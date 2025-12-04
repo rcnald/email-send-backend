@@ -29,7 +29,6 @@ POST {{baseUrl}}/auth/refresh
 # @name uploadAttachment
 POST {{baseUrl}}/attachments
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
-Authorization: Bearer {{authenticate.response.body.accessToken}}
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="fileName"
@@ -45,17 +44,15 @@ Content-Type: application/zip
 ### Fetch Clients
 # @name fetchClients
 GET {{baseUrl}}/clients
-Authorization: Bearer {{authenticate.response.body.accessToken}}
 
 ### Create Client
 # @name createClient
 POST {{baseUrl}}/clients
 Content-Type: application/json
-Authorization: Bearer {{authenticate.response.body.accessToken}}
 
 {
   "name": "Empresa Exemplo LTDA",
-  "CNPJ": "12345678000194",
+  "CNPJ": "12345678000197",
   "accountant_name": "João Contador",
   "accountant_email": "joaosilvaa@contador.com"
 }
@@ -64,7 +61,6 @@ Authorization: Bearer {{authenticate.response.body.accessToken}}
 # @name sendEmail
 POST {{baseUrl}}/emails
 Content-Type: application/json
-Authorization: Bearer {{authenticate.response.body.accessToken}}
 
 {
   "client_id": "6e1e54f4-d2db-4f91-ab15-ada669a60f97",
@@ -76,4 +72,3 @@ Authorization: Bearer {{authenticate.response.body.accessToken}}
 ### Delete Attachment
 # @name deleteAttachment
 DELETE {{baseUrl}}/attachments/{{uploadAttachment.response.body.attachment_id}}/delete
-Authorization: Bearer {{authenticate.response.body.accessToken}}

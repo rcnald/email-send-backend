@@ -15,7 +15,10 @@ describe("FetchClientsUseCase", () => {
   beforeEach(() => {
     inMemoryClientRepository = new InMemoryClientRepository()
     inMemoryHelperRepository = new InMemoryHelperRepository()
-    sut = new FetchClientsUseCase(inMemoryClientRepository)
+    sut = new FetchClientsUseCase(
+      inMemoryClientRepository,
+      inMemoryHelperRepository,
+    )
   })
 
   it("should return all clients", async () => {
@@ -31,10 +34,11 @@ describe("FetchClientsUseCase", () => {
     await inMemoryClientRepository.create(client2)
     await inMemoryClientRepository.create(client3)
 
-    const [_, result] = await sut.execute({ helperId: helper.id.value })
+    const [error, result] = await sut.execute({ helperId: helper.id.value })
 
-    expect(result.clients).toHaveLength(3)
-    expect(result.clients).toEqual(
+    expect(error).toBeUndefined()
+    expect(result?.clients).toHaveLength(3)
+    expect(result?.clients).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           props: expect.objectContaining({
@@ -78,10 +82,11 @@ describe("FetchClientsUseCase", () => {
 
     inMemoryClientRepository.mails.push(mail1)
 
-    const [_, result] = await sut.execute({ helperId: helper.id.value })
+    const [error, result] = await sut.execute({ helperId: helper.id.value })
 
-    expect(result.clients).toHaveLength(3)
-    expect(result.clients).toEqual(
+    expect(error).toBeUndefined()
+    expect(result?.clients).toHaveLength(3)
+    expect(result?.clients).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           props: expect.objectContaining({
@@ -103,6 +108,19 @@ describe("FetchClientsUseCase", () => {
         }),
       ]),
     )
+  })
+
+  it("should return error if helper does not exist", async () => {
+    const [error, result] = await sut.execute({
+      helperId: "non-existent-helper-id",
+    })
+
+    expect(result).toBeUndefined()
+    expect(error).toEqual({
+      code: "HELPER_NOT_FOUND",
+      message: "Helper not found",
+      data: { helperId: "non-existent-helper-id" },
+    })
   })
 
   it("should consider only mails sent in the current month", async () => {
@@ -131,10 +149,11 @@ describe("FetchClientsUseCase", () => {
     inMemoryClientRepository.mails.push(mail1)
     inMemoryClientRepository.mails.push(mail2)
 
-    const [_, result] = await sut.execute({ helperId: helper.id.value })
+    const [error, result] = await sut.execute({ helperId: helper.id.value })
 
-    expect(result.clients).toHaveLength(3)
-    expect(result.clients).toEqual(
+    expect(error).toBeUndefined()
+    expect(result?.clients).toHaveLength(3)
+    expect(result?.clients).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           props: expect.objectContaining({

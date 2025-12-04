@@ -20,7 +20,7 @@ model Client {
   CNPJ String @unique
 
   accountantName  String @map("accountant_name")
-  accountantEmail String @unique @map("accountant_email")
+  accountantEmail String @map("accountant_email")
 
   helperId String @map("user_id")
   helper   Helper @relation(fields: [helperId], references: [id])

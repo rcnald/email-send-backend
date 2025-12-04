@@ -22,6 +22,15 @@ export class FetchClientsController {
     })
 
     if (error) {
+      if (error.code === "HELPER_NOT_FOUND") {
+        return response.status(404).json({
+          message: "Helper not found",
+          data: {
+            helperId: error.data.helperId,
+          },
+        })
+      }
+
       return response.status(500).json({
         message: "An unexpected error occurred",
         data: {},

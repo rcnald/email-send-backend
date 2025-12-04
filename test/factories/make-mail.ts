@@ -2,7 +2,6 @@ import { faker } from "@faker-js/faker"
 import { PrismaClient } from "@prisma/client"
 
 import { UniqueId } from "@/core/entities/value-objects/unique-id"
-import { Client } from "@/domain/enterprise/entities/client"
 import { Mail, MailProps } from "@/domain/enterprise/entities/mail"
 import { Email } from "@/domain/enterprise/entities/value-object/email"
 import { PrismaMailMapper } from "@/infra/database/prisma/mappers/prisma-mail-mapper"

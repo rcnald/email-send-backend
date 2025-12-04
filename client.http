@@ -1,9 +1,35 @@
 @baseUrl = http://localhost:3333
 
+### Register Helper
+# @name registerHelper
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joaosilva@example.com",
+  "password": "senha123456"
+}
+
+### Authenticate (Login)
+# @name authenticate
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "joaosilva@example.com",
+  "password": "senha123456"
+}
+
+### Refresh Token
+# @name refreshToken
+POST {{baseUrl}}/auth/refresh
+
 ### Upload Files
 # @name uploadAttachment
 POST {{baseUrl}}/attachments
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Authorization: Bearer {{authenticate.response.body.accessToken}}
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="fileName"
@@ -16,45 +42,38 @@ Content-Type: application/zip
 < ./test/test-file.zip
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
+### Fetch Clients
+# @name fetchClients
+GET {{baseUrl}}/clients
+Authorization: Bearer {{authenticate.response.body.accessToken}}
+
+### Create Client
+# @name createClient
+POST {{baseUrl}}/clients
+Content-Type: application/json
+Authorization: Bearer {{authenticate.response.body.accessToken}}
+
+{
+  "name": "Empresa Exemplo LTDA",
+  "CNPJ": "12345678000194",
+  "accountant_name": "João Contador",
+  "accountant_email": "joaosilvaa@contador.com"
+}
+
 ### Send Email
 # @name sendEmail
 POST {{baseUrl}}/emails
 Content-Type: application/json
+Authorization: Bearer {{authenticate.response.body.accessToken}}
 
 {
-  "client_id": "0e26f8cb-b18c-43ee-89d4-44b1b8fc115b",
+  "client_id": "6e1e54f4-d2db-4f91-ab15-ada669a60f97",
   "attachment_ids": [
-    "{{uploadAttachment.response.body.attachment_id}}"
+    "5ce61d68-3e2a-4095-83b6-cf2d2c5b59db"
   ]
 }
 
 ### Delete Attachment
 # @name deleteAttachment
 DELETE {{baseUrl}}/attachments/{{uploadAttachment.response.body.attachment_id}}/delete
-
-### Fetch Clients
-# @name fetchClients
-GET {{baseUrl}}/clients
-
-### Create Client
-# @name createClient
-POST {{baseUrl}}/clients
-Content-Type: application/json
-
-{
-  "name": "Empresa Exemplo LTDA",
-  "CNPJ": "12345678000195",
-  "accountant_name": "João Contador",
-  "accountant_email": "joao@contador.com"
-}
-
-### Register Helper
-# @name registerHelper
-POST {{baseUrl}}/helpers
-Content-Type: application/json
-
-{
-  "name": "João Silva",
-  "email": "joao.silva@example.com",
-  "password": "senha123456"
-}
+Authorization: Bearer {{authenticate.response.body.accessToken}}

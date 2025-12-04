@@ -102,7 +102,7 @@ export class SentEmailController {
     return response.status(200).json({
       message: "Email sent successfully",
       data: {
-        email_id: result.mailId,
+        email_id: result.mailId.value,
       },
     })
   }

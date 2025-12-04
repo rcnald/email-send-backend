@@ -17,6 +17,10 @@
   ],
   "tags": [
     {
+      "name": "Auth",
+      "description": "Endpoints de autenticação e autorização"
+    },
+    {
       "name": "Attachments",
       "description": "Endpoints para gerenciamento de anexos"
     },
@@ -30,6 +34,511 @@
     }
   ],
   "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Registrar helper",
+        "description": "Cria um novo helper no sistema com credenciais de acesso",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 30,
+                    "description": "Nome completo do helper"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email único do helper"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 100,
+                    "description": "Senha de acesso (mínimo 6 caracteres)"
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "password"
+                ],
+                "additionalProperties": false
+              },
+              "examples": {
+                "exemplo_registro": {
+                  "summary": "Exemplo de registro",
+                  "value": {
+                    "name": "João Silva",
+                    "email": "joao.silva@example.com",
+                    "password": "senha123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Helper registrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação ou erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Invalid request body"
+                          ]
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "field_errors": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "An unexpected error occurred"
+                          ]
+                        },
+                        "data": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "validation_error": {
+                    "summary": "Erro de validação",
+                    "value": {
+                      "message": "Invalid request body",
+                      "data": {
+                        "field_errors": [
+                          "name must be at least 3 characters",
+                          "email must be a valid email",
+                          "password must be at least 6 characters"
+                        ]
+                      }
+                    }
+                  },
+                  "unexpected_error": {
+                    "summary": "Erro inesperado",
+                    "value": {
+                      "message": "An unexpected error occurred",
+                      "data": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Email já cadastrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Helper already exists"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "format": "email"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Helper already exists",
+                  "data": {
+                    "email": "joao.silva@example.com"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Email do helper inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Invalid email provided"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "format": "email"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Invalid email provided",
+                  "data": {
+                    "email": "invalid-email@"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Autenticar helper (Login)",
+        "description": "Autentica um helper e retorna tokens de acesso",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email do helper"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "description": "Senha do helper"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "additionalProperties": false
+              },
+              "examples": {
+                "exemplo_login": {
+                  "summary": "Exemplo de login",
+                  "value": {
+                    "email": "joao.silva@example.com",
+                    "password": "senha123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Autenticação realizada com sucesso",
+            "headers": {
+              "Set-Cookie": {
+                "description": "Cookies httpOnly contendo accessToken e refreshToken",
+                "schema": {
+                  "type": "string",
+                  "example": "accessToken=eyJhbGc...; HttpOnly; Secure; SameSite=Strict"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Invalid request body"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "field_errors": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Invalid request body",
+                  "data": {
+                    "field_errors": [
+                      "email must be a valid email"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais inválidas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Invalid email or password"
+                      ]
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Invalid email or password",
+                  "data": {}
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Email com formato inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "The email provided is invalid"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "The email provided is invalid",
+                  "data": {
+                    "email": "invalid-email"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Renovar access token",
+        "description": "Renova o access token usando o refresh token armazenado em cookie",
+        "parameters": [
+          {
+            "in": "cookie",
+            "name": "refreshToken",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Refresh token armazenado em cookie httpOnly"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token renovado com sucesso",
+            "headers": {
+              "Set-Cookie": {
+                "description": "Novos cookies httpOnly contendo accessToken e refreshToken",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {}
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido, expirado ou tipo incorreto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Refresh token not provided"
+                          ]
+                        },
+                        "data": {
+                          "type": "object"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Invalid or expired refresh token"
+                          ]
+                        },
+                        "data": {
+                          "type": "object"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "Token must be a refresh token"
+                          ]
+                        },
+                        "data": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "no_token": {
+                    "summary": "Token não fornecido",
+                    "value": {
+                      "message": "Refresh token not provided",
+                      "data": {}
+                    }
+                  },
+                  "invalid_token": {
+                    "summary": "Token inválido",
+                    "value": {
+                      "message": "Invalid or expired refresh token",
+                      "data": {}
+                    }
+                  },
+                  "wrong_type": {
+                    "summary": "Tipo de token incorreto",
+                    "value": {
+                      "message": "Token must be a refresh token",
+                      "data": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Helper não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Helper not found"
+                      ]
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Helper not found",
+                  "data": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/attachments": {
       "post": {
         "tags": [
@@ -37,6 +546,11 @@
         ],
         "summary": "Upload de anexo",
         "description": "Faz upload de um arquivo ZIP para ser anexado em emails",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -177,6 +691,11 @@
         ],
         "summary": "Deletar anexo",
         "description": "Remove um anexo do sistema e do storage",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -425,6 +944,11 @@
         ],
         "summary": "Enviar email",
         "description": "Envia um email para o contador do cliente com os anexos especificados",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -756,6 +1280,11 @@
         ],
         "summary": "Listar clientes",
         "description": "Retorna a lista de todos os clientes cadastrados no sistema",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Lista de clientes retornada com sucesso",
@@ -881,6 +1410,11 @@
         ],
         "summary": "Criar cliente",
         "description": "Cria um novo cliente com dados do contador",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1078,174 +1612,6 @@
           }
         }
       }
-    },
-    "/helpers": {
-      "post": {
-        "tags": [
-          "Helpers"
-        ],
-        "summary": "Registrar auxiliar",
-        "description": "Cria um novo auxiliar no sistema com credenciais de acesso",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "minLength": 2,
-                    "maxLength": 100,
-                    "description": "Nome completo do auxiliar"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "Email único do auxiliar"
-                  },
-                  "password": {
-                    "type": "string",
-                    "minLength": 6,
-                    "description": "Senha de acesso (mínimo 6 caracteres)"
-                  }
-                },
-                "required": [
-                  "name",
-                  "email",
-                  "password"
-                ],
-                "additionalProperties": false
-              },
-              "examples": {
-                "exemplo_registro": {
-                  "summary": "Exemplo de registro",
-                  "value": {
-                    "name": "João Silva",
-                    "email": "joao.silva@example.com",
-                    "password": "senha123456"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Auxiliar registrado com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                },
-                "example": {}
-              }
-            }
-          },
-          "400": {
-            "description": "Erro de validação ou erro inesperado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "oneOf": [
-                    {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "enum": [
-                            "Invalid request body"
-                          ]
-                        },
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "field_errors": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "enum": [
-                            "An unexpected error occurred"
-                          ]
-                        },
-                        "data": {
-                          "type": "object"
-                        }
-                      }
-                    }
-                  ]
-                },
-                "examples": {
-                  "validation_error": {
-                    "summary": "Erro de validação",
-                    "value": {
-                      "message": "Invalid request body",
-                      "data": {
-                        "field_errors": [
-                          "name must be at least 2 characters",
-                          "email must be a valid email",
-                          "password must be at least 6 characters"
-                        ]
-                      }
-                    }
-                  },
-                  "unexpected_error": {
-                    "summary": "Erro inesperado",
-                    "value": {
-                      "message": "An unexpected error occurred",
-                      "data": {}
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Email já cadastrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "enum": [
-                        "Helper already exists"
-                      ]
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "email": {
-                          "type": "string",
-                          "format": "email"
-                        }
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "message": "Helper already exists",
-                  "data": {
-                    "email": "joao.silva@example.com"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
@@ -1255,6 +1621,14 @@
         "format": "uuid",
         "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
         "example": "123e4567-e89b-12d3-a456-426614174000"
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token JWT obtido através do endpoint de login (/auth/login)"
       }
     }
   }

@@ -1,5 +1,4 @@
 import { Request, Response } from "express"
-import z from "zod"
 
 import { FetchClientsUseCase } from "@/domain/application/use-cases/client/fetch-clients"
 

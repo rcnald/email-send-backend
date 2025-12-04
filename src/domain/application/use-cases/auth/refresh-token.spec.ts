@@ -20,8 +20,8 @@ describe("RefreshTokenUseCase", () => {
     const helper = makeHelper()
     await inMemoryHelperRepository.create(helper)
 
-    const refreshToken = await fakeEncrypter.encrypt({
-      sub: helper.id.toString(),
+    const refreshToken = fakeEncrypter.encrypt({
+      sub: helper.id.value,
       type: "refresh",
       expiresIn: "7d",
     })

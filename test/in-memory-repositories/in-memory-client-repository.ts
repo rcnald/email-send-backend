@@ -37,6 +37,30 @@ export class InMemoryClientRepository implements ClientRepository {
     })
   }
 
+  async findManyWithStatusByUserId(
+    userId: string,
+  ): Promise<ClientWithStatus[]> {
+    return this.clients.map((client) => {
+      const mail = this.mails.find((mail) => {
+        const isCurrentMonth = new Date().getMonth() === mail.sentAt?.getMonth()
+
+        return (
+          mail.clientId.equals(client.id) &&
+          isCurrentMonth &&
+          client.helperId.value === userId
+        )
+      })
+
+      return ClientWithStatus.create({
+        clientId: client.id,
+        name: client.name,
+        CNPJ: client.CNPJ,
+        accountant: client.accountant,
+        status: mail ? "sent" : "not_sent",
+      })
+    })
+  }
+
   async findByCNPJ(CNPJ: string): Promise<Client | null> {
     const client = this.clients.find((client) => client.CNPJ === CNPJ)
 

@@ -1,29 +1,37 @@
 import dayjs from "dayjs"
 import { makeClient } from "test/factories/make-client"
+import { makeHelper } from "test/factories/make-helper"
 import { makeMail } from "test/factories/make-mail"
 import { InMemoryClientRepository } from "test/in-memory-repositories/in-memory-client-repository"
+import { InMemoryHelperRepository } from "test/in-memory-repositories/in-memory-helper-repository"
 
 import { FetchClientsUseCase } from "./fetch-clients"
 
 let inMemoryClientRepository: InMemoryClientRepository
+let inMemoryHelperRepository: InMemoryHelperRepository
 let sut: FetchClientsUseCase
 
 describe("FetchClientsUseCase", () => {
   beforeEach(() => {
     inMemoryClientRepository = new InMemoryClientRepository()
+    inMemoryHelperRepository = new InMemoryHelperRepository()
     sut = new FetchClientsUseCase(inMemoryClientRepository)
   })
 
   it("should return all clients", async () => {
-    const client1 = makeClient()
-    const client2 = makeClient()
-    const client3 = makeClient()
+    const helper = makeHelper()
+
+    inMemoryHelperRepository.helpers.push(helper)
+
+    const client1 = makeClient({ helperId: helper.id })
+    const client2 = makeClient({ helperId: helper.id })
+    const client3 = makeClient({ helperId: helper.id })
 
     await inMemoryClientRepository.create(client1)
     await inMemoryClientRepository.create(client2)
     await inMemoryClientRepository.create(client3)
 
-    const [_, result] = await sut.execute()
+    const [_, result] = await sut.execute({ userId: helper.id.value })
 
     expect(result.clients).toHaveLength(3)
     expect(result.clients).toEqual(
@@ -51,9 +59,13 @@ describe("FetchClientsUseCase", () => {
   })
 
   it("should return status sent if client has been sent", async () => {
-    const client1 = makeClient()
-    const client2 = makeClient()
-    const client3 = makeClient()
+    const helper = makeHelper()
+
+    inMemoryHelperRepository.helpers.push(helper)
+
+    const client1 = makeClient({ helperId: helper.id })
+    const client2 = makeClient({ helperId: helper.id })
+    const client3 = makeClient({ helperId: helper.id })
 
     await inMemoryClientRepository.create(client1)
     await inMemoryClientRepository.create(client2)
@@ -66,7 +78,7 @@ describe("FetchClientsUseCase", () => {
 
     inMemoryClientRepository.mails.push(mail1)
 
-    const [_, result] = await sut.execute()
+    const [_, result] = await sut.execute({ userId: helper.id.value })
 
     expect(result.clients).toHaveLength(3)
     expect(result.clients).toEqual(
@@ -94,9 +106,13 @@ describe("FetchClientsUseCase", () => {
   })
 
   it("should consider only mails sent in the current month", async () => {
-    const client1 = makeClient()
-    const client2 = makeClient()
-    const client3 = makeClient()
+    const helper = makeHelper()
+
+    inMemoryHelperRepository.helpers.push(helper)
+
+    const client1 = makeClient({ helperId: helper.id })
+    const client2 = makeClient({ helperId: helper.id })
+    const client3 = makeClient({ helperId: helper.id })
 
     await inMemoryClientRepository.create(client1)
     await inMemoryClientRepository.create(client2)
@@ -115,7 +131,7 @@ describe("FetchClientsUseCase", () => {
     inMemoryClientRepository.mails.push(mail1)
     inMemoryClientRepository.mails.push(mail2)
 
-    const [_, result] = await sut.execute()
+    const [_, result] = await sut.execute({ userId: helper.id.value })
 
     expect(result.clients).toHaveLength(3)
     expect(result.clients).toEqual(

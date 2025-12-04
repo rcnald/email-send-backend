@@ -4,6 +4,7 @@ import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { Email } from "./value-object/email"
 
 export interface ClientProps {
+  helperId: UniqueId
   name: string
   CNPJ: string
   accountant: {
@@ -25,8 +26,15 @@ export class Client extends Entity<ClientProps> {
     return this.props.accountant
   }
 
-  static create({ name, CNPJ, accountant }: ClientProps, id?: UniqueId) {
-    const client = new Client({ name, CNPJ, accountant }, id)
+  get helperId() {
+    return this.props.helperId
+  }
+
+  static create(
+    { helperId, name, CNPJ, accountant }: ClientProps,
+    id?: UniqueId,
+  ) {
+    const client = new Client({ helperId, name, CNPJ, accountant }, id)
 
     return client
   }

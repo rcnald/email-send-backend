@@ -1,10 +1,13 @@
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { bad, nice } from "@/core/error"
 import { Client } from "@/domain/enterprise/entities/client"
 import { Email } from "@/domain/enterprise/entities/value-object/email"
 
 import { ClientRepository } from "../../repositories/client-repository"
+import { HelperRepository } from "../../repositories/helper-repository"
 
 export interface CreateClientRequest {
+  userId: string
   name: string
   CNPJ: string
   accountant: {
@@ -14,9 +17,12 @@ export interface CreateClientRequest {
 }
 
 export class CreateClientUseCase {
-  constructor(private clientRepository: ClientRepository) {}
+  constructor(
+    private clientRepository: ClientRepository,
+    private helperRepository: HelperRepository,
+  ) {}
 
-  async execute({ name, CNPJ, accountant }: CreateClientRequest) {
+  async execute({ name, CNPJ, accountant, userId }: CreateClientRequest) {
     const clientExists = await this.clientRepository.findByCNPJ(CNPJ)
 
     if (clientExists) {
@@ -24,6 +30,16 @@ export class CreateClientUseCase {
         code: "CLIENT_ALREADY_EXISTS",
         message: "Client with this CNPJ already exists",
         data: { CNPJ },
+      })
+    }
+
+    const helperExists = await this.helperRepository.findById(userId)
+
+    if (!helperExists) {
+      return bad({
+        code: "HELPER_NOT_FOUND",
+        message: "Helper not found",
+        data: { userId },
       })
     }
 
@@ -36,6 +52,7 @@ export class CreateClientUseCase {
     }
 
     const client = Client.create({
+      helperId: new UniqueId(userId),
       name,
       CNPJ,
       accountant: { ...accountant, email: accountantEmail },

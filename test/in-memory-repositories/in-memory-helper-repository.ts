@@ -9,7 +9,7 @@ export class InMemoryHelperRepository implements HelperRepository {
   }
 
   async findById(id: string): Promise<Helper | null> {
-    const helper = this.helpers.find((helper) => helper.id.toString() === id)
+    const helper = this.helpers.find((helper) => helper.id.value === id)
 
     if (!helper) {
       return null

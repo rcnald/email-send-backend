@@ -8,12 +8,14 @@ import { Mail } from "@/domain/enterprise/entities/mail"
 import { EmailSender } from "../../email/email-sender"
 import { AttachmentRepository } from "../../repositories/attachment-repository"
 import { ClientRepository } from "../../repositories/client-repository"
+import { HelperRepository } from "../../repositories/helper-repository"
 import { MailRepository } from "../../repositories/mail-repository"
 import { Downloader } from "../../storage/downloader"
 import { Renamer } from "../../storage/renamer"
 
 export interface SendEmailUseCaseRequest {
   clientId: string
+  helperId: string
   attachmentIds: string[]
 }
 
@@ -22,12 +24,17 @@ export class SendEmailUseCase {
     private mailRepository: MailRepository,
     private clientRepository: ClientRepository,
     private attachmentRepository: AttachmentRepository,
+    private helperRepository: HelperRepository,
     private renamer: Renamer,
     private emailSender: EmailSender,
     private downloader: Downloader,
   ) {}
 
-  async execute({ clientId, attachmentIds }: SendEmailUseCaseRequest) {
+  async execute({
+    clientId,
+    helperId,
+    attachmentIds,
+  }: SendEmailUseCaseRequest) {
     const client = await this.clientRepository.find(clientId)
 
     if (!client)
@@ -37,8 +44,27 @@ export class SendEmailUseCase {
         data: { clientId },
       })
 
+    const helper = await this.helperRepository.findById(helperId)
+
+    if (!helper) {
+      return bad({
+        code: "HELPER_NOT_FOUND",
+        message: "Helper not found",
+        data: { helperId },
+      })
+    }
+
+    if (!helper.id.equals(client.helperId)) {
+      return bad({
+        code: "HELPER_CLIENT_MISMATCH",
+        message: "The helper is not associated with the client",
+        data: { helperId, clientId },
+      })
+    }
+
     const mail = Mail.create({
       clientId: new UniqueId(clientId),
+      helperId: new UniqueId(helperId),
       attachmentIds: attachmentIds.map((id) => new UniqueId(id)),
       accountantEmail: client.accountant.email,
       clientCNPJ: client.CNPJ,

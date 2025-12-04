@@ -9,6 +9,7 @@ export interface MailProps {
   accountantEmail: Email
   attachmentIds: UniqueId[]
   clientId: UniqueId
+  helperId: UniqueId
   clientCNPJ: string
   clientName: string
   referenceMonth: number
@@ -49,6 +50,10 @@ export class Mail extends Entity<MailProps> {
 
   get clientId() {
     return this.props.clientId
+  }
+
+  get helperId() {
+    return this.props.helperId
   }
 
   get clientName() {
@@ -115,6 +120,7 @@ export class Mail extends Entity<MailProps> {
     {
       clientCNPJ,
       clientId,
+      helperId,
       clientName,
       accountantEmail,
       attachmentIds,
@@ -155,6 +161,7 @@ export class Mail extends Entity<MailProps> {
       {
         clientCNPJ,
         clientId,
+        helperId,
         accountantEmail,
         attachmentIds,
         clientName,

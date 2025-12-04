@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker"
 import { PrismaClient } from "@prisma/client"
 
+import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { Uploader } from "@/domain/application/storage/uploader"
 import {
   Attachment,
@@ -10,7 +11,7 @@ import { PrismaAttachmentMapper } from "@/infra/database/prisma/mappers/prisma-a
 
 export const makeAttachment = (
   { mailId, title, url }: Partial<AttachmentProps> = {},
-  id?: string,
+  id?: UniqueId,
 ) => {
   const attachment = Attachment.create(
     {
@@ -32,7 +33,7 @@ export class AttachmentFactory {
 
   async makePrismaAttachment(
     props: Partial<AttachmentProps> = {},
-    id?: string,
+    id?: UniqueId,
   ): Promise<Attachment> {
     const attachment = makeAttachment(props, id)
 

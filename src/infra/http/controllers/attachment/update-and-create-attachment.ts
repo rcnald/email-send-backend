@@ -3,6 +3,7 @@ import z from "zod"
 import { fromZodError } from "zod-validation-error/v4"
 
 import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/attachment/upload-and-create-attachment"
+import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ACCEPTED_MIME_TYPES = [
@@ -56,27 +57,9 @@ export class UpdateAndCreateAttachmentController {
     )
 
     if (error) {
-      if (error.code === "INVALID_FILE_TYPE") {
-        return response.status(400).json({
-          message: "Invalid file type",
-          data: {
-            accepted_types: ACCEPTED_MIME_TYPES,
-          },
-        })
-      }
-
-      if (error.code === "FAILED_TO_UPLOAD") {
-        return response.status(400).json({
-          message: "Failed to upload file",
-          data: {},
-        })
-      }
-
-      return response
-        .status(400)
-        .send({ message: "An unexpected error occurred", data: {} })
+      return HttpErrorHandler.handle(response, error)
     }
 
-    return response.status(201).json({ attachment_id: result.attachment.id })
+    return response.status(201).json({ attachment_id: result.attachmentId })
   }
 }

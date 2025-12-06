@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 
 import { FetchClientsUseCase } from "@/domain/application/use-cases/client/fetch-clients"
+import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
 
 import { ClientWithStatusPresenter } from "../../presenters/client-with-status-presenter"
 
@@ -22,19 +23,7 @@ export class FetchClientsController {
     })
 
     if (error) {
-      if (error.code === "HELPER_NOT_FOUND") {
-        return response.status(404).json({
-          message: "Helper not found",
-          data: {
-            helperId: error.data.helperId,
-          },
-        })
-      }
-
-      return response.status(500).json({
-        message: "An unexpected error occurred",
-        data: {},
-      })
+      return HttpErrorHandler.handle(response, error)
     }
 
     return response.status(200).json({

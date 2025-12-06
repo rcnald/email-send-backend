@@ -1,3 +1,4 @@
+import { DomainError } from "@/core/domain-error"
 import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { bad, nice } from "@/core/error"
 import { Client } from "@/domain/enterprise/entities/client"
@@ -26,21 +27,17 @@ export class CreateClientUseCase {
     const clientExists = await this.clientRepository.findByCNPJ(CNPJ)
 
     if (clientExists) {
-      return bad({
-        code: "CLIENT_ALREADY_EXISTS",
-        message: "Client with this CNPJ already exists",
-        data: { CNPJ },
-      })
+      return bad(DomainError.AlreadyExists("Client already exists", { CNPJ }))
     }
 
     const helperExists = await this.helperRepository.findById(helperId)
 
     if (!helperExists) {
-      return bad({
-        code: "HELPER_NOT_FOUND",
-        message: "Helper not found",
-        data: { helperId },
-      })
+      return bad(
+        DomainError.NotFound("Helper not found", {
+          helperId,
+        }),
+      )
     }
 
     const [accountantEmailError, accountantEmail] = Email.create(
@@ -48,7 +45,11 @@ export class CreateClientUseCase {
     )
 
     if (accountantEmailError) {
-      return bad(accountantEmailError)
+      return bad(
+        DomainError.InvalidResource("Invalid email provided", {
+          email: accountant.email,
+        }),
+      )
     }
 
     const client = Client.create({

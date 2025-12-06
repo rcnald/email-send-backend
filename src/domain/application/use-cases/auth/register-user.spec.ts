@@ -30,7 +30,7 @@ describe("RegisterUserUseCase", () => {
     })
 
     expect(error).toEqual({
-      code: "HELPER_ALREADY_EXISTS",
+      code: "ALREADY_EXISTS",
       message: "Helper with this email already exists",
       data: { email: helper.email.value },
     })
@@ -48,8 +48,8 @@ describe("RegisterUserUseCase", () => {
     })
 
     expect(error).toEqual({
-      code: "INVALID_EMAIL",
-      message: "Invalid email format",
+      code: "INVALID_RESOURCE",
+      message: "The email provided is invalid",
       data: { email: "invalid-email" },
     })
   })

@@ -4,6 +4,7 @@ import { fromZodError } from "zod-validation-error"
 
 import { AuthenticateUseCase } from "@/domain/application/use-cases/auth/authenticate"
 import { Env, getEnv } from "@/infra/env"
+import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
 
 const authenticateControllerBodySchema = z.object({
   email: z.email(),
@@ -40,24 +41,7 @@ export class AuthenticateController {
     })
 
     if (error) {
-      if (error.code === "INVALID_EMAIL") {
-        return response.status(422).json({
-          message: error.message,
-          data: error.data,
-        })
-      }
-
-      if (error.code === "INVALID_CREDENTIALS") {
-        return response.status(401).json({
-          message: error.message,
-          data: error.data,
-        })
-      }
-
-      return response.status(400).json({
-        message: "An unexpected error occurred",
-        data: {},
-      })
+      return HttpErrorHandler.handle(response, error)
     }
 
     response.cookie("accessToken", result.accessToken, {

@@ -1,18 +1,13 @@
+import { DomainError, DomainErrorData } from "@/core/domain-error"
 import { bad, nice } from "@/core/error"
 import { Downloader } from "@/domain/application/storage/downloader"
 
 export class FakeDownloader implements Downloader {
-  async download(url: string): Promise<
+  async download(
+    url: string,
+  ): Promise<
     | [undefined, { buffer: Buffer }, undefined]
-    | [
-        {
-          code: "FAILED_TO_DOWNLOAD"
-          message: "Failed to download file"
-          file: string
-        },
-        undefined,
-        undefined,
-      ]
+    | [DomainErrorData, undefined, undefined]
   > {
     if (
       url === "http://fake-storage/invalid-file.zip" ||
@@ -22,11 +17,11 @@ export class FakeDownloader implements Downloader {
         }).format(new Date().setMonth(new Date().getMonth() - 1))}-1`,
       )
     ) {
-      return bad({
-        code: "FAILED_TO_DOWNLOAD",
-        message: "Failed to download file",
-        file: url,
-      })
+      return bad(
+        DomainError.ExternalServiceFailed("Failed to download file", {
+          file: url,
+        }),
+      )
     }
 
     return nice({ buffer: Buffer.from("file content ok") })

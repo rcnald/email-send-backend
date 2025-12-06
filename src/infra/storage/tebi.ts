@@ -10,6 +10,7 @@ import {
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 
+import { DomainError } from "@/core/domain-error"
 import { bad, nice } from "@/core/error"
 import { Deleter, DeleterParams } from "@/domain/application/storage/deleter"
 import { Downloader } from "@/domain/application/storage/downloader"
@@ -31,7 +32,7 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
   }: UploadParams): Promise<
     | [undefined, { url: string }, undefined]
     | [
-        { code: "FAILED_TO_UPLOAD"; message: "Failed to upload file" },
+        ReturnType<typeof DomainError.ExternalServiceFailed>,
         undefined,
         undefined,
       ]
@@ -54,10 +55,7 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
     )
 
     if (result.$metadata.httpStatusCode !== 200) {
-      return bad({
-        code: "FAILED_TO_UPLOAD",
-        message: "Failed to upload file",
-      })
+      return bad(DomainError.ExternalServiceFailed("Failed to upload file"))
     }
 
     return nice({ url: uniqueFilename })
@@ -80,14 +78,12 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
     )
   }
 
-  async download(url: string): Promise<
+  async download(
+    url: string,
+  ): Promise<
     | [undefined, { buffer: Buffer<ArrayBufferLike> }, undefined]
     | [
-        {
-          code: "FAILED_TO_DOWNLOAD"
-          message: "Failed to download file"
-          file: string
-        },
+        ReturnType<typeof DomainError.ExternalServiceFailed>,
         undefined,
         undefined,
       ]
@@ -105,38 +101,33 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
       const response = await fetch(signedUrl)
 
       if (!response.ok) {
-        return bad({
-          code: "FAILED_TO_DOWNLOAD",
-          message: "Failed to download file",
-          file: url,
-        })
+        return bad(
+          DomainError.ExternalServiceFailed("Failed to download file", {
+            file: url,
+          }),
+        )
       }
 
       return nice({ buffer: Buffer.from(await response.arrayBuffer()) })
     } catch {
-      return bad({
-        code: "FAILED_TO_DOWNLOAD",
-        message: "Failed to download file",
-        file: url,
-      })
+      return bad(
+        DomainError.ExternalServiceFailed("Failed to download file", {
+          file: url,
+        }),
+      )
     }
   }
 
-  async delete(params: DeleterParams): Promise<
+  async delete(
+    params: DeleterParams,
+  ): Promise<
     | [undefined, void, undefined]
     | [
-        { code: "FAILED_TO_DELETE"; message: "Failed to delete file" },
+        ReturnType<typeof DomainError.ExternalServiceFailed>,
         undefined,
         undefined,
       ]
-    | [
-        {
-          code: "ATTACHMENT_NOT_FOUND_ON_SERVER"
-          message: "Attachment not found on server"
-        },
-        undefined,
-        undefined,
-      ]
+    | [ReturnType<typeof DomainError.NotFound>, undefined, undefined]
   > {
     const { url } = params
 
@@ -158,16 +149,10 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
       return nice()
     } catch (error) {
       if ((error as { name?: unknown }).name === "NoSuchKey") {
-        return bad({
-          code: "ATTACHMENT_NOT_FOUND_ON_SERVER",
-          message: "Attachment not found on server",
-        })
+        return bad(DomainError.NotFound("Attachment not found on server"))
       }
 
-      return bad({
-        code: "FAILED_TO_DELETE",
-        message: "Failed to delete file",
-      })
+      return bad(DomainError.ExternalServiceFailed("Failed to delete file"))
     }
   }
 }

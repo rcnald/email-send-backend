@@ -1,3 +1,4 @@
+import { DomainError } from "@/core/domain-error"
 import { bad, nice } from "@/core/error"
 import { Attachment } from "@/domain/enterprise/entities/attachment"
 
@@ -27,11 +28,11 @@ export class UploadAndCreateAttachmentUseCase {
     const isFileTypeValid = zipRegex.test(fileType)
 
     if (!isFileTypeValid) {
-      return bad({
-        code: "INVALID_FILE_TYPE",
-        message: "Invalid file type",
-        data: { invalidFileType: fileType },
-      })
+      return bad(
+        DomainError.InvalidArgument("Invalid file type", {
+          invalidFileType: fileType,
+        }),
+      )
     }
 
     const [error, result] = await this.uploader.upload({
@@ -50,6 +51,6 @@ export class UploadAndCreateAttachmentUseCase {
 
     this.attachmentRepository.create(attachment)
 
-    return nice({ attachment })
+    return nice({ attachmentId: attachment.id.value })
   }
 }

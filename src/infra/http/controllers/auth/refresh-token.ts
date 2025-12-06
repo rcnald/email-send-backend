@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 
 import { RefreshTokenUseCase } from "@/domain/application/use-cases/auth/refresh-token"
 import { Env, getEnv } from "@/infra/env"
+import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
 
 export class RefreshTokenController {
   constructor(
@@ -24,31 +25,7 @@ export class RefreshTokenController {
     })
 
     if (error) {
-      if (error.code === "INVALID_TOKEN") {
-        return response.status(401).json({
-          message: error.message,
-          data: error.data,
-        })
-      }
-
-      if (error.code === "INVALID_TOKEN_TYPE") {
-        return response.status(401).json({
-          message: error.message,
-          data: error.data,
-        })
-      }
-
-      if (error.code === "HELPER_NOT_FOUND") {
-        return response.status(404).json({
-          message: error.message,
-          data: error.data,
-        })
-      }
-
-      return response.status(400).json({
-        message: "An unexpected error occurred",
-        data: {},
-      })
+      return HttpErrorHandler.handle(response, error)
     }
 
     const { accessToken, refreshToken: newRefreshToken } = result

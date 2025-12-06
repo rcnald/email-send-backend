@@ -35,7 +35,7 @@ describe("AuthenticateUseCase", () => {
     })
 
     expect(error).toEqual({
-      code: "INVALID_EMAIL",
+      code: "INVALID_RESOURCE",
       message: "The email provided is invalid",
       data: { email: "invalid-email" },
     })
@@ -54,9 +54,9 @@ describe("AuthenticateUseCase", () => {
     })
 
     expect(error).toEqual({
-      code: "INVALID_CREDENTIALS",
+      code: "UNAUTHORIZED",
       message: "Invalid email or password",
-      data: {},
+      data: undefined,
     })
   })
 
@@ -73,9 +73,9 @@ describe("AuthenticateUseCase", () => {
     })
 
     expect(error).toEqual({
-      code: "INVALID_CREDENTIALS",
+      code: "UNAUTHORIZED",
       message: "Invalid email or password",
-      data: {},
+      data: undefined,
     })
   })
 

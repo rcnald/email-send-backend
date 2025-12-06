@@ -1,3 +1,4 @@
+import { DomainError } from "@/core/domain-error"
 import { bad, nice } from "@/core/error"
 
 import { ClientRepository } from "../../repositories/client-repository"
@@ -17,11 +18,11 @@ export class FetchClientsUseCase {
     const helper = await this.helperRepository.findById(helperId)
 
     if (!helper) {
-      return bad({
-        code: "HELPER_NOT_FOUND",
-        message: "Helper not found",
-        data: { helperId },
-      })
+      return bad(
+        DomainError.NotFound("Helper not found", {
+          helperId,
+        }),
+      )
     }
 
     const clients =

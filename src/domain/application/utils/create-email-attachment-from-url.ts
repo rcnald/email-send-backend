@@ -1,3 +1,4 @@
+import { DomainError } from "@/core/domain-error"
 import { bad, nice } from "@/core/error"
 import { Downloader } from "@/domain/application/storage/downloader"
 
@@ -34,20 +35,24 @@ export async function createEmailAttachmentsFromUrls(
     .map((result) => result.reason)
 
   if (successfulAttachments.length === 0) {
-    return bad({
-      code: "ATTACHMENTS_HAS_EXPIRED",
-      message: "Attachments have expired or are not accessible",
-    })
+    return bad(
+      DomainError.ExternalServiceFailed(
+        "Attachments have expired or are not accessible",
+      ),
+    )
   }
 
   if (failedReasons.length > 0) {
-    return bad({
-      code: "ATTACHMENT_PROCESSING_ERROR",
-      message: "One or more attachments failed to be processed.",
-      data: {
-        details: failedReasons.map((reason) => reason.file),
-      },
-    })
+    return bad(
+      DomainError.ExternalServiceFailed(
+        "One or more attachments failed to be processed.",
+        {
+          details: failedReasons.map(
+            (reason) => (reason.data as { file?: string })?.file ?? "unknown",
+          ),
+        },
+      ),
+    )
   }
 
   return nice(successfulAttachments)

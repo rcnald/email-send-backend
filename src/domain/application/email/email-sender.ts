@@ -1,3 +1,5 @@
+import { DomainErrorData } from "@/core/domain-error"
+
 export interface EmailAttachment {
   filename: string
   content: Buffer
@@ -18,10 +20,6 @@ export abstract class EmailSender {
     params: SendEmailParams,
   ): Promise<
     | [undefined, { ok: true }, undefined]
-    | [
-        { code: "FAILED_TO_SEND_EMAIL"; message: "Failed to send email" },
-        undefined,
-        undefined,
-      ]
+    | [DomainErrorData, undefined, undefined]
   >
 }

@@ -58,7 +58,7 @@ describe("SentEmailUseCase", () => {
     })
 
     expect(error).toEqual({
-      code: "CLIENT_NOT_FOUND",
+      code: "NOT_FOUND",
       message: "Client not found",
       data: {
         clientId: "non-existent-client-id",
@@ -85,7 +85,7 @@ describe("SentEmailUseCase", () => {
     })
 
     expect(error).toEqual({
-      code: "SOME_ATTACHMENTS_NOT_FOUND",
+      code: "NOT_FOUND",
       data: {
         missingIds: ["invalid-attachment-id"],
       },
@@ -118,7 +118,7 @@ describe("SentEmailUseCase", () => {
       )
 
     expect(error).toEqual({
-      code: "ATTACHMENT_PROCESSING_ERROR",
+      code: "EXTERNAL_SERVICE_FAILED",
       message: "One or more attachments failed to be processed.",
       data: {
         details: [updatedInvalidAttachment?.url],

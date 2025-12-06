@@ -1,3 +1,4 @@
+import { DomainError } from "@/core/domain-error"
 import { bad, nice } from "@/core/error"
 import { Helper } from "@/domain/enterprise/entities/helper"
 import { Email } from "@/domain/enterprise/entities/value-object/email"
@@ -21,7 +22,9 @@ export class RegisterUserUseCase {
     const [emailError, helperEmail] = Email.create(email)
 
     if (emailError) {
-      return bad(emailError)
+      return bad(
+        DomainError.InvalidResource("The email provided is invalid", { email }),
+      )
     }
 
     const existingHelper = await this.helperRepository.findByEmail(
@@ -29,11 +32,11 @@ export class RegisterUserUseCase {
     )
 
     if (existingHelper) {
-      return bad({
-        code: "HELPER_ALREADY_EXISTS",
-        message: "Helper with this email already exists",
-        data: { email: helperEmail.value },
-      })
+      return bad(
+        DomainError.AlreadyExists("Helper with this email already exists", {
+          email: helperEmail.value,
+        }),
+      )
     }
 
     const hashedPassword = await this.hashGenerator.hash(password)

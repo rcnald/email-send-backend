@@ -3,6 +3,7 @@ import z from "zod"
 import { fromZodError } from "zod-validation-error/v4"
 
 import { CreateClientUseCase } from "@/domain/application/use-cases/client/create-client"
+import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
 
 const createClientControllerBodySchema = z.object({
   name: z.string().min(2).max(100),
@@ -53,28 +54,7 @@ export class CreateClientController {
     })
 
     if (error) {
-      if (error.code === "CLIENT_ALREADY_EXISTS") {
-        return response.status(409).json({
-          message: "Client already exists",
-          data: {
-            CNPJ: error.data.CNPJ,
-          },
-        })
-      }
-
-      if (error.code === "INVALID_EMAIL") {
-        return response.status(422).json({
-          message: "Invalid email provided",
-          data: {
-            email: error.data.email,
-          },
-        })
-      }
-
-      return response.status(400).json({
-        message: "An unexpected error occurred",
-        data: {},
-      })
+      return HttpErrorHandler.handle(response, error)
     }
 
     return response.status(201).json()

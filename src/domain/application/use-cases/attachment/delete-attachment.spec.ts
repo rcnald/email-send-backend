@@ -21,7 +21,7 @@ describe("DeleteAttachmentUseCase", () => {
     const [error] = await sut.execute({ attachmentId: "non-existing-id" })
 
     expect(error).toEqual({
-      code: "ATTACHMENT_NOT_FOUND",
+      code: "NOT_FOUND",
       message: "Attachment not found",
       data: { attachmentId: "non-existing-id" },
     })
@@ -35,7 +35,7 @@ describe("DeleteAttachmentUseCase", () => {
     const [error] = await sut.execute({ attachmentId: attachment.id.value })
 
     expect(error).toEqual({
-      code: "FAILED_TO_DELETE",
+      code: "EXTERNAL_SERVICE_FAILED",
       message: "Failed to delete file",
       data: {
         attachmentId: attachment.id,
@@ -51,7 +51,7 @@ describe("DeleteAttachmentUseCase", () => {
     const [error] = await sut.execute({ attachmentId: attachment.id.value })
 
     expect(error).toEqual({
-      code: "ATTACHMENT_IN_USE",
+      code: "OPERATION_FAILED",
       message: "Attachment is in use",
       data: {
         attachmentId: attachment.id.value,
@@ -68,7 +68,7 @@ describe("DeleteAttachmentUseCase", () => {
     const [error] = await sut.execute({ attachmentId: attachment.id.value })
 
     expect(error).toEqual({
-      code: "ATTACHMENT_NOT_FOUND_ON_SERVER",
+      code: "NOT_FOUND",
       message: "Attachment not found on server",
       data: { attachmentId: attachment.id },
     })

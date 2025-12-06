@@ -38,8 +38,8 @@ describe("CreateClientUseCase", () => {
     })
 
     expect(error).toEqual({
-      code: "CLIENT_ALREADY_EXISTS",
-      message: "Client with this CNPJ already exists",
+      code: "ALREADY_EXISTS",
+      message: "Client already exists",
       data: { CNPJ: client.CNPJ },
     })
   })
@@ -56,8 +56,8 @@ describe("CreateClientUseCase", () => {
     })
 
     expect(error).toEqual({
-      code: "INVALID_EMAIL",
-      message: "Invalid email format",
+      code: "INVALID_RESOURCE",
+      message: "Invalid email provided",
       data: { email: "invalid-email" },
     })
   })

@@ -3,6 +3,7 @@ import { z } from "zod"
 import { fromZodError } from "zod-validation-error"
 
 import { RegisterUserUseCase } from "@/domain/application/use-cases/auth/register-user"
+import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
 
 const registerUserControllerBodySchema = z.object({
   name: z.string().min(3).max(30),
@@ -38,23 +39,7 @@ export class RegisterUserController {
     })
 
     if (error) {
-      if (error.code === "HELPER_ALREADY_EXISTS") {
-        return response.status(409).json({
-          message: error.message,
-          data: {
-            email: error.data.email,
-          },
-        })
-      }
-
-      if (error.code === "INVALID_EMAIL") {
-        return response.status(422).json({
-          message: error.message,
-          data: {
-            email: error.data.email,
-          },
-        })
-      }
+      return HttpErrorHandler.handle(response, error)
     }
 
     return response.status(201).json()

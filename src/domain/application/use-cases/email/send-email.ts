@@ -1,3 +1,4 @@
+import { DomainError } from "@/core/domain-error"
 import { UniqueId } from "@/core/entities/value-objects/unique-id"
 import { bad, nice } from "@/core/error"
 import { createEmailAttachmentsFromUrls } from "@/domain/application/utils/create-email-attachment-from-url"
@@ -38,28 +39,21 @@ export class SendEmailUseCase {
     const client = await this.clientRepository.find(clientId)
 
     if (!client)
-      return bad({
-        code: "CLIENT_NOT_FOUND",
-        message: "Client not found",
-        data: { clientId },
-      })
+      return bad(DomainError.NotFound("Client not found", { clientId }))
 
     const helper = await this.helperRepository.findById(helperId)
 
     if (!helper) {
-      return bad({
-        code: "HELPER_NOT_FOUND",
-        message: "Helper not found",
-        data: { helperId },
-      })
+      return bad(DomainError.NotFound("Helper not found", { helperId }))
     }
 
     if (!helper.id.equals(client.helperId)) {
-      return bad({
-        code: "HELPER_CLIENT_MISMATCH",
-        message: "The helper is not associated with the client",
-        data: { helperId, clientId },
-      })
+      return bad(
+        DomainError.Forbidden("The helper is not associated with the client", {
+          helperId,
+          clientId,
+        }),
+      )
     }
 
     const mail = Mail.create({
@@ -79,11 +73,11 @@ export class SendEmailUseCase {
       )
 
     if (missingIds.length > 0) {
-      return bad({
-        code: "SOME_ATTACHMENTS_NOT_FOUND",
-        message: "Some attachments were not found",
-        data: { missingIds },
-      })
+      return bad(
+        DomainError.NotFound("Some attachments were not found", {
+          missingIds,
+        }),
+      )
     }
 
     attachments.forEach((attachment) => {
@@ -200,13 +194,14 @@ export class SendEmailUseCase {
     }
 
     if (failedReasons.length > 0) {
-      return bad({
-        code: "FAILED_TO_PROCESS_ATTACHMENTS",
-        message: "attachments failed to be processed.",
-        data: {
-          details: failedReasons.map((reason) => reason.message),
-        },
-      })
+      return bad(
+        DomainError.ExternalServiceFailed(
+          "Attachments failed to be processed.",
+          {
+            details: failedReasons.map((reason) => reason.message),
+          },
+        ),
+      )
     }
 
     return nice(successfulAttachments)

@@ -1,3 +1,4 @@
+import { DomainError } from "@/core/domain-error"
 import { bad, nice } from "@/core/error"
 import { Email } from "@/domain/enterprise/entities/value-object/email"
 import { Env } from "@/infra/env"
@@ -23,21 +24,15 @@ export class AuthenticateUseCase {
     const [emailError, emailVO] = Email.create(email)
 
     if (emailError) {
-      return bad({
-        code: "INVALID_EMAIL",
-        message: "The email provided is invalid",
-        data: { email },
-      })
+      return bad(
+        DomainError.InvalidResource("The email provided is invalid", { email }),
+      )
     }
 
     const helper = await this.helperRepository.findByEmail(emailVO.value)
 
     if (!helper) {
-      return bad({
-        code: "INVALID_CREDENTIALS",
-        message: "Invalid email or password",
-        data: {},
-      })
+      return bad(DomainError.Unauthorized("Invalid email or password"))
     }
 
     const isPasswordValid = await this.hashComparator.compare(
@@ -46,11 +41,7 @@ export class AuthenticateUseCase {
     )
 
     if (!isPasswordValid) {
-      return bad({
-        code: "INVALID_CREDENTIALS",
-        message: "Invalid email or password",
-        data: {},
-      })
+      return bad(DomainError.Unauthorized("Invalid email or password"))
     }
 
     const accessToken = this.encrypter.encrypt({

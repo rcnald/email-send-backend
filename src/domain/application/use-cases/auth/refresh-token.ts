@@ -1,3 +1,4 @@
+import { DomainError } from "@/core/domain-error"
 import { bad, nice } from "@/core/error"
 
 import { Encrypter } from "../../cryptography/encrypter"
@@ -17,39 +18,27 @@ export class RefreshTokenUseCase {
     const payload = this.encrypter.decrypt(refreshToken)
 
     if (!payload) {
-      return bad({
-        code: "INVALID_TOKEN",
-        message: "Invalid or expired refresh token",
-        data: {},
-      })
+      return bad(DomainError.Unauthorized("Invalid or expired refresh token"))
     }
 
     if (payload.type !== "refresh") {
-      return bad({
-        code: "INVALID_TOKEN_TYPE",
-        message: "Token must be a refresh token",
-        data: {},
-      })
+      return bad(DomainError.Unauthorized("Token must be a refresh token"))
     }
 
     const helper = await this.helperRepository.findById(payload.sub)
 
     if (!helper) {
-      return bad({
-        code: "HELPER_NOT_FOUND",
-        message: "Helper not found",
-        data: {},
-      })
+      return bad(DomainError.NotFound("Helper not found"))
     }
 
     const accessToken = this.encrypter.encrypt({
-      sub: helper.id.toString(),
+      sub: helper.id.value,
       type: "access",
       expiresIn: "15m",
     })
 
     const newRefreshToken = await this.encrypter.encrypt({
-      sub: helper.id.toString(),
+      sub: helper.id.value,
       type: "refresh",
       expiresIn: "7d",
     })

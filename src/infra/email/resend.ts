@@ -1,5 +1,6 @@
 import { Resend } from "resend"
 
+import { DomainError } from "@/core/domain-error"
 import { bad, nice } from "@/core/error"
 import {
   EmailSender,
@@ -16,7 +17,7 @@ export class RendEmailSender implements EmailSender {
   ): Promise<
     | [undefined, { ok: true }, undefined]
     | [
-        { code: "FAILED_TO_SEND_EMAIL"; message: "Failed to send email" },
+        ReturnType<typeof DomainError.ExternalServiceFailed>,
         undefined,
         undefined,
       ]
@@ -36,10 +37,11 @@ export class RendEmailSender implements EmailSender {
       })
 
       if (response.error) {
-        return bad({
-          code: "FAILED_TO_SEND_EMAIL",
-          message: "Failed to send email",
-        })
+        return bad(
+          DomainError.ExternalServiceFailed("Failed to send email", {
+            details: [response.error.message],
+          }),
+        )
       }
     }
 

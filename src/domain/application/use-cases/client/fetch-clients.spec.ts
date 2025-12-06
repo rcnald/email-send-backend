@@ -117,7 +117,7 @@ describe("FetchClientsUseCase", () => {
 
     expect(result).toBeUndefined()
     expect(error).toEqual({
-      code: "HELPER_NOT_FOUND",
+      code: "NOT_FOUND",
       message: "Helper not found",
       data: { helperId: "non-existent-helper-id" },
     })

@@ -1,3 +1,4 @@
+import { DomainError } from "@/core/domain-error"
 import { bad, nice } from "@/core/error"
 
 import { AttachmentRepository } from "../../repositories/attachment-repository"
@@ -17,19 +18,16 @@ export class DeleteAttachmentUseCase {
     const attachment = await this.attachmentRepository.find(attachmentId)
 
     if (!attachment) {
-      return bad({
-        code: "ATTACHMENT_NOT_FOUND",
-        message: "Attachment not found",
-        data: { attachmentId },
-      })
+      return bad(DomainError.NotFound("Attachment not found", { attachmentId }))
     }
 
     if (attachment.mailId) {
-      return bad({
-        code: "ATTACHMENT_IN_USE",
-        message: "Attachment is in use",
-        data: { attachmentId, attachmentTitle: attachment.title },
-      })
+      return bad(
+        DomainError.OperationFailed("Attachment is in use", {
+          attachmentId,
+          attachmentTitle: attachment.title,
+        }),
+      )
     }
 
     const [error] = await this.deleter.delete({ url: attachment.url })

@@ -1,3 +1,4 @@
+import { DomainError } from "@/core/domain-error"
 import { ValueObject } from "@/core/entities/value-object"
 import { bad, nice } from "@/core/error"
 
@@ -23,11 +24,11 @@ export class Email extends ValueObject<EmailProps> {
     const normalized = this.normalize(email)
 
     if (!this.isValid(normalized)) {
-      return bad({
-        code: "INVALID_EMAIL",
-        message: `Invalid email format`,
-        data: { email },
-      })
+      return bad(
+        DomainError.InvalidResource("Invalid email format", {
+          email: normalized,
+        }),
+      )
     }
 
     const emailVO = new Email({ value: normalized })

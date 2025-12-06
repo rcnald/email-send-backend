@@ -42,7 +42,7 @@ describe("createEmailAttachmentsFromUrls", () => {
     })
 
     expect(error).toEqual({
-      code: "ATTACHMENT_PROCESSING_ERROR",
+      code: "EXTERNAL_SERVICE_FAILED",
       data: {
         details: ["http://fake-storage/invalid-file.zip"],
       },

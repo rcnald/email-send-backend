@@ -1,3 +1,5 @@
+import { DomainErrorData } from "@/core/domain-error"
+
 export interface UploadParams {
   fileName: string
   fileType: string
@@ -9,10 +11,6 @@ export abstract class Uploader {
     params: UploadParams,
   ): Promise<
     | [undefined, { url: string }, undefined]
-    | [
-        { code: "FAILED_TO_UPLOAD"; message: "Failed to upload file" },
-        undefined,
-        undefined,
-      ]
+    | [DomainErrorData, undefined, undefined]
   >
 }

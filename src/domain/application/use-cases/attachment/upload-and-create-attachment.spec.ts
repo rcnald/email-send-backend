@@ -20,7 +20,7 @@ describe("UploadAndCreateAttachmentUseCase", () => {
     })
 
     expect(error).toEqual({
-      code: "INVALID_FILE_TYPE",
+      code: "INVALID_ARGUMENT",
       message: "Invalid file type",
       data: { invalidFileType: "application/txt" },
     })
@@ -34,7 +34,7 @@ describe("UploadAndCreateAttachmentUseCase", () => {
     })
 
     expect(error).toEqual({
-      code: "FAILED_TO_UPLOAD",
+      code: "EXTERNAL_SERVICE_FAILED",
       message: "Failed to upload file",
     })
   })
@@ -47,11 +47,6 @@ describe("UploadAndCreateAttachmentUseCase", () => {
     })
 
     expect(error).toBeUndefined()
-    expect(result?.attachment).toEqual(
-      expect.objectContaining({
-        title: "file.zip",
-        url: "http://fakeurl.com/file.zip",
-      }),
-    )
+    expect(result?.attachmentId).toBeDefined()
   })
 })

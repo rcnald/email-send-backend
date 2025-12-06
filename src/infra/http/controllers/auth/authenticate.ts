@@ -1,10 +1,10 @@
 import { Request, Response } from "express"
 import { z } from "zod"
-import { fromZodError } from "zod-validation-error"
 
 import { AuthenticateUseCase } from "@/domain/application/use-cases/auth/authenticate"
 import { Env, getEnv } from "@/infra/env"
 import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
+import { validateRequest } from "@/infra/http/handlers/http-validation"
 
 const authenticateControllerBodySchema = z.object({
   email: z.email(),
@@ -18,22 +18,15 @@ export class AuthenticateController {
   ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const bodyValidation = authenticateControllerBodySchema.safeParse(
+    const body = validateRequest(
+      response,
+      authenticateControllerBodySchema,
       request.body,
     )
 
-    if (!bodyValidation.success) {
-      const formattedError = fromZodError(bodyValidation.error)
+    if (!body) return response
 
-      return response.status(400).json({
-        message: "Invalid request body",
-        data: {
-          field_errors: formattedError.details,
-        },
-      })
-    }
-
-    const { email, password } = bodyValidation.data
+    const { email, password } = body
 
     const [error, result] = await this.authenticateUseCase.execute({
       email,

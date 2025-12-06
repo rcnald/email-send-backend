@@ -1,9 +1,12 @@
 import { Request, Response } from "express"
 import z from "zod"
-import { fromZodError } from "zod-validation-error/v4"
 
 import { SendEmailUseCase } from "@/domain/application/use-cases/email/send-email"
 import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
+import {
+  ensureUserId,
+  validateRequest,
+} from "@/infra/http/handlers/http-validation"
 
 const sentEmailControllerBodySchema = z.object({
   client_id: z.uuid(),
@@ -14,29 +17,19 @@ export class SentEmailController {
   constructor(private sentEmailUseCase: SendEmailUseCase) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const userId = request.userId
+    const userId = ensureUserId(response, request.userId)
 
-    if (!userId || typeof userId !== "string") {
-      return response.status(400).json({
-        message: "Invalid or missing user ID",
-        data: {},
-      })
-    }
+    if (!userId) return response
 
-    const bodyValidation = sentEmailControllerBodySchema.safeParse(request.body)
+    const body = validateRequest(
+      response,
+      sentEmailControllerBodySchema,
+      request.body,
+    )
 
-    if (!bodyValidation.success) {
-      const formattedError = fromZodError(bodyValidation.error)
+    if (!body) return response
 
-      return response.status(400).json({
-        message: "Invalid request body",
-        data: {
-          field_errors: formattedError.details,
-        },
-      })
-    }
-
-    const { attachment_ids, client_id } = bodyValidation.data
+    const { attachment_ids, client_id } = body
 
     const [error, result] = await this.sentEmailUseCase.execute({
       helperId: userId,

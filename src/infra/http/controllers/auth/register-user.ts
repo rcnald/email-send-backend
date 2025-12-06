@@ -1,9 +1,9 @@
 import { Request, Response } from "express"
 import { z } from "zod"
-import { fromZodError } from "zod-validation-error"
 
 import { RegisterUserUseCase } from "@/domain/application/use-cases/auth/register-user"
 import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
+import { validateRequest } from "@/infra/http/handlers/http-validation"
 
 const registerUserControllerBodySchema = z.object({
   name: z.string().min(3).max(30),
@@ -15,22 +15,15 @@ export class RegisterUserController {
   constructor(private registerUserUseCase: RegisterUserUseCase) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const bodyValidation = registerUserControllerBodySchema.safeParse(
+    const body = validateRequest(
+      response,
+      registerUserControllerBodySchema,
       request.body,
     )
 
-    if (!bodyValidation.success) {
-      const formattedError = fromZodError(bodyValidation.error)
+    if (!body) return response
 
-      return response.status(400).json({
-        message: "Invalid request body",
-        data: {
-          field_errors: formattedError.details,
-        },
-      })
-    }
-
-    const { name, email, password } = bodyValidation.data
+    const { name, email, password } = body
 
     const [error] = await this.registerUserUseCase.execute({
       name,

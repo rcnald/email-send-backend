@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 
 import { FetchClientsUseCase } from "@/domain/application/use-cases/client/fetch-clients"
 import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
+import { ensureUserId } from "@/infra/http/handlers/http-validation"
 
 import { ClientWithStatusPresenter } from "../../presenters/client-with-status-presenter"
 
@@ -9,14 +10,9 @@ export class FetchClientsController {
   constructor(private fetchClientsUseCase: FetchClientsUseCase) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const userId = request.userId
+    const userId = ensureUserId(response, request.userId)
 
-    if (!userId || typeof userId !== "string") {
-      return response.status(400).json({
-        message: "Invalid or missing user ID",
-        data: {},
-      })
-    }
+    if (!userId) return response
 
     const [error, result] = await this.fetchClientsUseCase.execute({
       helperId: userId,

@@ -63,7 +63,7 @@ describe("Send Email E2E Tests", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         client_id: client.id.value,
-        attachment_ids: [result?.attachment.id.value],
+        attachment_ids: [result?.attachmentId],
       })
 
     expect(response.status).toBe(200)

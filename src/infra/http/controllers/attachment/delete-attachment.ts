@@ -1,9 +1,9 @@
 import { Request, Response } from "express"
 import z from "zod"
-import { fromZodError } from "zod-validation-error/v4"
 
 import { DeleteAttachmentUseCase } from "@/domain/application/use-cases/attachment/delete-attachment"
 import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
+import { validateRequest } from "@/infra/http/handlers/http-validation"
 
 const deleteAttachmentControllerRouteParamsSchema = z.object({
   id: z.uuid(),
@@ -13,21 +13,16 @@ export class DeleteAttachmentController {
   constructor(private deleteAttachmentUseCase: DeleteAttachmentUseCase) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const routeParamsValidation =
-      deleteAttachmentControllerRouteParamsSchema.safeParse(request.params)
+    const routeParams = validateRequest(
+      response,
+      deleteAttachmentControllerRouteParamsSchema,
+      request.params,
+      { message: "Invalid request params" },
+    )
 
-    if (!routeParamsValidation.success) {
-      const formattedError = fromZodError(routeParamsValidation.error)
+    if (!routeParams) return response
 
-      return response.status(400).json({
-        message: "Invalid request body",
-        data: {
-          field_errors: formattedError.details,
-        },
-      })
-    }
-
-    const { id } = routeParamsValidation.data
+    const { id } = routeParams
 
     const [error] = await this.deleteAttachmentUseCase.execute({
       attachmentId: id,

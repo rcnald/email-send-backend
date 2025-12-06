@@ -1,9 +1,12 @@
 import { Request, Response } from "express"
 import z from "zod"
-import { fromZodError } from "zod-validation-error/v4"
 
 import { CreateClientUseCase } from "@/domain/application/use-cases/client/create-client"
 import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
+import {
+  ensureUserId,
+  validateRequest,
+} from "@/infra/http/handlers/http-validation"
 
 const createClientControllerBodySchema = z.object({
   name: z.string().min(2).max(100),
@@ -16,32 +19,19 @@ export class CreateClientController {
   constructor(private createClientUseCase: CreateClientUseCase) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const userId = request.userId
+    const userId = ensureUserId(response, request.userId)
 
-    if (!userId || typeof userId !== "string") {
-      return response.status(400).json({
-        message: "Invalid or missing user ID",
-        data: {},
-      })
-    }
+    if (!userId) return response
 
-    const bodyValidation = createClientControllerBodySchema.safeParse(
+    const body = validateRequest(
+      response,
+      createClientControllerBodySchema,
       request.body,
     )
 
-    if (!bodyValidation.success) {
-      const formattedError = fromZodError(bodyValidation.error)
+    if (!body) return response
 
-      return response.status(400).json({
-        message: "Invalid request body",
-        data: {
-          field_errors: formattedError.details,
-        },
-      })
-    }
-
-    const { name, CNPJ, accountant_name, accountant_email } =
-      bodyValidation.data
+    const { name, CNPJ, accountant_name, accountant_email } = body
 
     const [error] = await this.createClientUseCase.execute({
       helperId: userId,

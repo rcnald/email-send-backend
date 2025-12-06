@@ -1,9 +1,9 @@
 import { Request, Response } from "express"
 import z from "zod"
-import { fromZodError } from "zod-validation-error/v4"
 
 import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/attachment/upload-and-create-attachment"
 import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
+import { validateRequest } from "@/infra/http/handlers/http-validation"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ACCEPTED_MIME_TYPES = [
@@ -29,24 +29,13 @@ export class UpdateAndCreateAttachmentController {
   ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const fileValidation = attachmentFileSchema.safeParse(request.file)
+    const file = validateRequest(response, attachmentFileSchema, request.file, {
+      message: "Invalid file type or size",
+    })
 
-    if (!fileValidation.success) {
-      const formattedError = fromZodError(fileValidation.error)
+    if (!file) return response
 
-      return response.status(400).json({
-        message: "Invalid file type or size",
-        data: {
-          field_errors: formattedError.details,
-        },
-      })
-    }
-
-    const {
-      mimetype: fileType,
-      buffer: body,
-      originalname: fileName,
-    } = fileValidation.data
+    const { mimetype: fileType, buffer: body, originalname: fileName } = file
 
     const [error, result] = await this.updateAndCreateAttachmentUseCase.execute(
       {

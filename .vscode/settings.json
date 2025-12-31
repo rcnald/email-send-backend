@@ -4,5 +4,6 @@
     "Deleter",
     "renamer",
     "Renamer"
-  ]
+  ],
+  "prisma.pinToPrisma6": true
 }

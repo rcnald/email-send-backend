@@ -11,6 +11,7 @@ export function authMiddleware(encrypter: Encrypter) {
 
       if (!token) {
         return res.status(401).json({
+          code: "UNAUTHORIZED",
           message: "Unauthorized - Token not provided",
           data: {},
         })
@@ -20,6 +21,7 @@ export function authMiddleware(encrypter: Encrypter) {
 
       if (!payload) {
         return res.status(401).json({
+          code: "UNAUTHORIZED",
           message: "Unauthorized - Invalid or expired token",
           data: {},
         })
@@ -27,6 +29,7 @@ export function authMiddleware(encrypter: Encrypter) {
 
       if (payload.type !== "access") {
         return res.status(401).json({
+          code: "UNAUTHORIZED",
           message: "Unauthorized - Invalid token type",
           data: {},
         })
@@ -36,6 +39,7 @@ export function authMiddleware(encrypter: Encrypter) {
       next()
     } catch {
       return res.status(401).json({
+        code: "UNAUTHORIZED",
         message: "Unauthorized - Invalid token",
         data: {},
       })

@@ -7,8 +7,8 @@ import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
 import { validateRequest } from "@/infra/http/handlers/http-validation"
 
 const authenticateControllerBodySchema = z.object({
-  email: z.email(),
-  password: z.string().min(6),
+  email: z.email("O Endereço de email fornecido é inválido"),
+  password: z.string().min(6, "A senha deve ter no mínimo 6 caracteres"),
 })
 
 export class AuthenticateController {

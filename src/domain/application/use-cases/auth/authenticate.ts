@@ -24,15 +24,13 @@ export class AuthenticateUseCase {
     const [emailError, emailVO] = Email.create(email)
 
     if (emailError) {
-      return bad(
-        DomainError.InvalidResource("The email provided is invalid", { email }),
-      )
+      return bad(emailError)
     }
 
     const helper = await this.helperRepository.findByEmail(emailVO.value)
 
     if (!helper) {
-      return bad(DomainError.Unauthorized("Invalid email or password"))
+      return bad(DomainError.Unauthorized("Email ou senha inválidos"))
     }
 
     const isPasswordValid = await this.hashComparator.compare(
@@ -41,7 +39,7 @@ export class AuthenticateUseCase {
     )
 
     if (!isPasswordValid) {
-      return bad(DomainError.Unauthorized("Invalid email or password"))
+      return bad(DomainError.Unauthorized("Email ou senha inválidos"))
     }
 
     const accessToken = this.encrypter.encrypt({

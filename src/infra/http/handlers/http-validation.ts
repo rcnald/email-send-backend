@@ -10,7 +10,7 @@ export function validateRequest<T>(
   response: Response,
   schema: z.ZodSchema<T>,
   payload: unknown,
-  { message = "Invalid request body" }: ValidationOptions = {},
+  { message = "Dados inválidos" }: ValidationOptions = {},
 ): T | undefined {
   const result = schema.safeParse(payload)
 
@@ -18,9 +18,10 @@ export function validateRequest<T>(
     const formattedError = fromZodError(result.error)
 
     response.status(400).json({
+      code: "INVALID_DATA",
       message,
       data: {
-        field_errors: formattedError.details,
+        field_errors: formattedError.details.map((detail) => detail.message),
       },
     })
 

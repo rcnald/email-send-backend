@@ -6,9 +6,15 @@ import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
 import { validateRequest } from "@/infra/http/handlers/http-validation"
 
 const registerUserControllerBodySchema = z.object({
-  name: z.string().min(3).max(30),
-  email: z.email(),
-  password: z.string().min(6).max(100),
+  name: z
+    .string()
+    .min(3, { error: "Nome deve ter pelo menos 3 caracteres" })
+    .max(30, { error: "Nome deve ter no máximo 30 caracteres" }),
+  email: z.email("Endereço de email inválido"),
+  password: z
+    .string()
+    .min(6, { error: "Senha deve ter pelo menos 6 caracteres" })
+    .max(100, { error: "Senha deve ter no máximo 100 caracteres" }),
 })
 
 export class RegisterUserController {

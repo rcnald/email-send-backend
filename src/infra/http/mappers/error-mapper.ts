@@ -2,6 +2,7 @@ import { DomainErrorData, ErrorCodeType } from "@/core/domain-error"
 
 export interface ErrorResponse {
   statusCode: number
+  code: ErrorCodeType
   message: string
   data?: Record<string, unknown>
 }
@@ -23,6 +24,7 @@ export class ErrorMapper {
 
     return {
       statusCode,
+      code: error.code,
       message: error.message,
       data: error.data,
     }

@@ -25,7 +25,7 @@ export class Email extends ValueObject<EmailProps> {
 
     if (!this.isValid(normalized)) {
       return bad(
-        DomainError.InvalidResource("Invalid email format", {
+        DomainError.InvalidResource("O formato do email é inválido", {
           email: normalized,
         }),
       )

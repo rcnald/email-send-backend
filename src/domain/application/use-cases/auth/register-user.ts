@@ -23,7 +23,10 @@ export class RegisterUserUseCase {
 
     if (emailError) {
       return bad(
-        DomainError.InvalidResource("The email provided is invalid", { email }),
+        DomainError.InvalidResource(
+          "O Endereço de email fornecido é inválido",
+          { email },
+        ),
       )
     }
 
@@ -33,7 +36,7 @@ export class RegisterUserUseCase {
 
     if (existingHelper) {
       return bad(
-        DomainError.AlreadyExists("Helper with this email already exists", {
+        DomainError.AlreadyExists("Assistente com este email já existe", {
           email: helperEmail.value,
         }),
       )

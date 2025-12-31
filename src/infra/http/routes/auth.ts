@@ -15,13 +15,13 @@ export const createAuthRoutes = () => {
     createHelperController.handle(request, response)
   })
 
-  authRoutes.post("/login", (request: Request, response: Response) =>
-    authenticateController.handle(request, response),
-  )
+  authRoutes.post("/login", (request: Request, response: Response) => {
+    authenticateController.handle(request, response)
+  })
 
-  authRoutes.post("/refresh", (request: Request, response: Response) =>
-    refreshTokenController.handle(request, response),
-  )
+  authRoutes.post("/refresh", (request: Request, response: Response) => {
+    refreshTokenController.handle(request, response)
+  })
 
   return authRoutes
 }

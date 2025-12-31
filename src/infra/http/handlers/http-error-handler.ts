@@ -8,6 +8,7 @@ export class HttpErrorHandler {
     const errorResponse = ErrorMapper.toHTTP(error)
 
     return response.status(errorResponse.statusCode).json({
+      code: errorResponse.code,
       message: errorResponse.message,
       data: errorResponse.data || {},
     })

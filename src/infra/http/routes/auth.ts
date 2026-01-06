@@ -19,7 +19,7 @@ export const createAuthRoutes = () => {
     authenticateController.handle(request, response)
   })
 
-  authRoutes.post("/refresh", (request: Request, response: Response) => {
+  authRoutes.patch("/token/refresh", (request: Request, response: Response) => {
     refreshTokenController.handle(request, response)
   })
 

@@ -37,7 +37,7 @@ export class RefreshTokenUseCase {
       expiresIn: "15m",
     })
 
-    const newRefreshToken = await this.encrypter.encrypt({
+    const newRefreshToken = this.encrypter.encrypt({
       sub: helper.id.value,
       type: "refresh",
       expiresIn: "7d",

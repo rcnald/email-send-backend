@@ -7,6 +7,7 @@ import { createAttachmentRoutes } from "./attachment"
 import { createAuthRoutes } from "./auth"
 import { createClientRoutes } from "./client"
 import { createEmailRoutes } from "./email"
+import { createHelperRoutes } from "./helper"
 
 export function createRouter() {
   const jwtEncrypter = new JwtEncrypter()
@@ -19,6 +20,8 @@ export function createRouter() {
   router.use("/attachments", createAttachmentRoutes())
   router.use("/emails", createEmailRoutes())
   router.use("/clients", createClientRoutes())
+
+  router.use("/", createHelperRoutes())
 
   return router
 }

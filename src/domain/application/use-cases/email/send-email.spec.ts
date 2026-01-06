@@ -147,7 +147,7 @@ describe("SentEmailUseCase", () => {
 
     expect(inMemoryAttachmentRepository.attachments[0]).toEqual(
       expect.objectContaining({
-        title: `arquivos-fiscais-${clientName}-do-mes-de-novembro-0.zip`,
+        title: `arquivos-fiscais-${clientName}-do-mes-de-dezembro-0.zip`,
       }),
     )
   })

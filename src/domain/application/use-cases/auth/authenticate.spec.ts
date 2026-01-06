@@ -36,7 +36,7 @@ describe("AuthenticateUseCase", () => {
 
     expect(error).toEqual({
       code: "INVALID_RESOURCE",
-      message: "O Endereço de email fornecido é inválido",
+      message: "O formato do email é inválido",
       data: { email: "invalid-email" },
     })
   })

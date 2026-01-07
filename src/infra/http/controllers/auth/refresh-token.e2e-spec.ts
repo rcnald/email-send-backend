@@ -45,7 +45,7 @@ describe("Refresh Token (E2E)", () => {
     expect(refreshTokenCookie).toBeDefined()
 
     const response = await request(app)
-      .post("/auth/refresh")
+      .patch("/auth/token/refresh")
       .set("Cookie", refreshTokenCookie!)
 
     expect(response.status).toBe(200)

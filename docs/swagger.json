@@ -21,6 +21,10 @@
       "description": "Endpoints de autenticação e autorização"
     },
     {
+      "name": "Profile",
+      "description": "Endpoints para gerenciamento do perfil do usuário"
+    },
+    {
       "name": "Attachments",
       "description": "Endpoints para gerenciamento de anexos"
     },
@@ -539,16 +543,133 @@
         }
       }
     },
+    "/me": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Obter perfil do usuário",
+        "description": "Retorna os dados do perfil do usuário autenticado. Requer autenticação via Bearer token ou cookie accessToken.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Perfil do usuário retornado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Nome completo do usuário"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "description": "Email do usuário"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "email"
+                  ]
+                },
+                "example": {
+                  "name": "João Silva",
+                  "email": "joao.silva@example.com"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado - Cookie não fornecido ou inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                },
+                "examples": {
+                  "token_not_provided": {
+                    "summary": "Cookie não fornecido",
+                    "value": {
+                      "message": "Unauthorized - Token not provided",
+                      "data": {}
+                    }
+                  },
+                  "invalid_token": {
+                    "summary": "Cookie inválido ou expirado",
+                    "value": {
+                      "message": "Unauthorized - Invalid or expired token",
+                      "data": {}
+                    }
+                  },
+                  "invalid_token_type": {
+                    "summary": "Tipo de token inválido",
+                    "value": {
+                      "message": "Unauthorized - Invalid token type",
+                      "data": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Assistente não encontrado"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "helperId": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Assistente não encontrado",
+                  "data": {
+                    "helperId": "123e4567-e89b-12d3-a456-426614174000"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/attachments": {
       "post": {
         "tags": [
           "Attachments"
         ],
         "summary": "Upload de anexo",
-        "description": "Faz upload de um arquivo ZIP para ser anexado em emails",
+        "description": "Faz upload de um arquivo ZIP para ser anexado em emails. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ],
         "requestBody": {
@@ -690,10 +811,13 @@
           "Attachments"
         ],
         "summary": "Deletar anexo",
-        "description": "Remove um anexo do sistema e do storage",
+        "description": "Remove um anexo do sistema e do storage. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ],
         "parameters": [
@@ -943,10 +1067,13 @@
           "Emails"
         ],
         "summary": "Enviar email",
-        "description": "Envia um email para o contador do cliente com os anexos especificados",
+        "description": "Envia um email para o contador do cliente com os anexos especificados. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ],
         "requestBody": {
@@ -1279,10 +1406,13 @@
           "Clients"
         ],
         "summary": "Listar clientes",
-        "description": "Retorna a lista de todos os clientes cadastrados no sistema",
+        "description": "Retorna a lista de todos os clientes cadastrados no sistema. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ],
         "responses": {
@@ -1441,10 +1571,13 @@
           "Clients"
         ],
         "summary": "Criar cliente",
-        "description": "Cria um novo cliente com dados do contador",
+        "description": "Cria um novo cliente com dados do contador. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ],
         "requestBody": {
@@ -1653,6 +1786,23 @@
         "format": "uuid",
         "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
         "example": "123e4567-e89b-12d3-a456-426614174000"
+      },
+      "UnauthorizedError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "enum": [
+              "Unauthorized - Token not provided",
+              "Unauthorized - Invalid or expired token",
+              "Unauthorized - Invalid token type",
+              "Unauthorized - Invalid token"
+            ]
+          },
+          "data": {
+            "type": "object"
+          }
+        }
       }
     },
     "securitySchemes": {
@@ -1660,7 +1810,13 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT",
-        "description": "Token JWT obtido através do endpoint de login (/auth/login)"
+        "description": "Token JWT obtido através do endpoint de login (/auth/login). O token pode ser enviado via Header Authorization (Bearer token) ou via cookie httpOnly 'accessToken'."
+      },
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "accessToken",
+        "description": "Token JWT armazenado em cookie httpOnly obtido através do endpoint de login (/auth/login)."
       }
     }
   }

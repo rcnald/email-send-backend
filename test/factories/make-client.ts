@@ -1,13 +1,13 @@
-import { faker } from "@faker-js/faker"
-import { PrismaClient } from "@prisma/client"
+import { faker } from "@faker-js/faker";
+import type { PrismaClient } from "@prisma/client";
 
-import { UniqueId } from "@/core/entities/value-objects/unique-id"
-import { Client, ClientProps } from "@/domain/enterprise/entities/client"
-import { Email } from "@/domain/enterprise/entities/value-object/email"
+import { UniqueId } from "@/core/entities/value-objects/unique-id";
+import { Client, type ClientProps } from "@/domain/enterprise/entities/client";
+import { Email } from "@/domain/enterprise/entities/value-object/email";
 
 export const makeClient = (
   { name, CNPJ, accountant, helperId }: Partial<ClientProps> = {},
-  id?: UniqueId,
+  id?: UniqueId
 ) => {
   const client = Client.create(
     {
@@ -21,17 +21,17 @@ export const makeClient = (
           Email.unsafeCreate(`${faker.person.firstName()}@email.com`),
       },
     },
-    id,
-  )
+    id
+  );
 
-  return client
-}
+  return client;
+};
 
 export class ClientFactory {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) {}
 
   async makePrismaClient(props: Partial<ClientProps> = {}, id?: UniqueId) {
-    const client = makeClient(props, id)
+    const client = makeClient(props, id);
 
     await this.prisma.client.create({
       data: {
@@ -42,8 +42,8 @@ export class ClientFactory {
         accountantName: client.accountant.name,
         accountantEmail: client.accountant.email.value,
       },
-    })
+    });
 
-    return client
+    return client;
   }
 }

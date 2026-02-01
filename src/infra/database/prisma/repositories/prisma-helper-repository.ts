@@ -1,16 +1,16 @@
-import { PrismaClient } from "@prisma/client"
+import type { PrismaClient } from "@prisma/client";
 
-import { HelperRepository } from "@/domain/application/repositories/helper-repository"
-import { Helper } from "@/domain/enterprise/entities/helper"
-import { PrismaHelperMapper } from "../mappers/prisma-helper-mapper"
+import type { HelperRepository } from "@/domain/application/repositories/helper-repository";
+import type { Helper } from "@/domain/enterprise/entities/helper";
+import { PrismaHelperMapper } from "../mappers/prisma-helper-mapper";
 
 export class PrismaHelperRepository implements HelperRepository {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(helper: Helper): Promise<void> {
     await this.prisma.helper.create({
       data: PrismaHelperMapper.toPrisma(helper),
-    })
+    });
   }
 
   async findById(id: string): Promise<Helper | null> {
@@ -18,13 +18,13 @@ export class PrismaHelperRepository implements HelperRepository {
       where: {
         id,
       },
-    })
+    });
 
     if (!helper) {
-      return null
+      return null;
     }
 
-    return PrismaHelperMapper.toDomain(helper)
+    return PrismaHelperMapper.toDomain(helper);
   }
 
   async findByEmail(email: string): Promise<Helper | null> {
@@ -32,12 +32,12 @@ export class PrismaHelperRepository implements HelperRepository {
       where: {
         email,
       },
-    })
+    });
 
     if (!helper) {
-      return null
+      return null;
     }
 
-    return PrismaHelperMapper.toDomain(helper)
+    return PrismaHelperMapper.toDomain(helper);
   }
 }

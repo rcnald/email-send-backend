@@ -1,10 +1,10 @@
-import { DomainErrorData } from "@/core/domain-error"
+import type { DomainErrorData } from "@/core/domain-error";
 
 export abstract class Downloader {
   abstract download(
-    url: string,
+    url: string
   ): Promise<
     | [undefined, { buffer: Buffer }, undefined]
     | [DomainErrorData, undefined, undefined]
-  >
+  >;
 }

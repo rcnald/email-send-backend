@@ -1,8 +1,10 @@
 {
   "$schema": "https://cdn.scalar.com/schema/scalar-config.json",
   "subdomain": "rcnald-email-send",
-  "references": [{
-    "name": "Email send",
-    "path": "./docs/swagger.json"
-  }]
+  "references": [
+    {
+      "name": "Email send",
+      "path": "./docs/swagger.json"
+    }
+  ]
 }

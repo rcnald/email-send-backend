@@ -1,7 +1,7 @@
-import "dotenv/config"
+import "dotenv/config";
 
-import z from "zod"
-import { fromZodError } from "zod-validation-error"
+import { fromZodError } from "zod-validation-error";
+import { z } from "@/infra/lib/zod";
 
 const envSchema = z.object({
   DATABASE_URL: z
@@ -24,18 +24,18 @@ const envSchema = z.object({
   ENVIRONMENT: z
     .enum(["development", "production", "test"])
     .default("development"),
-})
+});
 
-export type Env = z.infer<typeof envSchema>
+export type Env = z.infer<typeof envSchema>;
 
 export function getEnv() {
-  const _env = envSchema.safeParse(process.env)
+  const _env = envSchema.safeParse(process.env);
 
   if (!_env.success) {
-    console.error("Invalid environment variables:", fromZodError(_env.error))
+    console.error("Invalid environment variables:", fromZodError(_env.error));
 
-    throw new Error("Invalid environment variables.")
+    throw new Error("Invalid environment variables.");
   }
 
-  return _env.data
+  return _env.data;
 }

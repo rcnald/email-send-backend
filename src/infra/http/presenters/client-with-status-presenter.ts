@@ -1,4 +1,4 @@
-import { ClientWithStatus } from "@/domain/enterprise/entities/value-object/client-with-status"
+import type { ClientWithStatus } from "@/domain/enterprise/entities/value-object/client-with-status";
 
 export class ClientWithStatusPresenter {
   static toHTTP(client: ClientWithStatus) {
@@ -11,6 +11,6 @@ export class ClientWithStatusPresenter {
         email: client.accountant.email.value,
       },
       status: client.status,
-    }
+    };
   }
 }

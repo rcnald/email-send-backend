@@ -1,15 +1,15 @@
-import { apiReference } from "@scalar/express-api-reference"
-import cookieParser from "cookie-parser"
-import cors from "cors"
-import express from "express"
+import { apiReference } from "@scalar/express-api-reference";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import express from "express";
 
-import * as swaggerDocs from "../../docs/swagger.json"
-import { getEnv } from "./env"
-import { createRouter } from "./http/routes"
+import swaggerDocs from "../../docs/swagger.json";
+import { getEnv } from "./env";
+import { createRouter } from "./http/routes";
 
 export function createApp() {
-  const app = express()
-  const env = getEnv()
+  const app = express();
+  const env = getEnv();
 
   app.use(
     cors({
@@ -17,8 +17,8 @@ export function createApp() {
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
       allowedHeaders: ["Content-Type", "Authorization"],
-    }),
-  )
+    })
+  );
 
   app.use(
     "/reference",
@@ -26,13 +26,13 @@ export function createApp() {
       spec: {
         content: swaggerDocs,
       },
-    }),
-  )
+    })
+  );
 
-  app.use(express.json())
-  app.use(cookieParser())
+  app.use(express.json());
+  app.use(cookieParser());
 
-  app.use(createRouter())
+  app.use(createRouter());
 
-  return app
+  return app;
 }

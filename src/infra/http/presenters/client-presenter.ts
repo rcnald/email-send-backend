@@ -1,4 +1,4 @@
-import { Client } from "@/domain/enterprise/entities/client"
+import type { Client } from "@/domain/enterprise/entities/client";
 
 export class ClientPresenter {
   static toHTTP(client: Client) {
@@ -10,6 +10,6 @@ export class ClientPresenter {
         name: client.accountant.name,
         email: client.accountant.email.value,
       },
-    }
+    };
   }
 }

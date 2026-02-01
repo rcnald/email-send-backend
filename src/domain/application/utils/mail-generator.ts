@@ -9,15 +9,15 @@ export function generateMailContent({
   clientName,
   referenceMonth,
 }: {
-  clientName: string
-  clientCNPJ: string
-  referenceMonth: string
+  clientName: string;
+  clientCNPJ: string;
+  referenceMonth: string;
 }): {
-  subject: string
-  html: string
-  text: string
+  subject: string;
+  html: string;
+  text: string;
 } {
-  const subject = `Arquivos fiscais de '${clientName}' ('${clientCNPJ}') referente ao mês '${referenceMonth}'`
+  const subject = `Arquivos fiscais de '${clientName}' ('${clientCNPJ}') referente ao mês '${referenceMonth}'`;
 
   const text = `
     Olá,
@@ -28,7 +28,7 @@ export function generateMailContent({
 
     --
     Este é um e-mail automático gerado pelo New Support Atendimento.
-  `.trim()
+  `.trim();
 
   const html = `
     <div style="font-family: sans-serif; font-size: 16px; line-height: 1.6;">
@@ -39,7 +39,7 @@ export function generateMailContent({
       <p>--</p>
       <p><em>Este é um e-mail automático gerado pelo New Support Atendimento.</em></p>
     </div>
-  `.trim()
+  `.trim();
 
-  return { subject, text, html }
+  return { subject, text, html };
 }

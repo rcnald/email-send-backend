@@ -1,15 +1,15 @@
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
-import {
+import type {
   DecryptResponse,
   Encrypter,
   EncryptPayload,
-} from "@/domain/application/cryptography/encrypter"
+} from "@/domain/application/cryptography/encrypter";
 
-import { Env, getEnv } from "../env"
+import { type Env, getEnv } from "../env";
 
 export class JwtEncrypter implements Encrypter {
-  constructor(private env: Env = getEnv()) {}
+  constructor(private readonly env: Env = getEnv()) {}
 
   encrypt({ sub, type, expiresIn }: EncryptPayload): string {
     const token = jwt.sign(
@@ -20,19 +20,19 @@ export class JwtEncrypter implements Encrypter {
       this.env.JWT_SECRET,
       {
         expiresIn,
-      } as jwt.SignOptions,
-    )
+      } as jwt.SignOptions
+    );
 
-    return token
+    return token;
   }
 
   decrypt(token: string): DecryptResponse | null {
     try {
-      const decoded = jwt.verify(token, this.env.JWT_SECRET) as DecryptResponse
+      const decoded = jwt.verify(token, this.env.JWT_SECRET) as DecryptResponse;
 
-      return decoded
+      return decoded;
     } catch {
-      return null
+      return null;
     }
   }
 }

@@ -1,12 +1,11 @@
-import {
+import type {
+  Prisma,
   Attachment as PrismaAttachment,
   Mail as PrismaMail,
-  Prisma,
-} from "@prisma/client"
-
-import { Mail } from "@/domain/enterprise/entities/mail"
-import { Email } from "@/domain/enterprise/entities/value-object/email"
-import { UniqueId } from "@/core/entities/value-objects/unique-id"
+} from "@prisma/client";
+import { UniqueId } from "@/core/entities/value-objects/unique-id";
+import { Mail } from "@/domain/enterprise/entities/mail";
+import { Email } from "@/domain/enterprise/entities/value-object/email";
 
 export class PrismaMailMapper {
   static toPrisma(mail: Mail): Prisma.MailUncheckedCreateInput {
@@ -25,7 +24,7 @@ export class PrismaMailMapper {
       sentAt: mail.sentAt,
       createdAt: mail.createdAt,
       updatedAt: mail.updatedAt,
-    }
+    };
   }
 
   static toDomain(raw: PrismaMail, rawAttachments: PrismaAttachment[]): Mail {
@@ -36,7 +35,7 @@ export class PrismaMailMapper {
         text: raw.text,
         subject: raw.subject,
         attachmentIds: rawAttachments.map(
-          (attachment) => new UniqueId(attachment.id),
+          (attachment) => new UniqueId(attachment.id)
         ),
         clientCNPJ: raw.clientCNPJ,
         clientId: new UniqueId(raw.clientId),
@@ -46,7 +45,7 @@ export class PrismaMailMapper {
         updatedAt: raw.updatedAt,
         referenceMonth: raw.referenceMonth,
       },
-      new UniqueId(raw.id),
-    )
+      new UniqueId(raw.id)
+    );
   }
 }

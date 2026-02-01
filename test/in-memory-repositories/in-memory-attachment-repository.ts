@@ -1,46 +1,51 @@
-import { AttachmentRepository } from "@/domain/application/repositories/attachment-repository"
-import { Attachment } from "@/domain/enterprise/entities/attachment"
+import type { AttachmentRepository } from "@/domain/application/repositories/attachment-repository";
+import type { Attachment } from "@/domain/enterprise/entities/attachment";
 
 export class InMemoryAttachmentRepository implements AttachmentRepository {
-  public attachments: Attachment[] = []
+  attachments: Attachment[] = [];
 
   async create(attachment: Attachment): Promise<void> {
-    this.attachments.push(attachment)
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    this.attachments.push(attachment);
   }
 
   async find(id: string): Promise<Attachment | null> {
+    await new Promise((resolve) => setTimeout(resolve, 10));
     const attachment = this.attachments.find(
-      (attachment) => attachment.id.value === id,
-    )
+      (attachment) => attachment.id.value === id
+    );
 
-    return attachment || null
+    return attachment || null;
   }
 
   async findManyByMultipleIds(
-    ids: string[],
+    ids: string[]
   ): Promise<[Attachment[], missingIds: string[]]> {
+    await new Promise((resolve) => setTimeout(resolve, 10));
     const foundAttachments = this.attachments.filter((attachment) =>
-      ids.includes(attachment.id.value),
-    )
-    const foundIds = foundAttachments.map((attachment) => attachment.id.value)
-    const missingIds = ids.filter((id) => !foundIds.includes(id))
+      ids.includes(attachment.id.value)
+    );
+    const foundIds = foundAttachments.map((attachment) => attachment.id.value);
+    const missingIds = ids.filter((id) => !foundIds.includes(id));
 
-    return [foundAttachments, missingIds]
+    return [foundAttachments, missingIds];
   }
 
   async update(attachment: Attachment): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, 10));
     const index = this.attachments.findIndex(
-      (existingAttachment) => existingAttachment.id === attachment.id,
-    )
+      (existingAttachment) => existingAttachment.id === attachment.id
+    );
 
     if (index !== -1) {
-      this.attachments[index] = attachment
+      this.attachments[index] = attachment;
     }
   }
 
   async delete(id: string): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, 10));
     this.attachments = this.attachments.filter(
-      (attachment) => attachment.id.value !== id,
-    )
+      (attachment) => attachment.id.value !== id
+    );
   }
 }

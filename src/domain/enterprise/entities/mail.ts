@@ -1,119 +1,119 @@
-import { Entity } from "@/core/entities/entity"
-import { UniqueId } from "@/core/entities/value-objects/unique-id"
-import { Optional } from "@/core/types/optional"
+import { Entity } from "@/core/entities/entity";
+import type { UniqueId } from "@/core/entities/value-objects/unique-id";
+import type { Optional } from "@/core/types/optional";
 
-import { generateMailContent } from "../../application/utils/mail-generator"
-import { Email } from "./value-object/email"
+import { generateMailContent } from "../../application/utils/mail-generator";
+import type { Email } from "./value-object/email";
 
 export interface MailProps {
-  accountantEmail: Email
-  attachmentIds: UniqueId[]
-  clientId: UniqueId
-  helperId: UniqueId
-  clientCNPJ: string
-  clientName: string
-  referenceMonth: number
-  subject: string
-  html: string
-  text: string
-  failedAt?: Date | null
-  sentAt?: Date | null
-  createdAt: Date
-  updatedAt: Date
-  message?: string
+  accountantEmail: Email;
+  attachmentIds: UniqueId[];
+  clientId: UniqueId;
+  helperId: UniqueId;
+  clientCNPJ: string;
+  clientName: string;
+  referenceMonth: number;
+  subject: string;
+  html: string;
+  text: string;
+  failedAt?: Date | null;
+  sentAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  message?: string;
 }
 
 export class Mail extends Entity<MailProps> {
   get accountantEmail() {
-    return this.props.accountantEmail
+    return this.props.accountantEmail;
   }
 
   get html() {
-    return this.props.html
+    return this.props.html;
   }
 
   get text() {
-    return this.props.text
+    return this.props.text;
   }
 
   get subject() {
-    return this.props.subject
+    return this.props.subject;
   }
 
   get attachmentIds() {
-    return this.props.attachmentIds
+    return this.props.attachmentIds;
   }
 
   get clientCNPJ() {
-    return this.props.clientCNPJ
+    return this.props.clientCNPJ;
   }
 
   get clientId() {
-    return this.props.clientId
+    return this.props.clientId;
   }
 
   get helperId() {
-    return this.props.helperId
+    return this.props.helperId;
   }
 
   get clientName() {
-    return this.props.clientName
+    return this.props.clientName;
   }
 
   get status() {
     if (this.props.failedAt) {
-      return "failed"
+      return "failed";
     }
 
     if (this.props.sentAt) {
-      return "sent"
+      return "sent";
     }
 
-    return "draft"
+    return "draft";
   }
 
   get createdAt() {
-    return this.props.createdAt
+    return this.props.createdAt;
   }
 
   get updatedAt() {
-    return this.props.updatedAt
+    return this.props.updatedAt;
   }
 
   get referenceMonth() {
-    return this.props.referenceMonth
+    return this.props.referenceMonth;
   }
 
   get failedAt(): Date | null | undefined {
-    return this.props.failedAt
+    return this.props.failedAt;
   }
 
   set failedAt(date: Date | null) {
-    this.props.failedAt = date
-    this.touch()
+    this.props.failedAt = date;
+    this.touch();
   }
 
   get sentAt(): Date | null | undefined {
-    return this.props.sentAt
+    return this.props.sentAt;
   }
 
   set sentAt(date: Date | null) {
-    this.props.sentAt = date
-    this.touch()
+    this.props.sentAt = date;
+    this.touch();
   }
 
   failed() {
-    this.props.failedAt = new Date()
-    this.touch()
+    this.props.failedAt = new Date();
+    this.touch();
   }
 
   sent() {
-    this.props.sentAt = new Date()
-    this.touch()
+    this.props.sentAt = new Date();
+    this.touch();
   }
 
   private touch() {
-    this.props.updatedAt = new Date()
+    this.props.updatedAt = new Date();
   }
 
   static create(
@@ -143,19 +143,19 @@ export class Mail extends Entity<MailProps> {
       | "createdAt"
       | "updatedAt"
     >,
-    id?: UniqueId,
+    id?: UniqueId
   ) {
-    const previousCurrentMonth = new Date().getMonth() - 1
+    const previousCurrentMonth = new Date().getMonth() - 1;
 
     const monthBRL = new Intl.DateTimeFormat("pt-BR", {
       month: "long",
-    }).format(new Date().setMonth(referenceMonth ?? previousCurrentMonth))
+    }).format(new Date().setMonth(referenceMonth ?? previousCurrentMonth));
 
     const mailContent = generateMailContent({
       clientCNPJ,
       clientName,
       referenceMonth: monthBRL,
-    })
+    });
 
     const mail = new Mail(
       {
@@ -175,9 +175,9 @@ export class Mail extends Entity<MailProps> {
         failedAt: failedAt ?? undefined,
         message: message ?? undefined,
       },
-      id,
-    )
+      id
+    );
 
-    return mail
+    return mail;
   }
 }

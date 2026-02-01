@@ -1,41 +1,41 @@
-import { PrismaClient } from "@prisma/client"
+import type { PrismaClient } from "@prisma/client";
 
-import { AttachmentRepository } from "@/domain/application/repositories/attachment-repository"
-import { Attachment } from "@/domain/enterprise/entities/attachment"
+import type { AttachmentRepository } from "@/domain/application/repositories/attachment-repository";
+import type { Attachment } from "@/domain/enterprise/entities/attachment";
 
-import { PrismaAttachmentMapper } from "../mappers/prisma-attachment-mapper"
+import { PrismaAttachmentMapper } from "../mappers/prisma-attachment-mapper";
 
 export class PrismaAttachmentRepository implements AttachmentRepository {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(attachment: Attachment): Promise<void> {
-    const data = PrismaAttachmentMapper.toPrisma(attachment)
+    const data = PrismaAttachmentMapper.toPrisma(attachment);
 
     await this.prisma.attachment.create({
       data,
-    })
+    });
   }
 
   async delete(id: string): Promise<void> {
     await this.prisma.attachment.delete({
       where: { id },
-    })
+    });
   }
 
   async find(id: string): Promise<Attachment | null> {
     const attachment = await this.prisma.attachment.findUnique({
       where: { id },
-    })
+    });
 
     if (!attachment) {
-      return null
+      return null;
     }
 
-    return PrismaAttachmentMapper.toDomain(attachment)
+    return PrismaAttachmentMapper.toDomain(attachment);
   }
 
   async findManyByMultipleIds(
-    ids: string[],
+    ids: string[]
   ): Promise<[Attachment[], missingIds: string[]]> {
     const attachments = await this.prisma.attachment.findMany({
       where: {
@@ -43,20 +43,20 @@ export class PrismaAttachmentRepository implements AttachmentRepository {
           in: ids,
         },
       },
-    })
+    });
 
-    const foundIds = attachments.map((a) => a.id)
-    const missingIds = ids.filter((id) => !foundIds.includes(id))
+    const foundIds = attachments.map((a) => a.id);
+    const missingIds = ids.filter((id) => !foundIds.includes(id));
 
-    return [attachments.map(PrismaAttachmentMapper.toDomain), missingIds]
+    return [attachments.map(PrismaAttachmentMapper.toDomain), missingIds];
   }
 
   async update(attachment: Attachment): Promise<void> {
-    const data = PrismaAttachmentMapper.toPrisma(attachment)
+    const data = PrismaAttachmentMapper.toPrisma(attachment);
 
     await this.prisma.attachment.update({
       where: { id: attachment.id.value },
       data,
-    })
+    });
   }
 }

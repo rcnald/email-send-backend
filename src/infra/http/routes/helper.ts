@@ -1,15 +1,15 @@
-import { Request, Response, Router } from "express"
+import { type Request, type Response, Router } from "express";
 
-import { makeGetProfile } from "@/infra/factories/make-get-profile"
+import { makeGetProfile } from "@/infra/factories/make-get-profile";
 
 export const createHelperRoutes = () => {
-  const helpersRoutes = Router()
+  const helpersRoutes = Router();
 
-  const { getProfileController } = makeGetProfile()
+  const { getProfileController } = makeGetProfile();
 
   helpersRoutes.get("/me", (request: Request, response: Response) =>
-    getProfileController.handle(request, response),
-  )
+    getProfileController.handle(request, response)
+  );
 
-  return helpersRoutes
-}
+  return helpersRoutes;
+};

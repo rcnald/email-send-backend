@@ -1,9 +1,8 @@
-import { Request, Response } from "express"
-import { z } from "zod"
-
-import { RegisterUserUseCase } from "@/domain/application/use-cases/auth/register-user"
-import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler"
-import { validateRequest } from "@/infra/http/handlers/http-validation"
+import type { Request, Response } from "express";
+import type { RegisterUserUseCase } from "@/domain/application/use-cases/auth/register-user";
+import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler";
+import { validateRequest } from "@/infra/http/handlers/http-validation";
+import { z } from "@/infra/lib/zod";
 
 const registerUserControllerBodySchema = z.object({
   name: z
@@ -15,32 +14,34 @@ const registerUserControllerBodySchema = z.object({
     .string()
     .min(6, { error: "Senha deve ter pelo menos 6 caracteres" })
     .max(100, { error: "Senha deve ter no máximo 100 caracteres" }),
-})
+});
 
 export class RegisterUserController {
-  constructor(private registerUserUseCase: RegisterUserUseCase) {}
+  constructor(private readonly registerUserUseCase: RegisterUserUseCase) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
     const body = validateRequest(
       response,
       registerUserControllerBodySchema,
-      request.body,
-    )
+      request.body
+    );
 
-    if (!body) return response
+    if (!body) {
+      return response;
+    }
 
-    const { name, email, password } = body
+    const { name, email, password } = body;
 
     const [error] = await this.registerUserUseCase.execute({
       name,
       email,
       password,
-    })
+    });
 
     if (error) {
-      return HttpErrorHandler.handle(response, error)
+      return HttpErrorHandler.handle(response, error);
     }
 
-    return response.status(201).json()
+    return response.status(201).json();
   }
 }

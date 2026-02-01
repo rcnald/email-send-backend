@@ -1,10 +1,10 @@
-import { DomainErrorData, ErrorCodeType } from "@/core/domain-error"
+import type { DomainErrorData, ErrorCodeType } from "@/core/domain-error";
 
 export interface ErrorResponse {
-  statusCode: number
-  code: ErrorCodeType
-  message: string
-  data?: Record<string, unknown>
+  statusCode: number;
+  code: ErrorCodeType;
+  message: string;
+  data?: Record<string, unknown>;
 }
 
 export class ErrorMapper {
@@ -18,15 +18,15 @@ export class ErrorMapper {
       FORBIDDEN: 403,
       OPERATION_FAILED: 400,
       EXTERNAL_SERVICE_FAILED: 503,
-    }
+    };
 
-    const statusCode = mapping[error.code] || 400
+    const statusCode = mapping[error.code] || 400;
 
     return {
       statusCode,
       code: error.code,
       message: error.message,
       data: error.data,
-    }
+    };
   }
 }

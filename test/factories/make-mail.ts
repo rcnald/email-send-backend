@@ -1,10 +1,10 @@
-import { faker } from "@faker-js/faker"
-import { PrismaClient } from "@prisma/client"
+import { faker } from "@faker-js/faker";
+import type { PrismaClient } from "@prisma/client";
 
-import { UniqueId } from "@/core/entities/value-objects/unique-id"
-import { Mail, MailProps } from "@/domain/enterprise/entities/mail"
-import { Email } from "@/domain/enterprise/entities/value-object/email"
-import { PrismaMailMapper } from "@/infra/database/prisma/mappers/prisma-mail-mapper"
+import { UniqueId } from "@/core/entities/value-objects/unique-id";
+import { Mail, type MailProps } from "@/domain/enterprise/entities/mail";
+import { Email } from "@/domain/enterprise/entities/value-object/email";
+import { PrismaMailMapper } from "@/infra/database/prisma/mappers/prisma-mail-mapper";
 
 export const makeMail = (
   {
@@ -24,7 +24,7 @@ export const makeMail = (
     createdAt,
     updatedAt,
   }: Partial<MailProps> = {},
-  id?: UniqueId,
+  id?: UniqueId
 ) => {
   const mail = Mail.create(
     {
@@ -45,25 +45,25 @@ export const makeMail = (
       updatedAt: updatedAt ?? undefined,
       sentAt: sentAt ?? undefined,
     },
-    id,
-  )
+    id
+  );
 
-  return mail
-}
+  return mail;
+};
 
 export class MailFactory {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) {}
 
   async makePrismaMail(
     props: Partial<MailProps> = {},
-    id?: UniqueId,
+    id?: UniqueId
   ): Promise<Mail> {
-    const mail = makeMail(props, id)
+    const mail = makeMail(props, id);
 
     await this.prisma.mail.create({
       data: PrismaMailMapper.toPrisma(mail),
-    })
+    });
 
-    return mail
+    return mail;
   }
 }

@@ -1,36 +1,36 @@
-import { Entity } from "@/core/entities/entity"
-import { UniqueId } from "@/core/entities/value-objects/unique-id"
-import { Optional } from "@/core/types/optional"
+import { Entity } from "@/core/entities/entity";
+import type { UniqueId } from "@/core/entities/value-objects/unique-id";
+import type { Optional } from "@/core/types/optional";
 
-import { Email } from "./value-object/email"
+import type { Email } from "./value-object/email";
 
 export interface HelperProps {
-  name: string
-  email: Email
-  password: string
-  createdAt: Date
-  updatedAt: Date
+  name: string;
+  email: Email;
+  password: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export class Helper extends Entity<HelperProps> {
   get name() {
-    return this.props.name
+    return this.props.name;
   }
 
   get email() {
-    return this.props.email
+    return this.props.email;
   }
 
   get password() {
-    return this.props.password
+    return this.props.password;
   }
 
   get createdAt() {
-    return this.props.createdAt
+    return this.props.createdAt;
   }
 
   get updatedAt() {
-    return this.props.updatedAt
+    return this.props.updatedAt;
   }
 
   static create(
@@ -41,7 +41,7 @@ export class Helper extends Entity<HelperProps> {
       createdAt,
       updatedAt,
     }: Optional<HelperProps, "createdAt" | "updatedAt">,
-    id?: UniqueId,
+    id?: UniqueId
   ) {
     const helper = new Helper(
       {
@@ -51,9 +51,9 @@ export class Helper extends Entity<HelperProps> {
         createdAt: createdAt ?? new Date(),
         updatedAt: updatedAt ?? new Date(),
       },
-      id,
-    )
+      id
+    );
 
-    return helper
+    return helper;
   }
 }

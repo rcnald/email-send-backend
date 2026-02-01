@@ -1,17 +1,16 @@
-import {
-  Client as PrismaClient,
+import type {
   Prisma,
+  Client as PrismaClient,
   Mail as PrismaMail,
-} from "@prisma/client"
-
-import { Client } from "@/domain/enterprise/entities/client"
-import { ClientWithStatus } from "@/domain/enterprise/entities/value-object/client-with-status"
-import { UniqueId } from "@/core/entities/value-objects/unique-id"
-import { Email } from "@/domain/enterprise/entities/value-object/email"
+} from "@prisma/client";
+import { UniqueId } from "@/core/entities/value-objects/unique-id";
+import type { Client } from "@/domain/enterprise/entities/client";
+import { ClientWithStatus } from "@/domain/enterprise/entities/value-object/client-with-status";
+import { Email } from "@/domain/enterprise/entities/value-object/email";
 
 export type PrismaClientWithStatus = PrismaClient & {
-  Mail: PrismaMail[]
-}
+  Mail: PrismaMail[];
+};
 
 export class PrismaClientWithStatusMapper {
   static toPrisma(client: Client): Prisma.ClientUncheckedCreateInput {
@@ -22,7 +21,7 @@ export class PrismaClientWithStatusMapper {
       CNPJ: client.CNPJ,
       accountantName: client.accountant.name,
       accountantEmail: client.accountant.email.value,
-    }
+    };
   }
 
   static toDomain(data: PrismaClientWithStatus): ClientWithStatus {
@@ -35,6 +34,6 @@ export class PrismaClientWithStatusMapper {
       },
       clientId: new UniqueId(data.id),
       status: data.Mail.length > 0 ? "sent" : "not_sent",
-    })
+    });
   }
 }

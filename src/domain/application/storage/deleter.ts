@@ -1,13 +1,13 @@
-import { DomainErrorData } from "@/core/domain-error"
+import type { DomainErrorData } from "@/core/domain-error";
 
 export interface DeleterParams {
-  url: string
+  url: string;
 }
 
 export abstract class Deleter {
   abstract delete(
-    params: DeleterParams,
+    params: DeleterParams
   ): Promise<
-    [undefined, void, undefined] | [DomainErrorData, undefined, undefined]
-  >
+    [undefined, undefined, undefined] | [DomainErrorData, undefined, undefined]
+  >;
 }

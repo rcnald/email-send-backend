@@ -1,38 +1,41 @@
-import { makeAttachment } from "test/factories/make-attachment"
-import { InMemoryAttachmentRepository } from "test/in-memory-repositories/in-memory-attachment-repository"
-import { FakeDeleter } from "test/storage/fake-deleter"
+import { makeAttachment } from "test/factories/make-attachment";
+import { InMemoryAttachmentRepository } from "test/in-memory-repositories/in-memory-attachment-repository";
+import { FakeDeleter } from "test/storage/fake-deleter";
 
-import { UniqueId } from "@/core/entities/value-objects/unique-id"
+import { UniqueId } from "@/core/entities/value-objects/unique-id";
 
-import { DeleteAttachmentUseCase } from "./delete-attachment"
+import { DeleteAttachmentUseCase } from "./delete-attachment";
 
-let inMemoryAttachmentRepository: InMemoryAttachmentRepository
-let fakeDeleter: FakeDeleter
-let sut: DeleteAttachmentUseCase
+let inMemoryAttachmentRepository: InMemoryAttachmentRepository;
+let fakeDeleter: FakeDeleter;
+let sut: DeleteAttachmentUseCase;
 
 describe("DeleteAttachmentUseCase", () => {
   beforeEach(() => {
-    inMemoryAttachmentRepository = new InMemoryAttachmentRepository()
-    fakeDeleter = new FakeDeleter()
-    sut = new DeleteAttachmentUseCase(inMemoryAttachmentRepository, fakeDeleter)
-  })
+    inMemoryAttachmentRepository = new InMemoryAttachmentRepository();
+    fakeDeleter = new FakeDeleter();
+    sut = new DeleteAttachmentUseCase(
+      inMemoryAttachmentRepository,
+      fakeDeleter
+    );
+  });
 
   it("should return an error if attachment doesn't exists", async () => {
-    const [error] = await sut.execute({ attachmentId: "non-existing-id" })
+    const [error] = await sut.execute({ attachmentId: "non-existing-id" });
 
     expect(error).toEqual({
       code: "NOT_FOUND",
       message: "Attachment not found",
       data: { attachmentId: "non-existing-id" },
-    })
-  })
+    });
+  });
 
   it("should return an error if attachment failed to be deleted", async () => {
-    const attachment = makeAttachment({ url: "fail-delete-url" })
+    const attachment = makeAttachment({ url: "fail-delete-url" });
 
-    await inMemoryAttachmentRepository.create(attachment)
+    await inMemoryAttachmentRepository.create(attachment);
 
-    const [error] = await sut.execute({ attachmentId: attachment.id.value })
+    const [error] = await sut.execute({ attachmentId: attachment.id.value });
 
     expect(error).toEqual({
       code: "EXTERNAL_SERVICE_FAILED",
@@ -40,15 +43,15 @@ describe("DeleteAttachmentUseCase", () => {
       data: {
         attachmentId: attachment.id,
       },
-    })
-  })
+    });
+  });
 
   it("should return an error if attachment is in use", async () => {
-    const attachment = makeAttachment({ mailId: new UniqueId("mail-id") })
+    const attachment = makeAttachment({ mailId: new UniqueId("mail-id") });
 
-    await inMemoryAttachmentRepository.create(attachment)
+    await inMemoryAttachmentRepository.create(attachment);
 
-    const [error] = await sut.execute({ attachmentId: attachment.id.value })
+    const [error] = await sut.execute({ attachmentId: attachment.id.value });
 
     expect(error).toEqual({
       code: "OPERATION_FAILED",
@@ -57,31 +60,31 @@ describe("DeleteAttachmentUseCase", () => {
         attachmentId: attachment.id.value,
         attachmentTitle: attachment.title,
       },
-    })
-  })
+    });
+  });
 
   it("should return an error if attachment is not found on server", async () => {
-    const attachment = makeAttachment({ url: "non-existent-on-server-url" })
+    const attachment = makeAttachment({ url: "non-existent-on-server-url" });
 
-    await inMemoryAttachmentRepository.create(attachment)
+    await inMemoryAttachmentRepository.create(attachment);
 
-    const [error] = await sut.execute({ attachmentId: attachment.id.value })
+    const [error] = await sut.execute({ attachmentId: attachment.id.value });
 
     expect(error).toEqual({
       code: "NOT_FOUND",
       message: "Attachment not found on server",
       data: { attachmentId: attachment.id },
-    })
-  })
+    });
+  });
 
   it("should delete the attachment successfully", async () => {
-    const attachment = makeAttachment({})
+    const attachment = makeAttachment({});
 
-    await inMemoryAttachmentRepository.create(attachment)
+    await inMemoryAttachmentRepository.create(attachment);
 
-    const [error] = await sut.execute({ attachmentId: attachment.id.value })
+    const [error] = await sut.execute({ attachmentId: attachment.id.value });
 
-    expect(error).toBeUndefined()
-    expect(inMemoryAttachmentRepository.attachments).toHaveLength(0)
-  })
-})
+    expect(error).toBeUndefined();
+    expect(inMemoryAttachmentRepository.attachments).toHaveLength(0);
+  });
+});

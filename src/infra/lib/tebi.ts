@@ -1,9 +1,9 @@
-import { S3Client } from "@aws-sdk/client-s3"
+import { S3Client } from "@aws-sdk/client-s3";
 
-import { getEnv } from "../env"
+import { getEnv } from "../env";
 
 export const createS3Client = () => {
-  const env = getEnv()
+  const env = getEnv();
 
   const tebiClient = new S3Client({
     endpoint: env.S3_URL,
@@ -13,7 +13,7 @@ export const createS3Client = () => {
     },
     region: env.S3_REGION,
     forcePathStyle: env.ENVIRONMENT === "test",
-  })
+  });
 
-  return tebiClient
-}
+  return tebiClient;
+};

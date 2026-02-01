@@ -1,27 +1,27 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client";
 
-import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/attachment/upload-and-create-attachment"
+import { UploadAndCreateAttachmentUseCase } from "@/domain/application/use-cases/attachment/upload-and-create-attachment";
 
-import { PrismaAttachmentRepository } from "../database/prisma/repositories/prisma-attachment-repository"
-import { getEnv } from "../env"
-import { UpdateAndCreateAttachmentController } from "../http/controllers/attachment/update-and-create-attachment"
-import { createS3Client } from "../lib/tebi"
-import { TebiStorage } from "../storage/tebi"
+import { PrismaAttachmentRepository } from "../database/prisma/repositories/prisma-attachment-repository";
+import { getEnv } from "../env";
+import { UpdateAndCreateAttachmentController } from "../http/controllers/attachment/update-and-create-attachment";
+import { createS3Client } from "../lib/tebi";
+import { TebiStorage } from "../storage/tebi";
 
 export const makeUpdateAndCreateAttachment = () => {
-  const env = getEnv()
-  const tebiClient = createS3Client()
-  const prisma = new PrismaClient()
-  const attachmentRepository = new PrismaAttachmentRepository(prisma)
-  const uploader = new TebiStorage(tebiClient, env)
+  const env = getEnv();
+  const tebiClient = createS3Client();
+  const prisma = new PrismaClient();
+  const attachmentRepository = new PrismaAttachmentRepository(prisma);
+  const uploader = new TebiStorage(tebiClient, env);
 
   const updateAndCreateAttachmentUseCase = new UploadAndCreateAttachmentUseCase(
     attachmentRepository,
-    uploader,
-  )
+    uploader
+  );
 
   const updateAndCreateAttachmentController =
-    new UpdateAndCreateAttachmentController(updateAndCreateAttachmentUseCase)
+    new UpdateAndCreateAttachmentController(updateAndCreateAttachmentUseCase);
 
-  return { updateAndCreateAttachmentController }
-}
+  return { updateAndCreateAttachmentController };
+};

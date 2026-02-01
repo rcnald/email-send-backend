@@ -1,11 +1,11 @@
-import { Attachment } from "@/domain/enterprise/entities/attachment"
+import type { Attachment } from "@/domain/enterprise/entities/attachment";
 
 export abstract class AttachmentRepository {
-  abstract create(attachment: Attachment): Promise<void>
-  abstract find(id: string): Promise<Attachment | null>
+  abstract create(attachment: Attachment): Promise<void>;
+  abstract find(id: string): Promise<Attachment | null>;
   abstract findManyByMultipleIds(
-    ids: string[],
-  ): Promise<[Attachment[], missingIds: string[]]>
-  abstract update(attachment: Attachment): Promise<void>
-  abstract delete(id: string): Promise<void>
+    ids: string[]
+  ): Promise<[Attachment[], missingIds: string[]]>;
+  abstract update(attachment: Attachment): Promise<void>;
+  abstract delete(id: string): Promise<void>;
 }

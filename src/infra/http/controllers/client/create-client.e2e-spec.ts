@@ -1,25 +1,25 @@
-import { PrismaClient } from "@prisma/client"
-import request from "supertest"
-import { HelperFactory } from "test/factories/make-helper"
+import { PrismaClient } from "@prisma/client";
+import request from "supertest";
+import { HelperFactory } from "test/factories/make-helper";
 
-import { createApp } from "@/infra/app"
+import { createApp } from "@/infra/app";
 
-let app: ReturnType<typeof createApp>
-let helperFactory: HelperFactory
-let prisma: PrismaClient
+let app: ReturnType<typeof createApp>;
+let helperFactory: HelperFactory;
+let prisma: PrismaClient;
 
 describe("Create Client E2E Tests", () => {
   beforeEach(() => {
-    app = createApp()
-    prisma = new PrismaClient()
-    helperFactory = new HelperFactory(prisma)
-  })
+    app = createApp();
+    prisma = new PrismaClient();
+    helperFactory = new HelperFactory(prisma);
+  });
 
   it("should create a client", async () => {
     const { token } = await helperFactory.makePrismaHelper(
       {},
-      { authenticated: true },
-    )
+      { authenticated: true }
+    );
 
     const response = await request(app)
       .post("/clients")
@@ -29,8 +29,8 @@ describe("Create Client E2E Tests", () => {
         CNPJ: "12345678000199",
         accountant_name: "Accountant Name",
         accountant_email: "accountant@example.com",
-      })
+      });
 
-    expect(response.status).toBe(201)
-  })
-})
+    expect(response.status).toBe(201);
+  });
+});

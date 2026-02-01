@@ -1,17 +1,17 @@
-import { faker } from "@faker-js/faker"
-import { PrismaClient } from "@prisma/client"
+import { faker } from "@faker-js/faker";
+import type { PrismaClient } from "@prisma/client";
 
-import { UniqueId } from "@/core/entities/value-objects/unique-id"
-import { Uploader } from "@/domain/application/storage/uploader"
+import type { UniqueId } from "@/core/entities/value-objects/unique-id";
+import type { Uploader } from "@/domain/application/storage/uploader";
 import {
   Attachment,
-  AttachmentProps,
-} from "@/domain/enterprise/entities/attachment"
-import { PrismaAttachmentMapper } from "@/infra/database/prisma/mappers/prisma-attachment-mapper"
+  type AttachmentProps,
+} from "@/domain/enterprise/entities/attachment";
+import { PrismaAttachmentMapper } from "@/infra/database/prisma/mappers/prisma-attachment-mapper";
 
 export const makeAttachment = (
   { mailId, title, url }: Partial<AttachmentProps> = {},
-  id?: UniqueId,
+  id?: UniqueId
 ) => {
   const attachment = Attachment.create(
     {
@@ -19,40 +19,40 @@ export const makeAttachment = (
       url: url ?? faker.internet.url(),
       mailId,
     },
-    id,
-  )
+    id
+  );
 
-  return attachment
-}
+  return attachment;
+};
 
 export class AttachmentFactory {
   constructor(
-    private prisma: PrismaClient,
-    private uploader: Uploader,
+    private readonly prisma: PrismaClient,
+    private readonly uploader: Uploader
   ) {}
 
   async makePrismaAttachment(
     props: Partial<AttachmentProps> = {},
-    id?: UniqueId,
+    id?: UniqueId
   ): Promise<Attachment> {
-    const attachment = makeAttachment(props, id)
+    const attachment = makeAttachment(props, id);
 
     const [error, result] = await this.uploader.upload({
       fileName: attachment.title,
       fileType: "application/zip",
       body: Buffer.from(attachment.title),
-    })
+    });
 
     if (error) {
-      throw new Error(`Failed to upload attachment: ${error.message}`)
+      throw new Error(`Failed to upload attachment: ${error.message}`);
     }
 
-    attachment.url = result.url
+    attachment.url = result.url;
 
     await this.prisma.attachment.create({
       data: PrismaAttachmentMapper.toPrisma(attachment),
-    })
+    });
 
-    return attachment
+    return attachment;
   }
 }

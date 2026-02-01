@@ -1,25 +1,25 @@
-import { DomainErrorData } from "@/core/domain-error"
+import type { DomainErrorData } from "@/core/domain-error";
 
 export interface EmailAttachment {
-  filename: string
-  content: Buffer
-  type: "application/zip"
+  filename: string;
+  content: Buffer;
+  type: "application/zip";
 }
 
 export interface SendEmailParams {
-  to: string | string[]
-  from: string
-  subject: string
-  html: string
-  text?: string
-  attachments?: EmailAttachment[]
+  to: string | string[];
+  from: string;
+  subject: string;
+  html: string;
+  text?: string;
+  attachments?: EmailAttachment[];
 }
 
 export abstract class EmailSender {
   abstract send(
-    params: SendEmailParams,
+    params: SendEmailParams
   ): Promise<
     | [undefined, { ok: true }, undefined]
     | [DomainErrorData, undefined, undefined]
-  >
+  >;
 }

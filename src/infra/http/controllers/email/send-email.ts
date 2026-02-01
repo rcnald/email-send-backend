@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
+import { z } from "zod";
 import type { SendEmailUseCase } from "@/domain/application/use-cases/email/send-email";
 import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler";
 import {
   ensureUserId,
   validateRequest,
 } from "@/infra/http/handlers/http-validation";
-import { z } from "@/infra/lib/zod";
 
 const sentEmailControllerBodySchema = z.object({
   client_id: z.uuid(),

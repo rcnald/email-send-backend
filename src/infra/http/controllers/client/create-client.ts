@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
+import { z } from "zod";
 import type { CreateClientUseCase } from "@/domain/application/use-cases/client/create-client";
 import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler";
 import {
   ensureUserId,
   validateRequest,
 } from "@/infra/http/handlers/http-validation";
-import { z } from "@/infra/lib/zod";
 
 const createClientControllerBodySchema = z.object({
   name: z.string().min(2).max(100),

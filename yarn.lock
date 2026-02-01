@@ -3869,6 +3869,7 @@ __metadata:
     vite-tsconfig-paths: "npm:^5.1.4"
     vitest: "npm:^3.2.3"
     zod: "npm:^4.0.5"
+    zod-openapi: "npm:^5.4.6"
     zod-validation-error: "npm:^4.0.2"
   languageName: unknown
   linkType: soft
@@ -7692,6 +7693,15 @@ __metadata:
   version: 3.1.1
   resolution: "yn@npm:3.1.1"
   checksum: 10c0/0732468dd7622ed8a274f640f191f3eaf1f39d5349a1b72836df484998d7d9807fbea094e2f5486d6b0cd2414aad5775972df0e68f8604db89a239f0f4bf7443
+  languageName: node
+  linkType: hard
+
+"zod-openapi@npm:^5.4.6":
+  version: 5.4.6
+  resolution: "zod-openapi@npm:5.4.6"
+  peerDependencies:
+    zod: ^3.25.74 || ^4.0.0
+  checksum: 10c0/87fb2c55c11d2a285d4a9edc1f9b9f7a6b741092786065575468f384ef180bb80b03694c1b8f5364ddf698ba603ff0543ef7c5395962cf3289893b1ebf7f1497
   languageName: node
   linkType: hard
 

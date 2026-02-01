@@ -40,9 +40,7 @@
   "paths": {
     "/auth/register": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Registrar helper",
         "description": "Cria um novo helper no sistema com credenciais de acesso",
         "requestBody": {
@@ -70,11 +68,7 @@
                     "description": "Senha de acesso (mínimo 6 caracteres)"
                   }
                 },
-                "required": [
-                  "name",
-                  "email",
-                  "password"
-                ],
+                "required": ["name", "email", "password"],
                 "additionalProperties": false
               },
               "examples": {
@@ -113,9 +107,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid request body"
-                          ]
+                          "enum": ["Invalid request body"]
                         },
                         "data": {
                           "type": "object",
@@ -135,9 +127,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "An unexpected error occurred"
-                          ]
+                          "enum": ["An unexpected error occurred"]
                         },
                         "data": {
                           "type": "object"
@@ -180,9 +170,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Helper already exists"
-                      ]
+                      "enum": ["Helper already exists"]
                     },
                     "data": {
                       "type": "object",
@@ -213,9 +201,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Invalid email provided"
-                      ]
+                      "enum": ["Invalid email provided"]
                     },
                     "data": {
                       "type": "object",
@@ -242,9 +228,7 @@
     },
     "/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Autenticar helper (Login)",
         "description": "Autentica um helper e retorna tokens de acesso",
         "requestBody": {
@@ -265,10 +249,7 @@
                     "description": "Senha do helper"
                   }
                 },
-                "required": [
-                  "email",
-                  "password"
-                ],
+                "required": ["email", "password"],
                 "additionalProperties": false
               },
               "examples": {
@@ -313,9 +294,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Invalid request body"
-                      ]
+                      "enum": ["Invalid request body"]
                     },
                     "data": {
                       "type": "object",
@@ -333,9 +312,7 @@
                 "example": {
                   "message": "Invalid request body",
                   "data": {
-                    "field_errors": [
-                      "email must be a valid email"
-                    ]
+                    "field_errors": ["email must be a valid email"]
                   }
                 }
               }
@@ -350,9 +327,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Invalid email or password"
-                      ]
+                      "enum": ["Invalid email or password"]
                     },
                     "data": {
                       "type": "object"
@@ -375,9 +350,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "The email provided is invalid"
-                      ]
+                      "enum": ["The email provided is invalid"]
                     },
                     "data": {
                       "type": "object",
@@ -403,9 +376,7 @@
     },
     "/auth/refresh": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Renovar access token",
         "description": "Renova o access token usando o refresh token armazenado em cookie",
         "parameters": [
@@ -450,9 +421,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Refresh token not provided"
-                          ]
+                          "enum": ["Refresh token not provided"]
                         },
                         "data": {
                           "type": "object"
@@ -464,9 +433,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid or expired refresh token"
-                          ]
+                          "enum": ["Invalid or expired refresh token"]
                         },
                         "data": {
                           "type": "object"
@@ -478,9 +445,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Token must be a refresh token"
-                          ]
+                          "enum": ["Token must be a refresh token"]
                         },
                         "data": {
                           "type": "object"
@@ -524,9 +489,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Helper not found"
-                      ]
+                      "enum": ["Helper not found"]
                     },
                     "data": {
                       "type": "object"
@@ -545,9 +508,7 @@
     },
     "/me": {
       "get": {
-        "tags": [
-          "Profile"
-        ],
+        "tags": ["Profile"],
         "summary": "Obter perfil do usuário",
         "description": "Retorna os dados do perfil do usuário autenticado. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
@@ -576,10 +537,7 @@
                       "description": "Email do usuário"
                     }
                   },
-                  "required": [
-                    "name",
-                    "email"
-                  ]
+                  "required": ["name", "email"]
                 },
                 "example": {
                   "name": "João Silva",
@@ -630,9 +588,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Assistente não encontrado"
-                      ]
+                      "enum": ["Assistente não encontrado"]
                     },
                     "data": {
                       "type": "object",
@@ -659,9 +615,7 @@
     },
     "/attachments": {
       "post": {
-        "tags": [
-          "Attachments"
-        ],
+        "tags": ["Attachments"],
         "summary": "Upload de anexo",
         "description": "Faz upload de um arquivo ZIP para ser anexado em emails. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
@@ -685,9 +639,7 @@
                     "description": "Arquivo ZIP (apenas arquivos .zip são aceitos)"
                   }
                 },
-                "required": [
-                  "file"
-                ]
+                "required": ["file"]
               }
             }
           }
@@ -704,9 +656,7 @@
                       "$ref": "#/components/schemas/UUID"
                     }
                   },
-                  "required": [
-                    "attachment_id"
-                  ]
+                  "required": ["attachment_id"]
                 },
                 "example": {
                   "attachment_id": "123e4567-e89b-12d3-a456-426614174000"
@@ -725,9 +675,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid file type"
-                          ]
+                          "enum": ["Invalid file type"]
                         },
                         "data": {
                           "type": "object",
@@ -747,9 +695,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Failed to upload file"
-                          ]
+                          "enum": ["Failed to upload file"]
                         },
                         "data": {
                           "type": "object"
@@ -761,9 +707,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "An unexpected error occurred"
-                          ]
+                          "enum": ["An unexpected error occurred"]
                         },
                         "data": {
                           "type": "object"
@@ -778,9 +722,7 @@
                     "value": {
                       "message": "Invalid file type",
                       "data": {
-                        "accepted_types": [
-                          "application/zip"
-                        ]
+                        "accepted_types": ["application/zip"]
                       }
                     }
                   },
@@ -807,9 +749,7 @@
     },
     "/attachments/{id}/delete": {
       "delete": {
-        "tags": [
-          "Attachments"
-        ],
+        "tags": ["Attachments"],
         "summary": "Deletar anexo",
         "description": "Remove um anexo do sistema e do storage. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
@@ -842,9 +782,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Attachment deleted successfully"
-                      ]
+                      "enum": ["Attachment deleted successfully"]
                     }
                   }
                 },
@@ -865,9 +803,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid request body"
-                          ]
+                          "enum": ["Invalid request body"]
                         },
                         "data": {
                           "type": "object",
@@ -887,9 +823,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "An unexpected error occurred"
-                          ]
+                          "enum": ["An unexpected error occurred"]
                         },
                         "data": {
                           "type": "object"
@@ -904,9 +838,7 @@
                     "value": {
                       "message": "Invalid request body",
                       "data": {
-                        "field_errors": [
-                          "Invalid uuid"
-                        ]
+                        "field_errors": ["Invalid uuid"]
                       }
                     }
                   },
@@ -932,9 +864,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Attachment not found"
-                          ]
+                          "enum": ["Attachment not found"]
                         },
                         "data": {
                           "type": "object",
@@ -952,9 +882,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Attachment is not found on server"
-                          ]
+                          "enum": ["Attachment is not found on server"]
                         },
                         "data": {
                           "type": "object",
@@ -1001,9 +929,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Attachment is in use and cannot be deleted"
-                      ]
+                      "enum": ["Attachment is in use and cannot be deleted"]
                     },
                     "data": {
                       "type": "object",
@@ -1034,9 +960,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Failed to delete attachment"
-                      ]
+                      "enum": ["Failed to delete attachment"]
                     },
                     "data": {
                       "type": "object",
@@ -1063,9 +987,7 @@
     },
     "/emails": {
       "post": {
-        "tags": [
-          "Emails"
-        ],
+        "tags": ["Emails"],
         "summary": "Enviar email",
         "description": "Envia um email para o contador do cliente com os anexos especificados. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
@@ -1096,10 +1018,7 @@
                     "maxItems": 10
                   }
                 },
-                "required": [
-                  "client_id",
-                  "attachment_ids"
-                ],
+                "required": ["client_id", "attachment_ids"],
                 "additionalProperties": false
               },
               "examples": {
@@ -1107,9 +1026,7 @@
                   "summary": "Envio básico com um anexo",
                   "value": {
                     "client_id": "f9b5d9e4-e8e9-4a0d-90d7-77ccda364af8",
-                    "attachment_ids": [
-                      "987fcdeb-51a2-43d1-9f12-123456789000"
-                    ]
+                    "attachment_ids": ["987fcdeb-51a2-43d1-9f12-123456789000"]
                   }
                 },
                 "exemplo_multiplos_anexos": {
@@ -1137,9 +1054,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Email sent successfully"
-                      ]
+                      "enum": ["Email sent successfully"]
                     },
                     "data": {
                       "type": "object",
@@ -1148,15 +1063,10 @@
                           "$ref": "#/components/schemas/UUID"
                         }
                       },
-                      "required": [
-                        "email_id"
-                      ]
+                      "required": ["email_id"]
                     }
                   },
-                  "required": [
-                    "message",
-                    "data"
-                  ]
+                  "required": ["message", "data"]
                 },
                 "example": {
                   "message": "Email sent successfully",
@@ -1178,9 +1088,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid request body"
-                          ]
+                          "enum": ["Invalid request body"]
                         },
                         "data": {
                           "type": "object",
@@ -1200,9 +1108,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "An unexpected error occurred"
-                          ]
+                          "enum": ["An unexpected error occurred"]
                         },
                         "data": {
                           "type": "object"
@@ -1246,9 +1152,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Client not found"
-                          ]
+                          "enum": ["Client not found"]
                         },
                         "data": {
                           "type": "object",
@@ -1266,9 +1170,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Some attachments were not found"
-                          ]
+                          "enum": ["Some attachments were not found"]
                         },
                         "data": {
                           "type": "object",
@@ -1320,9 +1222,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Failed to process some attachments"
-                      ]
+                      "enum": ["Failed to process some attachments"]
                     },
                     "data": {
                       "type": "object",
@@ -1373,9 +1273,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Failed to send email"
-                      ]
+                      "enum": ["Failed to send email"]
                     },
                     "data": {
                       "type": "object",
@@ -1402,9 +1300,7 @@
     },
     "/clients": {
       "get": {
-        "tags": [
-          "Clients"
-        ],
+        "tags": ["Clients"],
         "summary": "Listar clientes",
         "description": "Retorna a lista de todos os clientes cadastrados no sistema. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
@@ -1454,10 +1350,7 @@
                                 "description": "Email do contador"
                               }
                             },
-                            "required": [
-                              "name",
-                              "email"
-                            ]
+                            "required": ["name", "email"]
                           },
                           "status": {
                             "type": "string",
@@ -1475,9 +1368,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "clients"
-                  ]
+                  "required": ["clients"]
                 },
                 "examples": {
                   "success_with_clients": {
@@ -1516,9 +1407,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Helper not found"
-                      ]
+                      "enum": ["Helper not found"]
                     },
                     "data": {
                       "type": "object",
@@ -1548,9 +1437,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Internal server error"
-                      ]
+                      "enum": ["Internal server error"]
                     },
                     "data": {
                       "type": "object"
@@ -1567,9 +1454,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Clients"
-        ],
+        "tags": ["Clients"],
         "summary": "Criar cliente",
         "description": "Cria um novo cliente com dados do contador. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
@@ -1652,9 +1537,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid request body"
-                          ]
+                          "enum": ["Invalid request body"]
                         },
                         "data": {
                           "type": "object",
@@ -1674,9 +1557,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "An unexpected error occurred"
-                          ]
+                          "enum": ["An unexpected error occurred"]
                         },
                         "data": {
                           "type": "object"
@@ -1718,9 +1599,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Client already exists"
-                      ]
+                      "enum": ["Client already exists"]
                     },
                     "data": {
                       "type": "object",
@@ -1751,9 +1630,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Invalid email provided"
-                      ]
+                      "enum": ["Invalid email provided"]
                     },
                     "data": {
                       "type": "object",

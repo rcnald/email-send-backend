@@ -1,7 +1,7 @@
 import "dotenv/config";
 
+import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
-import { z } from "@/infra/lib/zod";
 
 const envSchema = z.object({
   DATABASE_URL: z

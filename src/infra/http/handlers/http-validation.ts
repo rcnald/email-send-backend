@@ -1,6 +1,6 @@
 import type { Response } from "express";
+import type { z } from "zod";
 import { fromZodError } from "zod-validation-error/v4";
-import type { z } from "@/infra/lib/zod";
 
 interface ValidationOptions {
   message?: string;

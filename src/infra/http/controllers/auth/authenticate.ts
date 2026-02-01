@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
+import { z } from "zod";
 import type { AuthenticateUseCase } from "@/domain/application/use-cases/auth/authenticate";
 import { type Env, getEnv } from "@/infra/env";
 import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler";
 import { validateRequest } from "@/infra/http/handlers/http-validation";
-import { z } from "@/infra/lib/zod";
 
 const authenticateControllerBodySchema = z.object({
   email: z.email("O Endereço de email fornecido é inválido"),

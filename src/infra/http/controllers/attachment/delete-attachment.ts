@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
+import { z } from "zod";
 import type { DeleteAttachmentUseCase } from "@/domain/application/use-cases/attachment/delete-attachment";
 import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler";
 import { validateRequest } from "@/infra/http/handlers/http-validation";
-import { z } from "@/infra/lib/zod";
 
 const deleteAttachmentControllerRouteParamsSchema = z.object({
   id: z.uuid(),

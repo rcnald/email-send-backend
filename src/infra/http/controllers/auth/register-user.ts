@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
+import { z } from "zod";
 import type { RegisterUserUseCase } from "@/domain/application/use-cases/auth/register-user";
 import { HttpErrorHandler } from "@/infra/http/handlers/http-error-handler";
 import { validateRequest } from "@/infra/http/handlers/http-validation";
-import { z } from "@/infra/lib/zod";
 
 const registerUserControllerBodySchema = z.object({
   name: z

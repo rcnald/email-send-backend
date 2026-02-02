@@ -5,6 +5,7 @@ import type { Encrypter } from "@/domain/application/cryptography/encrypter";
 export function authMiddleware(encrypter: Encrypter) {
   return async (req: Request, res: Response, next: NextFunction) => {
     await new Promise((resolve) => setTimeout(resolve, 10));
+
     try {
       const token =
         req.cookies?.accessToken ||

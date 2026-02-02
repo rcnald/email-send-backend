@@ -14,14 +14,17 @@ export function createRouter() {
   const router = Router();
 
   router.use("/auth", createAuthRoutes());
+  router.get("/health", (_, res) => res.status(200).send("OK"));
 
-  router.use(authMiddleware(jwtEncrypter));
+  router.use(
+    "/attachments",
+    authMiddleware(jwtEncrypter),
+    createAttachmentRoutes()
+  );
+  router.use("/emails", authMiddleware(jwtEncrypter), createEmailRoutes());
+  router.use("/clients", authMiddleware(jwtEncrypter), createClientRoutes());
 
-  router.use("/attachments", createAttachmentRoutes());
-  router.use("/emails", createEmailRoutes());
-  router.use("/clients", createClientRoutes());
-
-  router.use("/", createHelperRoutes());
+  router.use("/", authMiddleware(jwtEncrypter), createHelperRoutes());
 
   return router;
 }

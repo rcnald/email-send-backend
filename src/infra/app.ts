@@ -11,14 +11,17 @@ export function createApp() {
   const app = express();
   const env = getEnv();
 
-  app.use(
-    cors({
-      origin: [env.APP_URL],
-      credentials: true,
-      methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-      allowedHeaders: ["Content-Type", "Authorization"],
-    })
-  );
+  app.set("trust proxy", 1); // safe to add
+
+  const corsOptions = {
+    origin: [env.APP_URL],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  };
+
+  app.use(cors(corsOptions));
+  app.options("*", cors(corsOptions));
 
   app.use(
     "/reference",

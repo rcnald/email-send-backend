@@ -40,14 +40,14 @@ export class AuthenticateController {
 
     response.cookie("accessToken", result.accessToken, {
       httpOnly: true,
-      secure: this.env.ENVIRONMENT === "production",
+      secure: true,
       sameSite: this.env.ENVIRONMENT === "production" ? "strict" : "none",
       maxAge: this.env.JWT_ACCESS_TOKEN_MAX_AGE,
     });
 
     response.cookie("refreshToken", result.refreshToken, {
       httpOnly: true,
-      secure: this.env.ENVIRONMENT === "production",
+      secure: true,
       sameSite: this.env.ENVIRONMENT === "production" ? "strict" : "none",
       maxAge: this.env.JWT_REFRESH_TOKEN_MAX_AGE,
     });

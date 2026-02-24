@@ -21,7 +21,7 @@ export function createApp() {
   };
 
   app.use(cors(corsOptions));
-  app.options("*", cors(corsOptions));
+  app.options("/.*/", cors(corsOptions));
 
   app.use(
     "/reference",

@@ -32,8 +32,8 @@ export class RefreshTokenController {
 
     response.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: this.env.ENVIRONMENT === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: this.env.ENVIRONMENT === "production" ? "strict" : "none",
       maxAge: this.env.JWT_ACCESS_TOKEN_MAX_AGE,
     });
 

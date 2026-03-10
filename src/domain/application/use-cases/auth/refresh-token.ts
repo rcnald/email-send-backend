@@ -37,15 +37,8 @@ export class RefreshTokenUseCase {
       expiresIn: "15m",
     });
 
-    const newRefreshToken = this.encrypter.encrypt({
-      sub: helper.id.value,
-      type: "refresh",
-      expiresIn: "7d",
-    });
-
     return nice({
       accessToken,
-      refreshToken: newRefreshToken,
     });
   }
 }

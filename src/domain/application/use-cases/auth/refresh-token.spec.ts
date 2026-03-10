@@ -31,7 +31,6 @@ describe("RefreshTokenUseCase", () => {
     expect(error).toBeUndefined();
     expect(result).toMatchObject({
       accessToken: expect.any(String),
-      refreshToken: expect.any(String),
     });
   });
 
@@ -39,7 +38,7 @@ describe("RefreshTokenUseCase", () => {
     const helper = makeHelper();
     await inMemoryHelperRepository.create(helper);
 
-    const accessToken = await fakeEncrypter.encrypt({
+    const accessToken = fakeEncrypter.encrypt({
       sub: helper.id.toString(),
       type: "access",
       expiresIn: "15m",

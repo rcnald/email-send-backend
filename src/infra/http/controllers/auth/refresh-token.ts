@@ -28,20 +28,13 @@ export class RefreshTokenController {
       return HttpErrorHandler.handle(response, error);
     }
 
-    const { accessToken, refreshToken: newRefreshToken } = result;
+    const { accessToken } = result;
 
     response.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: this.env.ENVIRONMENT === "production",
       sameSite: "strict",
       maxAge: this.env.JWT_ACCESS_TOKEN_MAX_AGE,
-    });
-
-    response.cookie("refreshToken", newRefreshToken, {
-      httpOnly: true,
-      secure: this.env.ENVIRONMENT === "production",
-      sameSite: "strict",
-      maxAge: this.env.JWT_REFRESH_TOKEN_MAX_AGE,
     });
 
     return response.status(200).json();

@@ -52,10 +52,7 @@ describe("Refresh Token (E2E)", () => {
     expect(response.status).toBe(200);
     expect(response.headers["set-cookie"]).toBeDefined();
     expect(response.headers["set-cookie"]).toEqual(
-      expect.arrayContaining([
-        expect.stringContaining("accessToken="),
-        expect.stringContaining("refreshToken="),
-      ])
+      expect.arrayContaining([expect.stringContaining("accessToken=")])
     );
   });
 });

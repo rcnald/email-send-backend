@@ -18,7 +18,7 @@ const envSchema = z.object({
   MAX_STORAGE: z.coerce
     .number()
     .positive()
-    .default(10 * 1024 * 1024 * 1024), // 10 GB
+    .default(5 * 1024 * 1024 * 1024), // 5 GB
   RESEND_API_KEY: z.string().min(1),
   JWT_SECRET: z.string().min(32),
   JWT_ACCESS_TOKEN_EXPIRATION: z.string().min(1),

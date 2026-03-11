@@ -15,6 +15,10 @@ const envSchema = z.object({
   S3_URL: z.url(),
   S3_REGION: z.string().min(1),
   S3_BUCKET: z.string().min(1),
+  MAX_STORAGE: z.coerce
+    .number()
+    .positive()
+    .default(10 * 1024 * 1024 * 1024), // 10 GB
   RESEND_API_KEY: z.string().min(1),
   JWT_SECRET: z.string().min(32),
   JWT_ACCESS_TOKEN_EXPIRATION: z.string().min(1),

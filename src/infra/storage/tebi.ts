@@ -5,6 +5,7 @@ import {
   CopyObjectCommand,
   DeleteObjectCommand,
   GetObjectCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   type S3Client,
 } from "@aws-sdk/client-s3";
@@ -46,6 +47,13 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
         undefined,
       ]
   > {
+    const usedStorage = await this.getBucketUsage();
+    const fileSize = body.length;
+
+    if (usedStorage + fileSize > this.env.MAX_STORAGE) {
+      return bad(DomainError.OperationFailed("Storage limit reached"));
+    }
+
     const uuid = randomUUID();
 
     const extension = path.extname(fileName);
@@ -68,6 +76,30 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
     }
 
     return nice({ url: uniqueFilename });
+  }
+
+  private async getBucketUsage(): Promise<number> {
+    let totalSize = 0;
+    let continuationToken: string | undefined;
+
+    do {
+      const response = await this.tebiClient.send(
+        new ListObjectsV2Command({
+          Bucket: this.env.S3_BUCKET,
+          ContinuationToken: continuationToken,
+        })
+      );
+
+      if (response.Contents) {
+        for (const object of response.Contents) {
+          totalSize += object.Size ?? 0;
+        }
+      }
+
+      continuationToken = response.NextContinuationToken;
+    } while (continuationToken);
+
+    return totalSize;
   }
 
   async rename({ currentFileUrl, newFileUrl }: RenamerParams): Promise<void> {

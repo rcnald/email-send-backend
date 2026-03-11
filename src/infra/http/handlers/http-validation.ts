@@ -34,7 +34,7 @@ export function validateRequest<T>(
 export function ensureUserId(
   response: Response,
   userId: unknown,
-  message = "Invalid or missing user ID"
+  message = "ID de usuario invalido ou ausente"
 ): string | undefined {
   if (!userId || typeof userId !== "string") {
     response.status(400).json({

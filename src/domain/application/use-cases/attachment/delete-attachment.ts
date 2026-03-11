@@ -19,13 +19,13 @@ export class DeleteAttachmentUseCase {
 
     if (!attachment) {
       return bad(
-        DomainError.NotFound("Attachment not found", { attachmentId })
+        DomainError.NotFound("Anexo nao encontrado", { attachmentId })
       );
     }
 
     if (attachment.mailId) {
       return bad(
-        DomainError.OperationFailed("Attachment is in use", {
+        DomainError.OperationFailed("Anexo esta em uso", {
           attachmentId,
           attachmentTitle: attachment.title,
         })

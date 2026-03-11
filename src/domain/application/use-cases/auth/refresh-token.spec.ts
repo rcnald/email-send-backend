@@ -49,7 +49,7 @@ describe("RefreshTokenUseCase", () => {
     expect(result).toBeUndefined();
     expect(error).toMatchObject({
       code: "UNAUTHORIZED",
-      message: "Token must be a refresh token",
+      message: "O token deve ser um token de atualizacao",
     });
   });
 
@@ -61,7 +61,7 @@ describe("RefreshTokenUseCase", () => {
     expect(result).toBeUndefined();
     expect(error).toMatchObject({
       code: "UNAUTHORIZED",
-      message: "Invalid or expired refresh token",
+      message: "Token de atualizacao invalido ou expirado",
     });
   });
 });

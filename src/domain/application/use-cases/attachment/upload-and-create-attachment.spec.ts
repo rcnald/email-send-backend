@@ -21,7 +21,7 @@ describe("UploadAndCreateAttachmentUseCase", () => {
 
     expect(error).toEqual({
       code: "INVALID_ARGUMENT",
-      message: "Invalid file type",
+      message: "Tipo de arquivo invalido",
       data: { invalidFileType: "application/txt" },
     });
   });
@@ -35,7 +35,7 @@ describe("UploadAndCreateAttachmentUseCase", () => {
 
     expect(error).toEqual({
       code: "EXTERNAL_SERVICE_FAILED",
-      message: "Failed to upload file",
+      message: "Falha ao enviar arquivo",
     });
   });
 

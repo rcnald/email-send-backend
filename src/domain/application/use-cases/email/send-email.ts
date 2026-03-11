@@ -39,18 +39,20 @@ export class SendEmailUseCase {
     const client = await this.clientRepository.find(clientId);
 
     if (!client) {
-      return bad(DomainError.NotFound("Client not found", { clientId }));
+      return bad(DomainError.NotFound("Cliente nao encontrado", { clientId }));
     }
 
     const helper = await this.helperRepository.findById(helperId);
 
     if (!helper) {
-      return bad(DomainError.NotFound("Helper not found", { helperId }));
+      return bad(
+        DomainError.NotFound("Assistente nao encontrado", { helperId })
+      );
     }
 
     if (!helper.id.equals(client.helperId)) {
       return bad(
-        DomainError.Forbidden("The helper is not associated with the client", {
+        DomainError.Forbidden("O assistente nao esta associado ao cliente", {
           helperId,
           clientId,
         })
@@ -75,7 +77,7 @@ export class SendEmailUseCase {
 
     if (missingIds.length > 0) {
       return bad(
-        DomainError.NotFound("Some attachments were not found", {
+        DomainError.NotFound("Alguns anexos nao foram encontrados", {
           missingIds,
         })
       );
@@ -196,12 +198,9 @@ export class SendEmailUseCase {
 
     if (failedReasons.length > 0) {
       return bad(
-        DomainError.ExternalServiceFailed(
-          "Attachments failed to be processed.",
-          {
-            details: failedReasons.map((reason) => reason.message),
-          }
-        )
+        DomainError.ExternalServiceFailed("Falha ao processar anexos.", {
+          details: failedReasons.map((reason) => reason.message),
+        })
       );
     }
 

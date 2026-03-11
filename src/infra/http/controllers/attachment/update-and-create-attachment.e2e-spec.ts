@@ -85,7 +85,7 @@ describe("Update and Create Attachment E2E Tests", () => {
       expect(response.status).toBe(400);
       expect(response.body).toEqual({
         code: "OPERATION_FAILED",
-        message: "Storage limit reached",
+        message: "Limite de armazenamento atingido",
         data: {},
       });
     } finally {

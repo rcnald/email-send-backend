@@ -44,7 +44,7 @@ export class AttachmentFactory {
     });
 
     if (error) {
-      throw new Error(`Failed to upload attachment: ${error.message}`);
+      throw new Error(`Falha ao enviar anexo: ${error.message}`);
     }
 
     attachment.url = result.url;

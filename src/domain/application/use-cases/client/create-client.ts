@@ -27,14 +27,14 @@ export class CreateClientUseCase {
     const clientExists = await this.clientRepository.findByCNPJ(CNPJ);
 
     if (clientExists) {
-      return bad(DomainError.AlreadyExists("Client already exists", { CNPJ }));
+      return bad(DomainError.AlreadyExists("Cliente ja existe", { CNPJ }));
     }
 
     const helperExists = await this.helperRepository.findById(helperId);
 
     if (!helperExists) {
       return bad(
-        DomainError.NotFound("Helper not found", {
+        DomainError.NotFound("Assistente nao encontrado", {
           helperId,
         })
       );
@@ -46,7 +46,7 @@ export class CreateClientUseCase {
 
     if (accountantEmailError) {
       return bad(
-        DomainError.InvalidResource("Invalid email provided", {
+        DomainError.InvalidResource("E-mail invalido informado", {
           email: accountant.email,
         })
       );

@@ -6,6 +6,7 @@ import type { InMemoryAttachmentRepository } from "test/in-memory-repositories/i
 import type { InMemoryClientRepository } from "test/in-memory-repositories/in-memory-client-repository";
 import type { InMemoryHelperRepository } from "test/in-memory-repositories/in-memory-helper-repository";
 import type { InMemoryMailRepository } from "test/in-memory-repositories/in-memory-mail-repository";
+import { generateFileName } from "@/domain/application/utils/file-name-generator";
 
 import type { SendEmailUseCase } from "./send-email";
 
@@ -59,7 +60,7 @@ describe("SentEmailUseCase", () => {
 
     expect(error).toEqual({
       code: "NOT_FOUND",
-      message: "Client not found",
+      message: "Cliente nao encontrado",
       data: {
         clientId: "non-existent-client-id",
       },
@@ -89,7 +90,7 @@ describe("SentEmailUseCase", () => {
       data: {
         missingIds: ["invalid-attachment-id"],
       },
-      message: "Some attachments were not found",
+      message: "Alguns anexos nao foram encontrados",
     });
   });
 
@@ -119,7 +120,7 @@ describe("SentEmailUseCase", () => {
 
     expect(error).toEqual({
       code: "EXTERNAL_SERVICE_FAILED",
-      message: "One or more attachments failed to be processed.",
+      message: "Um ou mais anexos falharam ao serem processados.",
       data: {
         details: [updatedInvalidAttachment?.url],
       },
@@ -143,11 +144,15 @@ describe("SentEmailUseCase", () => {
       attachmentIds: [attachment.id.value],
     });
 
-    const clientName = client.name.toLowerCase().replace(/\s+/g, "-");
+    const expectedAttachmentName = generateFileName(
+      client.name,
+      new Date().getMonth() - 1,
+      0
+    ).name;
 
     expect(inMemoryAttachmentRepository.attachments[0]).toEqual(
       expect.objectContaining({
-        title: `arquivos-fiscais-${clientName}-do-mes-de-dezembro-0.zip`,
+        title: expectedAttachmentName,
       })
     );
   });

@@ -51,7 +51,9 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
     const fileSize = body.length;
 
     if (usedStorage + fileSize > this.env.MAX_STORAGE) {
-      return bad(DomainError.OperationFailed("Storage limit reached"));
+      return bad(
+        DomainError.OperationFailed("Limite de armazenamento atingido")
+      );
     }
 
     const uuid = randomUUID();
@@ -72,7 +74,7 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
     );
 
     if (result.$metadata.httpStatusCode !== 200) {
-      return bad(DomainError.ExternalServiceFailed("Failed to upload file"));
+      return bad(DomainError.ExternalServiceFailed("Falha ao enviar arquivo"));
     }
 
     return nice({ url: uniqueFilename });
@@ -143,7 +145,7 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
 
       if (!response.ok) {
         return bad(
-          DomainError.ExternalServiceFailed("Failed to download file", {
+          DomainError.ExternalServiceFailed("Falha ao baixar arquivo", {
             file: url,
           })
         );
@@ -152,7 +154,7 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
       return nice({ buffer: Buffer.from(await response.arrayBuffer()) });
     } catch {
       return bad(
-        DomainError.ExternalServiceFailed("Failed to download file", {
+        DomainError.ExternalServiceFailed("Falha ao baixar arquivo", {
           file: url,
         })
       );
@@ -190,10 +192,10 @@ export class TebiStorage implements Uploader, Renamer, Downloader, Deleter {
       return nice();
     } catch (error) {
       if ((error as { name?: unknown }).name === "NoSuchKey") {
-        return bad(DomainError.NotFound("Attachment not found on server"));
+        return bad(DomainError.NotFound("Anexo nao encontrado no servidor"));
       }
 
-      return bad(DomainError.ExternalServiceFailed("Failed to delete file"));
+      return bad(DomainError.ExternalServiceFailed("Falha ao excluir arquivo"));
     }
   }
 }

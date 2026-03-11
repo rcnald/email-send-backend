@@ -40,7 +40,7 @@ describe("LogoutUseCase", () => {
     expect(result).toBeUndefined();
     expect(error).toMatchObject({
       code: "UNAUTHORIZED",
-      message: "Invalid or expired refresh token",
+      message: "Token de atualizacao invalido ou expirado",
     });
   });
 
@@ -61,7 +61,7 @@ describe("LogoutUseCase", () => {
     expect(result).toBeUndefined();
     expect(error).toMatchObject({
       code: "UNAUTHORIZED",
-      message: "Token must be a refresh token",
+      message: "O token deve ser um token de atualizacao",
     });
   });
 
@@ -82,7 +82,7 @@ describe("LogoutUseCase", () => {
     expect(result).toBeUndefined();
     expect(error).toMatchObject({
       code: "UNAUTHORIZED",
-      message: "Refresh token does not belong to authenticated user",
+      message: "O token de atualizacao nao pertence ao usuario autenticado",
     });
   });
 });

@@ -14,10 +14,10 @@ const ACCEPTED_MIME_TYPES = [
 const attachmentFileSchema = z.object({
   originalname: z.string(),
   mimetype: z.string().refine((mime) => ACCEPTED_MIME_TYPES.includes(mime), {
-    message: `File type invalid. Accepted types: ${ACCEPTED_MIME_TYPES.join(", ")}.`,
+    message: `Tipo de arquivo invalido. Tipos aceitos: ${ACCEPTED_MIME_TYPES.join(", ")}.`,
   }),
   size: z.number().max(MAX_FILE_SIZE, {
-    message: `File too large. Maximum size ${MAX_FILE_SIZE / (1024 * 1024)}MB.`,
+    message: `Arquivo muito grande. Tamanho maximo ${MAX_FILE_SIZE / (1024 * 1024)}MB.`,
   }),
   buffer: z.instanceof(Buffer),
 });
@@ -29,7 +29,7 @@ export class UpdateAndCreateAttachmentController {
 
   async handle(request: Request, response: Response): Promise<Response> {
     const file = validateRequest(response, attachmentFileSchema, request.file, {
-      message: "Invalid file type or size",
+      message: "Tipo ou tamanho de arquivo invalido",
     });
 
     if (!file) {

@@ -18,7 +18,7 @@ export class DeleteAttachmentController {
       response,
       deleteAttachmentControllerRouteParamsSchema,
       request.params,
-      { message: "Invalid request params" }
+      { message: "Parametros de requisicao invalidos" }
     );
 
     if (!routeParams) {
@@ -36,7 +36,7 @@ export class DeleteAttachmentController {
     }
 
     return response.status(204).json({
-      message: "Attachment deleted successfully",
+      message: "Anexo excluido com sucesso",
     });
   }
 }

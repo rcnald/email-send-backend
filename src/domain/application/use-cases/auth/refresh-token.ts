@@ -18,17 +18,21 @@ export class RefreshTokenUseCase {
     const payload = this.encrypter.decrypt(refreshToken);
 
     if (!payload) {
-      return bad(DomainError.Unauthorized("Invalid or expired refresh token"));
+      return bad(
+        DomainError.Unauthorized("Token de atualizacao invalido ou expirado")
+      );
     }
 
     if (payload.type !== "refresh") {
-      return bad(DomainError.Unauthorized("Token must be a refresh token"));
+      return bad(
+        DomainError.Unauthorized("O token deve ser um token de atualizacao")
+      );
     }
 
     const helper = await this.helperRepository.findById(payload.sub);
 
     if (!helper) {
-      return bad(DomainError.NotFound("Helper not found"));
+      return bad(DomainError.NotFound("Assistente nao encontrado"));
     }
 
     const accessToken = this.encrypter.encrypt({

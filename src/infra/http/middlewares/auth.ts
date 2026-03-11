@@ -14,7 +14,7 @@ export function authMiddleware(encrypter: Encrypter) {
       if (!token) {
         return res.status(401).json({
           code: "UNAUTHORIZED",
-          message: "Unauthorized - Token not provided",
+          message: "Não autorizado - Token não fornecido",
           data: {},
         });
       }
@@ -24,7 +24,7 @@ export function authMiddleware(encrypter: Encrypter) {
       if (!payload) {
         return res.status(401).json({
           code: "UNAUTHORIZED",
-          message: "Unauthorized - Invalid or expired token",
+          message: "Não autorizado - Token inválido ou expirado",
           data: {},
         });
       }
@@ -32,7 +32,7 @@ export function authMiddleware(encrypter: Encrypter) {
       if (payload.type !== "access") {
         return res.status(401).json({
           code: "UNAUTHORIZED",
-          message: "Unauthorized - Invalid token type",
+          message: "Não autorizado - Tipo de token inválido",
           data: {},
         });
       }
@@ -42,7 +42,7 @@ export function authMiddleware(encrypter: Encrypter) {
     } catch {
       return res.status(401).json({
         code: "UNAUTHORIZED",
-        message: "Unauthorized - Invalid token",
+        message: "Não autorizado - Token inválido",
         data: {},
       });
     }

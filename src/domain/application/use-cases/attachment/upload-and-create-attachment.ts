@@ -28,7 +28,7 @@ export class UploadAndCreateAttachmentUseCase {
 
     if (!isFileTypeValid) {
       return bad(
-        DomainError.InvalidArgument("Invalid file type", {
+        DomainError.InvalidArgument("Tipo de arquivo invalido", {
           invalidFileType: fileType,
         })
       );

@@ -36,9 +36,9 @@ export function getEnv() {
   const _env = envSchema.safeParse(process.env);
 
   if (!_env.success) {
-    console.error("Invalid environment variables:", fromZodError(_env.error));
+    console.error("Variáveis de ambiente inválidas:", fromZodError(_env.error));
 
-    throw new Error("Invalid environment variables.");
+    throw new Error("Variáveis de ambiente inválidas.");
   }
 
   return _env.data;

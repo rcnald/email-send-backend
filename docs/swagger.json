@@ -40,9 +40,7 @@
   "paths": {
     "/auth/register": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Registrar helper",
         "description": "Cria um novo helper no sistema com credenciais de acesso",
         "requestBody": {
@@ -70,11 +68,7 @@
                     "description": "Senha de acesso (mínimo 6 caracteres)"
                   }
                 },
-                "required": [
-                  "name",
-                  "email",
-                  "password"
-                ],
+                "required": ["name", "email", "password"],
                 "additionalProperties": false
               },
               "examples": {
@@ -113,9 +107,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid request body"
-                          ]
+                          "enum": ["Corpo da requisição inválido"]
                         },
                         "data": {
                           "type": "object",
@@ -135,9 +127,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "An unexpected error occurred"
-                          ]
+                          "enum": ["Ocorreu um erro inesperado"]
                         },
                         "data": {
                           "type": "object"
@@ -150,7 +140,7 @@
                   "validation_error": {
                     "summary": "Erro de validação",
                     "value": {
-                      "message": "Invalid request body",
+                      "message": "Corpo da requisição inválido",
                       "data": {
                         "field_errors": [
                           "name must be at least 3 characters",
@@ -163,7 +153,7 @@
                   "unexpected_error": {
                     "summary": "Erro inesperado",
                     "value": {
-                      "message": "An unexpected error occurred",
+                      "message": "Ocorreu um erro inesperado",
                       "data": {}
                     }
                   }
@@ -180,9 +170,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Helper already exists"
-                      ]
+                      "enum": ["Assistente já existe"]
                     },
                     "data": {
                       "type": "object",
@@ -196,7 +184,7 @@
                   }
                 },
                 "example": {
-                  "message": "Helper already exists",
+                  "message": "Assistente já existe",
                   "data": {
                     "email": "joao.silva@example.com"
                   }
@@ -213,9 +201,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Invalid email provided"
-                      ]
+                      "enum": ["Email informado inválido"]
                     },
                     "data": {
                       "type": "object",
@@ -229,7 +215,7 @@
                   }
                 },
                 "example": {
-                  "message": "Invalid email provided",
+                  "message": "Email informado inválido",
                   "data": {
                     "email": "invalid-email@"
                   }
@@ -242,9 +228,7 @@
     },
     "/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Autenticar helper (Login)",
         "description": "Autentica um helper e retorna tokens de acesso",
         "requestBody": {
@@ -265,10 +249,7 @@
                     "description": "Senha do helper"
                   }
                 },
-                "required": [
-                  "email",
-                  "password"
-                ],
+                "required": ["email", "password"],
                 "additionalProperties": false
               },
               "examples": {
@@ -313,9 +294,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Invalid request body"
-                      ]
+                      "enum": ["Corpo da requisição inválido"]
                     },
                     "data": {
                       "type": "object",
@@ -331,11 +310,9 @@
                   }
                 },
                 "example": {
-                  "message": "Invalid request body",
+                  "message": "Corpo da requisição inválido",
                   "data": {
-                    "field_errors": [
-                      "email must be a valid email"
-                    ]
+                    "field_errors": ["email must be a valid email"]
                   }
                 }
               }
@@ -350,9 +327,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Invalid email or password"
-                      ]
+                      "enum": ["Email ou senha inválidos"]
                     },
                     "data": {
                       "type": "object"
@@ -360,7 +335,7 @@
                   }
                 },
                 "example": {
-                  "message": "Invalid email or password",
+                  "message": "Email ou senha inválidos",
                   "data": {}
                 }
               }
@@ -375,9 +350,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "The email provided is invalid"
-                      ]
+                      "enum": ["O email informado é inválido"]
                     },
                     "data": {
                       "type": "object",
@@ -390,7 +363,7 @@
                   }
                 },
                 "example": {
-                  "message": "The email provided is invalid",
+                  "message": "O email informado é inválido",
                   "data": {
                     "email": "invalid-email"
                   }
@@ -403,9 +376,7 @@
     },
     "/auth/refresh": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Renovar access token",
         "description": "Renova o access token usando o refresh token armazenado em cookie",
         "parameters": [
@@ -450,9 +421,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Refresh token not provided"
-                          ]
+                          "enum": ["Refresh token não fornecido"]
                         },
                         "data": {
                           "type": "object"
@@ -464,9 +433,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid or expired refresh token"
-                          ]
+                          "enum": ["Refresh token inválido ou expirado"]
                         },
                         "data": {
                           "type": "object"
@@ -478,9 +445,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Token must be a refresh token"
-                          ]
+                          "enum": ["O token deve ser um refresh token"]
                         },
                         "data": {
                           "type": "object"
@@ -493,21 +458,21 @@
                   "no_token": {
                     "summary": "Token não fornecido",
                     "value": {
-                      "message": "Refresh token not provided",
+                      "message": "Refresh token não fornecido",
                       "data": {}
                     }
                   },
                   "invalid_token": {
                     "summary": "Token inválido",
                     "value": {
-                      "message": "Invalid or expired refresh token",
+                      "message": "Refresh token inválido ou expirado",
                       "data": {}
                     }
                   },
                   "wrong_type": {
                     "summary": "Tipo de token incorreto",
                     "value": {
-                      "message": "Token must be a refresh token",
+                      "message": "O token deve ser um refresh token",
                       "data": {}
                     }
                   }
@@ -524,9 +489,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Helper not found"
-                      ]
+                      "enum": ["Assistente não encontrado"]
                     },
                     "data": {
                       "type": "object"
@@ -534,7 +497,7 @@
                   }
                 },
                 "example": {
-                  "message": "Helper not found",
+                  "message": "Assistente não encontrado",
                   "data": {}
                 }
               }
@@ -545,11 +508,9 @@
     },
     "/auth/logout": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Encerrar sessao",
-        "description": "Faz logout do usuario autenticado, validando o refresh token da mesma sessao e limpando os cookies de autenticacao.",
+        "description": "Faz logout do usuário autenticado, validando o refresh token da mesma sessao e limpando os cookies de autenticacao.",
         "security": [
           {
             "bearerAuth": []
@@ -591,7 +552,7 @@
             }
           },
           "401": {
-            "description": "Nao autorizado por token ausente/invalido ou refresh token inconsistente",
+            "description": "Não autorizado por token ausente/inválido ou refresh token inconsistente",
             "content": {
               "application/json": {
                 "schema": {
@@ -601,15 +562,11 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHORIZED"
-                          ]
+                          "enum": ["UNAUTHORIZED"]
                         },
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Unauthorized - Token not provided"
-                          ]
+                          "enum": ["Não autorizado - token não fornecido"]
                         },
                         "data": {
                           "type": "object"
@@ -621,15 +578,11 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHORIZED"
-                          ]
+                          "enum": ["UNAUTHORIZED"]
                         },
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Unauthorized - Invalid or expired token"
-                          ]
+                          "enum": ["Não autorizado - token inválido ou expirado"]
                         },
                         "data": {
                           "type": "object"
@@ -641,15 +594,11 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHORIZED"
-                          ]
+                          "enum": ["UNAUTHORIZED"]
                         },
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Unauthorized - Invalid token type"
-                          ]
+                          "enum": ["Não autorizado - tipo de token inválido"]
                         },
                         "data": {
                           "type": "object"
@@ -661,15 +610,11 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHORIZED"
-                          ]
+                          "enum": ["UNAUTHORIZED"]
                         },
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Refresh token not provided"
-                          ]
+                          "enum": ["Refresh token não fornecido"]
                         },
                         "data": {
                           "type": "object"
@@ -681,15 +626,11 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHORIZED"
-                          ]
+                          "enum": ["UNAUTHORIZED"]
                         },
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid or expired refresh token"
-                          ]
+                          "enum": ["Refresh token inválido ou expirado"]
                         },
                         "data": {
                           "type": "object"
@@ -701,15 +642,11 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHORIZED"
-                          ]
+                          "enum": ["UNAUTHORIZED"]
                         },
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Token must be a refresh token"
-                          ]
+                          "enum": ["O token deve ser um refresh token"]
                         },
                         "data": {
                           "type": "object"
@@ -721,14 +658,12 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHORIZED"
-                          ]
+                          "enum": ["UNAUTHORIZED"]
                         },
                         "message": {
                           "type": "string",
                           "enum": [
-                            "Refresh token does not belong to authenticated user"
+                            "O refresh token não pertence ao usuário autenticado"
                           ]
                         },
                         "data": {
@@ -740,42 +675,42 @@
                 },
                 "examples": {
                   "token_not_provided": {
-                    "summary": "Access token nao fornecido",
+                    "summary": "Access token não fornecido",
                     "value": {
                       "code": "UNAUTHORIZED",
-                      "message": "Unauthorized - Token not provided",
+                      "message": "Não autorizado - token não fornecido",
                       "data": {}
                     }
                   },
                   "invalid_access_token": {
-                    "summary": "Access token invalido ou expirado",
+                    "summary": "Access token inválido ou expirado",
                     "value": {
                       "code": "UNAUTHORIZED",
-                      "message": "Unauthorized - Invalid or expired token",
+                      "message": "Não autorizado - token inválido ou expirado",
                       "data": {}
                     }
                   },
                   "invalid_access_token_type": {
-                    "summary": "Tipo de token de acesso invalido",
+                    "summary": "Tipo de token de acesso inválido",
                     "value": {
                       "code": "UNAUTHORIZED",
-                      "message": "Unauthorized - Invalid token type",
+                      "message": "Não autorizado - tipo de token inválido",
                       "data": {}
                     }
                   },
                   "refresh_not_provided": {
-                    "summary": "Refresh token nao fornecido",
+                    "summary": "Refresh token não fornecido",
                     "value": {
                       "code": "UNAUTHORIZED",
-                      "message": "Refresh token not provided",
+                      "message": "Refresh token não fornecido",
                       "data": {}
                     }
                   },
                   "invalid_refresh_token": {
-                    "summary": "Refresh token invalido",
+                    "summary": "Refresh token inválido",
                     "value": {
                       "code": "UNAUTHORIZED",
-                      "message": "Invalid or expired refresh token",
+                      "message": "Refresh token inválido ou expirado",
                       "data": {}
                     }
                   },
@@ -783,15 +718,15 @@
                     "summary": "Tipo incorreto de refresh token",
                     "value": {
                       "code": "UNAUTHORIZED",
-                      "message": "Token must be a refresh token",
+                      "message": "O token deve ser um refresh token",
                       "data": {}
                     }
                   },
                   "refresh_from_another_user": {
-                    "summary": "Refresh token de outro usuario",
+                    "summary": "Refresh token de outro usuário",
                     "value": {
                       "code": "UNAUTHORIZED",
-                      "message": "Refresh token does not belong to authenticated user",
+                      "message": "O refresh token não pertence ao usuário autenticado",
                       "data": {}
                     }
                   }
@@ -804,9 +739,7 @@
     },
     "/me": {
       "get": {
-        "tags": [
-          "Profile"
-        ],
+        "tags": ["Profile"],
         "summary": "Obter perfil do usuário",
         "description": "Retorna os dados do perfil do usuário autenticado. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
@@ -835,10 +768,7 @@
                       "description": "Email do usuário"
                     }
                   },
-                  "required": [
-                    "name",
-                    "email"
-                  ]
+                  "required": ["name", "email"]
                 },
                 "example": {
                   "name": "João Silva",
@@ -858,21 +788,21 @@
                   "token_not_provided": {
                     "summary": "Cookie não fornecido",
                     "value": {
-                      "message": "Unauthorized - Token not provided",
+                      "message": "Não autorizado - token não fornecido",
                       "data": {}
                     }
                   },
                   "invalid_token": {
                     "summary": "Cookie inválido ou expirado",
                     "value": {
-                      "message": "Unauthorized - Invalid or expired token",
+                      "message": "Não autorizado - token inválido ou expirado",
                       "data": {}
                     }
                   },
                   "invalid_token_type": {
                     "summary": "Tipo de token inválido",
                     "value": {
-                      "message": "Unauthorized - Invalid token type",
+                      "message": "Não autorizado - tipo de token inválido",
                       "data": {}
                     }
                   }
@@ -918,9 +848,7 @@
     },
     "/attachments": {
       "post": {
-        "tags": [
-          "Attachments"
-        ],
+        "tags": ["Attachments"],
         "summary": "Upload de anexo",
         "description": "Faz upload de um arquivo ZIP para ser anexado em emails. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
@@ -944,9 +872,7 @@
                     "description": "Arquivo ZIP (apenas arquivos .zip são aceitos)"
                   }
                 },
-                "required": [
-                  "file"
-                ]
+                "required": ["file"]
               }
             }
           }
@@ -963,9 +889,7 @@
                       "$ref": "#/components/schemas/UUID"
                     }
                   },
-                  "required": [
-                    "attachment_id"
-                  ]
+                  "required": ["attachment_id"]
                 },
                 "example": {
                   "attachment_id": "123e4567-e89b-12d3-a456-426614174000"
@@ -984,9 +908,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid file type"
-                          ]
+                          "enum": ["Tipo de arquivo inválido"]
                         },
                         "data": {
                           "type": "object",
@@ -1006,9 +928,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Failed to upload file"
-                          ]
+                          "enum": ["Falha ao fazer upload do arquivo"]
                         },
                         "data": {
                           "type": "object"
@@ -1020,9 +940,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "An unexpected error occurred"
-                          ]
+                          "enum": ["Ocorreu um erro inesperado"]
                         },
                         "data": {
                           "type": "object"
@@ -1035,25 +953,23 @@
                   "invalid_file_type": {
                     "summary": "Tipo de arquivo inválido",
                     "value": {
-                      "message": "Invalid file type",
+                      "message": "Tipo de arquivo inválido",
                       "data": {
-                        "accepted_types": [
-                          "application/zip"
-                        ]
+                        "accepted_types": ["application/zip"]
                       }
                     }
                   },
                   "upload_failed": {
                     "summary": "Falha no upload",
                     "value": {
-                      "message": "Failed to upload file",
+                      "message": "Falha ao fazer upload do arquivo",
                       "data": {}
                     }
                   },
                   "unexpected_error": {
                     "summary": "Erro inesperado",
                     "value": {
-                      "message": "An unexpected error occurred",
+                      "message": "Ocorreu um erro inesperado",
                       "data": {}
                     }
                   }
@@ -1066,9 +982,7 @@
     },
     "/attachments/{id}/delete": {
       "delete": {
-        "tags": [
-          "Attachments"
-        ],
+        "tags": ["Attachments"],
         "summary": "Deletar anexo",
         "description": "Remove um anexo do sistema e do storage. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
@@ -1101,14 +1015,12 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Attachment deleted successfully"
-                      ]
+                      "enum": ["Anexo deletado com sucesso"]
                     }
                   }
                 },
                 "example": {
-                  "message": "Attachment deleted successfully"
+                  "message": "Anexo deletado com sucesso"
                 }
               }
             }
@@ -1124,9 +1036,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid request body"
-                          ]
+                          "enum": ["Corpo da requisição inválido"]
                         },
                         "data": {
                           "type": "object",
@@ -1146,9 +1056,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "An unexpected error occurred"
-                          ]
+                          "enum": ["Ocorreu um erro inesperado"]
                         },
                         "data": {
                           "type": "object"
@@ -1161,18 +1069,16 @@
                   "invalid_uuid": {
                     "summary": "UUID inválido",
                     "value": {
-                      "message": "Invalid request body",
+                      "message": "Corpo da requisição inválido",
                       "data": {
-                        "field_errors": [
-                          "Invalid uuid"
-                        ]
+                        "field_errors": ["Invalid uuid"]
                       }
                     }
                   },
                   "unexpected_error": {
                     "summary": "Erro inesperado",
                     "value": {
-                      "message": "An unexpected error occurred",
+                      "message": "Ocorreu um erro inesperado",
                       "data": {}
                     }
                   }
@@ -1191,9 +1097,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Attachment not found"
-                          ]
+                          "enum": ["Anexo não encontrado"]
                         },
                         "data": {
                           "type": "object",
@@ -1211,9 +1115,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Attachment is not found on server"
-                          ]
+                          "enum": ["Anexo não encontrado no servidor"]
                         },
                         "data": {
                           "type": "object",
@@ -1232,7 +1134,7 @@
                   "not_found_db": {
                     "summary": "Anexo não encontrado no banco",
                     "value": {
-                      "message": "Attachment not found",
+                      "message": "Anexo não encontrado",
                       "data": {
                         "attachment_id": "123e4567-e89b-12d3-a456-426614174000"
                       }
@@ -1241,7 +1143,7 @@
                   "not_found_server": {
                     "summary": "Anexo não encontrado no storage",
                     "value": {
-                      "message": "Attachment is not found on server",
+                      "message": "Anexo não encontrado no servidor",
                       "data": {
                         "attachment_id": "123e4567-e89b-12d3-a456-426614174000"
                       }
@@ -1260,9 +1162,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Attachment is in use and cannot be deleted"
-                      ]
+                      "enum": ["O anexo está em uso e não pode ser deletado"]
                     },
                     "data": {
                       "type": "object",
@@ -1276,7 +1176,7 @@
                   }
                 },
                 "example": {
-                  "message": "Attachment is in use and cannot be deleted",
+                  "message": "O anexo está em uso e não pode ser deletado",
                   "data": {
                     "attachment_id": "123e4567-e89b-12d3-a456-426614174000"
                   }
@@ -1293,9 +1193,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Failed to delete attachment"
-                      ]
+                      "enum": ["Falha ao deletar anexo"]
                     },
                     "data": {
                       "type": "object",
@@ -1309,7 +1207,7 @@
                   }
                 },
                 "example": {
-                  "message": "Failed to delete attachment",
+                  "message": "Falha ao deletar anexo",
                   "data": {
                     "attachment_id": "123e4567-e89b-12d3-a456-426614174000"
                   }
@@ -1322,9 +1220,7 @@
     },
     "/emails": {
       "post": {
-        "tags": [
-          "Emails"
-        ],
+        "tags": ["Emails"],
         "summary": "Enviar email",
         "description": "Envia um email para o contador do cliente com os anexos especificados. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
@@ -1355,10 +1251,7 @@
                     "maxItems": 10
                   }
                 },
-                "required": [
-                  "client_id",
-                  "attachment_ids"
-                ],
+                "required": ["client_id", "attachment_ids"],
                 "additionalProperties": false
               },
               "examples": {
@@ -1366,9 +1259,7 @@
                   "summary": "Envio básico com um anexo",
                   "value": {
                     "client_id": "f9b5d9e4-e8e9-4a0d-90d7-77ccda364af8",
-                    "attachment_ids": [
-                      "987fcdeb-51a2-43d1-9f12-123456789000"
-                    ]
+                    "attachment_ids": ["987fcdeb-51a2-43d1-9f12-123456789000"]
                   }
                 },
                 "exemplo_multiplos_anexos": {
@@ -1396,9 +1287,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Email sent successfully"
-                      ]
+                      "enum": ["Email enviado com sucesso"]
                     },
                     "data": {
                       "type": "object",
@@ -1407,18 +1296,13 @@
                           "$ref": "#/components/schemas/UUID"
                         }
                       },
-                      "required": [
-                        "email_id"
-                      ]
+                      "required": ["email_id"]
                     }
                   },
-                  "required": [
-                    "message",
-                    "data"
-                  ]
+                  "required": ["message", "data"]
                 },
                 "example": {
-                  "message": "Email sent successfully",
+                  "message": "Email enviado com sucesso",
                   "data": {
                     "email_id": "456f7890-a1b2-34c5-d678-901234567890"
                   }
@@ -1437,9 +1321,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid request body"
-                          ]
+                          "enum": ["Corpo da requisição inválido"]
                         },
                         "data": {
                           "type": "object",
@@ -1459,9 +1341,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "An unexpected error occurred"
-                          ]
+                          "enum": ["Ocorreu um erro inesperado"]
                         },
                         "data": {
                           "type": "object"
@@ -1474,7 +1354,7 @@
                   "validation_error": {
                     "summary": "Erro de validação",
                     "value": {
-                      "message": "Invalid request body",
+                      "message": "Corpo da requisição inválido",
                       "data": {
                         "field_errors": [
                           "client_id must be a valid UUID",
@@ -1486,7 +1366,7 @@
                   "unexpected_error": {
                     "summary": "Erro inesperado",
                     "value": {
-                      "message": "An unexpected error occurred",
+                      "message": "Ocorreu um erro inesperado",
                       "data": {}
                     }
                   }
@@ -1505,9 +1385,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Client not found"
-                          ]
+                          "enum": ["Cliente não encontrado"]
                         },
                         "data": {
                           "type": "object",
@@ -1525,9 +1403,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Some attachments were not found"
-                          ]
+                          "enum": ["Alguns anexos não foram encontrados"]
                         },
                         "data": {
                           "type": "object",
@@ -1549,7 +1425,7 @@
                   "client_not_found": {
                     "summary": "Cliente não encontrado",
                     "value": {
-                      "message": "Client not found",
+                      "message": "Cliente não encontrado",
                       "data": {
                         "client_id": "f9b5d9e4-e8e9-4a0d-90d7-77ccda364af8"
                       }
@@ -1558,7 +1434,7 @@
                   "attachments_not_found": {
                     "summary": "Anexos não encontrados",
                     "value": {
-                      "message": "Some attachments were not found",
+                      "message": "Alguns anexos não foram encontrados",
                       "data": {
                         "missing_attachment_ids": [
                           "987fcdeb-51a2-43d1-9f12-123456789000"
@@ -1579,9 +1455,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Failed to process some attachments"
-                      ]
+                      "enum": ["Falha ao processar alguns anexos"]
                     },
                     "data": {
                       "type": "object",
@@ -1609,7 +1483,7 @@
                   }
                 },
                 "example": {
-                  "message": "Failed to process some attachments",
+                  "message": "Falha ao processar alguns anexos",
                   "data": {
                     "failed_attachments": [
                       {
@@ -1632,9 +1506,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Failed to send email"
-                      ]
+                      "enum": ["Falha ao enviar email"]
                     },
                     "data": {
                       "type": "object",
@@ -1648,7 +1520,7 @@
                   }
                 },
                 "example": {
-                  "message": "Failed to send email",
+                  "message": "Falha ao enviar email",
                   "data": {
                     "retry_after": "5 minutes"
                   }
@@ -1661,9 +1533,7 @@
     },
     "/clients": {
       "get": {
-        "tags": [
-          "Clients"
-        ],
+        "tags": ["Clients"],
         "summary": "Listar clientes",
         "description": "Retorna a lista de todos os clientes cadastrados no sistema. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
@@ -1713,17 +1583,11 @@
                                 "description": "Email do contador"
                               }
                             },
-                            "required": [
-                              "name",
-                              "email"
-                            ]
+                            "required": ["name", "email"]
                           },
                           "status": {
                             "type": "string",
-                            "enum": [
-                              "sent",
-                              "not_sent"
-                            ],
+                            "enum": ["sent", "not_sent"],
                             "description": "Status do envio de email para o cliente no mês atual"
                           }
                         },
@@ -1737,9 +1601,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "clients"
-                  ]
+                  "required": ["clients"]
                 },
                 "examples": {
                   "success_with_clients": {
@@ -1778,9 +1640,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Helper not found"
-                      ]
+                      "enum": ["Assistente não encontrado"]
                     },
                     "data": {
                       "type": "object",
@@ -1793,7 +1653,7 @@
                   }
                 },
                 "example": {
-                  "message": "Helper not found",
+                  "message": "Assistente não encontrado",
                   "data": {
                     "helperId": "non-existent-id"
                   }
@@ -1810,9 +1670,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Internal server error"
-                      ]
+                      "enum": ["Erro interno do servidor"]
                     },
                     "data": {
                       "type": "object"
@@ -1820,7 +1678,7 @@
                   }
                 },
                 "example": {
-                  "message": "Internal server error",
+                  "message": "Erro interno do servidor",
                   "data": {}
                 }
               }
@@ -1829,9 +1687,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Clients"
-        ],
+        "tags": ["Clients"],
         "summary": "Criar cliente",
         "description": "Cria um novo cliente com dados do contador. Requer autenticação via Bearer token ou cookie accessToken.",
         "security": [
@@ -1914,9 +1770,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "Invalid request body"
-                          ]
+                          "enum": ["Corpo da requisição inválido"]
                         },
                         "data": {
                           "type": "object",
@@ -1936,9 +1790,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "enum": [
-                            "An unexpected error occurred"
-                          ]
+                          "enum": ["Ocorreu um erro inesperado"]
                         },
                         "data": {
                           "type": "object"
@@ -1951,7 +1803,7 @@
                   "validation_error": {
                     "summary": "Erro de validação",
                     "value": {
-                      "message": "Invalid request body",
+                      "message": "Corpo da requisição inválido",
                       "data": {
                         "field_errors": [
                           "name must be at least 2 characters",
@@ -1963,7 +1815,7 @@
                   "unexpected_error": {
                     "summary": "Erro inesperado",
                     "value": {
-                      "message": "An unexpected error occurred",
+                      "message": "Ocorreu um erro inesperado",
                       "data": {}
                     }
                   }
@@ -1980,9 +1832,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Client already exists"
-                      ]
+                      "enum": ["Cliente já existe"]
                     },
                     "data": {
                       "type": "object",
@@ -1996,7 +1846,7 @@
                   }
                 },
                 "example": {
-                  "message": "Client already exists",
+                  "message": "Cliente já existe",
                   "data": {
                     "CNPJ": "12345678000195"
                   }
@@ -2013,9 +1863,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Invalid email provided"
-                      ]
+                      "enum": ["Email informado inválido"]
                     },
                     "data": {
                       "type": "object",
@@ -2029,7 +1877,7 @@
                   }
                 },
                 "example": {
-                  "message": "Invalid email provided",
+                  "message": "Email informado inválido",
                   "data": {
                     "email": "invalid-email@"
                   }
@@ -2055,9 +1903,9 @@
           "message": {
             "type": "string",
             "enum": [
-              "Unauthorized - Token not provided",
-              "Unauthorized - Invalid or expired token",
-              "Unauthorized - Invalid token type",
+              "Não autorizado - token não fornecido",
+              "Não autorizado - token inválido ou expirado",
+              "Não autorizado - tipo de token inválido",
               "Unauthorized - Invalid token"
             ]
           },

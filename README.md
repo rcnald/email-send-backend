@@ -1,7 +1,7 @@
-# **Documento de Requisitos: Sistema de Envio de Documentos Fiscais**
+# **Documento de Requisitos: invoice-api**
 
-Versão: 1.4  
-Data: 23/07/2025
+Versão: 1.5  
+Data: 21/03/2026
 
 ## **Histórico de Revisões**
 
@@ -11,6 +11,7 @@ Data: 23/07/2025
 | 1.1 | 06/06/2025 | Ronaldo Junior | Escopo expandido e adição de RNs e RNFs |
 | 1.3 | 11/06/2025 | Ronaldo Junior | Atualização dos Requisitos Funcionais e Regras de Negócio |
 | 1.4 | 23/07/2025 | Ronaldo Junior | Reestruturação do documento: merge com documentação técnica, reorganização das seções para melhor experiência do desenvolvedor, padronização de comandos e configurações |
+| 1.5 | 21/03/2026 | Ronaldo Junior | Atualização para o estado atual da API, renomeação da aplicação para invoice-api, revisão de endpoints, scripts e variáveis de ambiente |
 
 ## **Índice**
 
@@ -25,6 +26,7 @@ Data: 23/07/2025
    5.1. [Autenticação](#51-autenticação)       
    5.2. [Gerenciamento de Clientes](#52-gerenciamento-de-clientes)    
    5.3. [Envio de E-mail](#53-envio-de-e-mail)
+   5.4. [Endpoints Atuais da API](#54-endpoints-atuais-da-api)
 6. [Regras de Negócio](#6-regras-de-negócio)  
 7. [Requisitos Não Funcionais](#7-requisitos-não-funcionais)
 8. [Estrutura do Projeto](#8-estrutura-do-projeto)
@@ -38,7 +40,7 @@ Data: 23/07/2025
 
 ### **1.1 Propósito**
 
-Este documento especifica os requisitos para o Sistema de Envio de Documentos Fiscais. Seu propósito é detalhar as funcionalidades, regras e características técnicas necessárias para que a equipe de desenvolvimento possa projetar, implementar e testar a solução de forma eficaz.
+Este documento especifica os requisitos para a aplicação **invoice-api**. Seu propósito é detalhar as funcionalidades, regras e características técnicas necessárias para que a equipe de desenvolvimento possa projetar, implementar e testar a solução de forma eficaz.
 
 ### **1.2 Público-alvo**
 
@@ -54,7 +56,7 @@ O escopo do projeto abrange o desenvolvimento de uma plataforma completa que inc
 
 ## **2. Visão Geral do Produto**
 
-O sistema é uma plataforma web projetada para otimizar o processo de envio de documentos fiscais. Usuários poderão se cadastrar, gerenciar uma base de clientes e contadores, e então utilizar a ferramenta principal para enviar arquivos .zip de forma padronizada e automatizada. O sistema notificará o usuário em tempo real sobre o status de cada envio, garantindo transparência e confiabilidade no processo.
+O **invoice-api** é uma plataforma web projetada para otimizar o processo de envio de documentos fiscais. Usuários podem se cadastrar, gerenciar uma base de clientes e contadores, e utilizar a API para enviar arquivos `.zip` de forma padronizada e automatizada. O sistema notifica o usuário sobre o status de cada envio, garantindo transparência e confiabilidade no processo.
 
 Desenvolvido com **Clean Architecture** e **DDD**, organizando o código em camadas: domínio (entidades + regras), aplicação (use cases) e infraestrutura (implementações). Utiliza padrões como **Repository**, **Dependency Injection** e **Factory**, com sistema robusto de tratamento de erros via tuplas `[error, result, warning]`.
 
@@ -94,23 +96,26 @@ npm install
 ```
 
 ### **4. Configure o ambiente:**
-Crie um arquivo `.env` na raiz do projeto e configure as variáveis com base no `.env.example`. Emails só serão enviados quando `ENVIRONMENT=production`.
+Crie um arquivo `.env` na raiz do projeto e configure as variáveis com base no `.env.example`.
 
-### **5. Inicialize os serviços:**
+### **5. Inicialize os serviços locais:**
 ```bash
 yarn setup
 # ou
 npm run setup
 ```
 
-### **6. Inicie o servidor:**
+### **6. Inicie o servidor da invoice-api:**
 ```bash
 yarn dev
 # ou
 npm run dev
 ```
 
-A aplicação estará disponível em: [http://localhost:3333](http://localhost:3333)
+### **7. Acesse a API e documentação:**
+- API: [http://localhost:3333](http://localhost:3333)
+- Healthcheck: [http://localhost:3333/health](http://localhost:3333/health)
+- API Reference (Scalar): [http://localhost:3333/reference](http://localhost:3333/reference)
 
 ## **5. Requisitos Funcionais**
 
@@ -143,6 +148,23 @@ A aplicação estará disponível em: [http://localhost:3333](http://localhost:3
 - [ ] **RF-10:** Se uma falha de envio persistir, o sistema deve sugerir o envio manual e fornecer um template de e-mail (com assunto e corpo) para o usuário copiar.  
 - [ ] **RF-11:** O sistema deve manter um histórico de envios com seus respectivos status (ex: enviado, falhou, pendente, etc.).
 
+### **5.4 Endpoints Atuais da API**
+
+**Públicos:**
+- `GET /health`
+- `POST /auth/register`
+- `POST /auth/login`
+- `PATCH /auth/token/refresh`
+
+**Protegidos (JWT por cookie httpOnly ou Bearer Token):**
+- `POST /auth/logout`
+- `GET /me`
+- `GET /clients`
+- `POST /clients`
+- `POST /attachments`
+- `DELETE /attachments/:id/delete`
+- `POST /emails`
+
 ## **6. Regras de Negócio**
 
 * [x] **RN-01:** O arquivo anexado pelo usuário **deve**, obrigatoriamente, estar no formato **.zip**. O sistema deve validar a extensão do arquivo e rejeitar formatos diferentes.  
@@ -154,16 +176,16 @@ A aplicação estará disponível em: [http://localhost:3333](http://localhost:3
 * [x] **RN-07:** Os arquivos armazenados temporariamente para envio (mencionando S3/Tebi.io) **devem** ser excluídos permanentemente após 3 dias.  
 * [x] **RN-08:** O campo de mês de referência deve ser preenchido automaticamente com o mês anterior à data atual, mas **deve** permitir a alteração pelo usuário.  
 * [ ] **RN-09:** Um usuário só poderá visualizar o histórico dos **seus próprios** envios.  
-* [ ] **RN-10:** Na tela de envio, o usuário só poderá selecionar clientes que ele mesmo cadastrou.
+* [x] **RN-10:** Na tela de envio, o usuário só poderá selecionar clientes que ele mesmo cadastrou.
 
 ## **7. Requisitos Não Funcionais**
 
 * [X] **RNF-01 (Desempenho):** O upload do arquivo e o disparo do e-mail devem ser concluídos em um tempo de resposta rápido, idealmente em menos de 5 segundos sob condições normais de rede.  
 * [X] **RNF-02 (Usabilidade):** A interface para anexar arquivos e selecionar clientes deve ser clara e intuitiva, minimizando a chance de erro do usuário.  
-* [ ] **RNF-03 (Confiabilidade):** O sistema deve garantir a entrega dos e-mails utilizando um serviço externo confiável (como o Resend). Falhas na comunicação com o serviço devem ser tratadas de forma elegante, sem perda de dados.  
+* [] **RNF-03 (Confiabilidade):** O sistema deve garantir a entrega dos e-mails utilizando um serviço externo confiável (como o Resend). Falhas na comunicação com o serviço devem ser tratadas de forma elegante, sem perda de dados.  
 * [X] **RNF-04 (Segurança):** Os arquivos fiscais anexados devem ser tratados de forma segura, com armazenamento temporário e exclusão automática após o período definido. O acesso à funcionalidade de envio deve ser restrito a usuários autenticados.  
-* [ ] **RNF-05 (Disponibilidade):** O serviço de envio de e-mail deve estar disponível 99.9% do tempo.  
-* [ ] **RNF-06 (Comunicação):** As notificações de sucesso e falha para o usuário devem ser exibidas em tempo real (via Socket.IO, conforme sugerido no diagrama), sem a necessidade de recarregar a página.
+* [x] **RNF-05 (Disponibilidade):** O serviço de envio de e-mail deve estar disponível 99.9% do tempo.  
+* [x] **RNF-06 (Comunicação):** As notificações de sucesso e falha para o usuário devem ser exibidas em tempo real (via Socket.IO, conforme sugerido no diagrama), sem a necessidade de recarregar a página.
 
 ## **8. Estrutura do Projeto**
 
@@ -189,7 +211,7 @@ test/                      # Utilitários de teste
 - Porta: 5432
 - User: docker
 - Password: docker
-- Database: email-send
+- Database: invoice-api
 
 # MinIO - S3-compatible storage
 - API: http://localhost:9000
@@ -200,7 +222,10 @@ test/                      # Utilitários de teste
 
 ### **9.2 Variáveis de Ambiente**
 ```bash
-DATABASE_URL="postgresql://docker:docker@localhost:5432/email-send"
+DATABASE_URL="postgresql://docker:docker@localhost:5432/invoice-api"
+
+APP_URL="http://localhost:3000"
+PORT=3333
 
 S3_URL="http://localhost:9000"
 S3_BUCKET="attachments"
@@ -208,34 +233,77 @@ S3_ACCESS_KEY_ID="testuser"
 S3_SECRET_KEY="testpassword"
 S3_REGION="us-east-1"
 
+JWT_SECRET="your-super-secret-key-with-at-least-32-characters"
+JWT_ACCESS_TOKEN_EXPIRATION="15m"
+JWT_REFRESH_TOKEN_EXPIRATION="7d"
+JWT_ACCESS_TOKEN_MAX_AGE=900000
+JWT_REFRESH_TOKEN_MAX_AGE=604800000
+
 ENVIRONMENT="development"  # development | test | production
 
-RESEND_API_KEY="your-resend-key"  # Obrigatório apenas para production
+RESEND_API_KEY="your-resend-key"
 ```
+
+> `RESEND_API_KEY` é validada na inicialização da aplicação. Utilize um valor real em produção.
 
 ### **9.3 Comandos de Desenvolvimento**
 
-#### **Testes**
+#### **Comandos Principais**
 
-**1. Executar testes unitários:**
+**1. Rodar em desenvolvimento:**
+```bash
+yarn dev
+# ou
+npm run dev
+```
+
+**2. Subir dependências locais e preparar banco:**
+```bash
+yarn setup
+# ou
+npm run setup
+```
+
+**3. Gerar e atualizar documentação OpenAPI (swagger.json):**
+```bash
+yarn swagger
+# ou
+npm run swagger
+```
+
+**4. Exportar documentação estática (Scalar) para `/public`:**
+```bash
+yarn build:docs
+# ou
+npm run build:docs
+```
+
+**5. Executar testes unitários:**
 ```bash
 yarn test
 # ou
 npm test
 ```
 
-**2. Executar testes E2E:**
+**6. Executar testes E2E:**
 ```bash
 yarn test:e2e
 # ou
 npm run test:e2e
 ```
 
-**3. Executar linting:**
+**7. Executar verificação de qualidade:**
 ```bash
-yarn lint
+yarn check
 # ou
-npm run lint
+npm run check
+```
+
+**8. Aplicar correções automáticas:**
+```bash
+yarn fix
+# ou
+npm run fix
 ```
 
 #### **Estrutura de Testes**
@@ -307,5 +375,3 @@ npm start
 ```
 
 ---
-
-

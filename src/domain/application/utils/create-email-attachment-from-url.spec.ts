@@ -46,7 +46,7 @@ describe("createEmailAttachmentsFromUrls", () => {
       data: {
         details: ["http://fake-storage/invalid-file.zip"],
       },
-      message: "One or more attachments failed to be processed.",
+      message: "Um ou mais anexos falharam ao serem processados.",
     });
   });
 });

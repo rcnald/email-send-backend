@@ -19,7 +19,7 @@ export class FetchClientsUseCase {
 
     if (!helper) {
       return bad(
-        DomainError.NotFound("Helper not found", {
+        DomainError.NotFound("Assistente nao encontrado", {
           helperId,
         })
       );

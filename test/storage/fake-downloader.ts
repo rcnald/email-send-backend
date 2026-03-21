@@ -20,7 +20,7 @@ export class FakeDownloader implements Downloader {
       )
     ) {
       return bad(
-        DomainError.ExternalServiceFailed("Failed to download file", {
+        DomainError.ExternalServiceFailed("Falha ao baixar arquivo", {
           file: url,
         })
       );

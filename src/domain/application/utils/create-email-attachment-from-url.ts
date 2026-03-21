@@ -39,7 +39,7 @@ export async function createEmailAttachmentsFromUrls(
   if (successfulAttachments.length === 0) {
     return bad(
       DomainError.ExternalServiceFailed(
-        "Attachments have expired or are not accessible"
+        "Os anexos expiraram ou nao estao acessiveis"
       )
     );
   }
@@ -47,7 +47,7 @@ export async function createEmailAttachmentsFromUrls(
   if (failedReasons.length > 0) {
     return bad(
       DomainError.ExternalServiceFailed(
-        "One or more attachments failed to be processed.",
+        "Um ou mais anexos falharam ao serem processados.",
         {
           details: failedReasons.map(
             (reason) => (reason.data as { file?: string })?.file ?? "unknown"

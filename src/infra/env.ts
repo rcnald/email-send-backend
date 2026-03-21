@@ -15,6 +15,10 @@ const envSchema = z.object({
   S3_URL: z.url(),
   S3_REGION: z.string().min(1),
   S3_BUCKET: z.string().min(1),
+  MAX_STORAGE: z.coerce
+    .number()
+    .positive()
+    .default(5 * 1024 * 1024 * 1024), // 5 GB
   RESEND_API_KEY: z.string().min(1),
   JWT_SECRET: z.string().min(32),
   JWT_ACCESS_TOKEN_EXPIRATION: z.string().min(1),
@@ -32,9 +36,9 @@ export function getEnv() {
   const _env = envSchema.safeParse(process.env);
 
   if (!_env.success) {
-    console.error("Invalid environment variables:", fromZodError(_env.error));
+    console.error("Variáveis de ambiente inválidas:", fromZodError(_env.error));
 
-    throw new Error("Invalid environment variables.");
+    throw new Error("Variáveis de ambiente inválidas.");
   }
 
   return _env.data;

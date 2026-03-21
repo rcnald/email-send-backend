@@ -25,7 +25,7 @@ describe("DeleteAttachmentUseCase", () => {
 
     expect(error).toEqual({
       code: "NOT_FOUND",
-      message: "Attachment not found",
+      message: "Anexo nao encontrado",
       data: { attachmentId: "non-existing-id" },
     });
   });
@@ -39,7 +39,7 @@ describe("DeleteAttachmentUseCase", () => {
 
     expect(error).toEqual({
       code: "EXTERNAL_SERVICE_FAILED",
-      message: "Failed to delete file",
+      message: "Falha ao excluir arquivo",
       data: {
         attachmentId: attachment.id,
       },
@@ -55,7 +55,7 @@ describe("DeleteAttachmentUseCase", () => {
 
     expect(error).toEqual({
       code: "OPERATION_FAILED",
-      message: "Attachment is in use",
+      message: "Anexo esta em uso",
       data: {
         attachmentId: attachment.id.value,
         attachmentTitle: attachment.title,
@@ -72,7 +72,7 @@ describe("DeleteAttachmentUseCase", () => {
 
     expect(error).toEqual({
       code: "NOT_FOUND",
-      message: "Attachment not found on server",
+      message: "Anexo nao encontrado no servidor",
       data: { attachmentId: attachment.id },
     });
   });

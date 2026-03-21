@@ -39,7 +39,7 @@ beforeAll(async () => {
   try {
     await s3Client.send(new CreateBucketCommand({ Bucket: bucketName }));
   } catch (error) {
-    console.error("Failed to create test bucket:", error);
+    console.error("Falha ao criar bucket de teste:", error);
     throw error;
   }
 

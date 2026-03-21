@@ -38,7 +38,7 @@ export class RendEmailSender implements EmailSender {
 
       if (response.error) {
         return bad(
-          DomainError.ExternalServiceFailed("Failed to send email", {
+          DomainError.ExternalServiceFailed("Falha ao enviar e-mail", {
             details: [response.error.message],
           })
         );

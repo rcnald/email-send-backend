@@ -11,11 +11,11 @@ export class FakeDeleter extends Deleter {
     await new Promise((resolve) => setTimeout(resolve, 10));
 
     if (params.url === "non-existent-on-server-url") {
-      return bad(DomainError.NotFound("Attachment not found on server"));
+      return bad(DomainError.NotFound("Anexo nao encontrado no servidor"));
     }
 
     if (params.url === "fail-delete-url") {
-      return bad(DomainError.ExternalServiceFailed("Failed to delete file"));
+      return bad(DomainError.ExternalServiceFailed("Falha ao excluir arquivo"));
     }
 
     return nice();

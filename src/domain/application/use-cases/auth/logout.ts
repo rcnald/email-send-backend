@@ -15,17 +15,21 @@ export class LogoutUseCase {
     const payload = this.encrypter.decrypt(refreshToken);
 
     if (!payload) {
-      return bad(DomainError.Unauthorized("Invalid or expired refresh token"));
+      return bad(
+        DomainError.Unauthorized("Token de atualizacao invalido ou expirado")
+      );
     }
 
     if (payload.type !== "refresh") {
-      return bad(DomainError.Unauthorized("Token must be a refresh token"));
+      return bad(
+        DomainError.Unauthorized("O token deve ser um token de atualizacao")
+      );
     }
 
     if (payload.sub !== userId) {
       return bad(
         DomainError.Unauthorized(
-          "Refresh token does not belong to authenticated user"
+          "O token de atualizacao nao pertence ao usuario autenticado"
         )
       );
     }

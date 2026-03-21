@@ -45,7 +45,7 @@ export class SentEmailController {
     }
 
     return response.status(200).json({
-      message: "Email sent successfully",
+      message: "E-mail enviado com sucesso",
       data: {
         email_id: result.mailId.value,
       },

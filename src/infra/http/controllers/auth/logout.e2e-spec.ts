@@ -70,7 +70,7 @@ describe("Logout (E2E)", () => {
     expect(response.status).toBe(401);
     expect(response.body).toMatchObject({
       code: "UNAUTHORIZED",
-      message: "Refresh token does not belong to authenticated user",
+      message: "O token de atualizacao nao pertence ao usuario autenticado",
     });
   });
 });

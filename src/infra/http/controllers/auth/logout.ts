@@ -23,7 +23,7 @@ export class LogoutController {
     if (!refreshToken) {
       return response.status(401).json({
         code: "UNAUTHORIZED",
-        message: "Refresh token not provided",
+        message: "Token de atualizacao nao fornecido",
         data: {},
       });
     }

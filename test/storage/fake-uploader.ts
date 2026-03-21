@@ -16,7 +16,7 @@ export class FakeUploader implements Uploader {
     const { fileName } = params;
 
     if (fileName === "invalid.zip") {
-      return bad(DomainError.ExternalServiceFailed("Failed to upload file"));
+      return bad(DomainError.ExternalServiceFailed("Falha ao enviar arquivo"));
     }
     return nice({ url: `http://fakeurl.com/${fileName}` });
   }

@@ -1,7 +1,7 @@
 # **Documento de Requisitos: invoice-api**
 
-Versão: 1.5  
-Data: 21/03/2026
+Versão: 1.6  
+Data: 22/03/2026
 
 ## **Histórico de Revisões**
 
@@ -12,6 +12,7 @@ Data: 21/03/2026
 | 1.3 | 11/06/2025 | Ronaldo Junior | Atualização dos Requisitos Funcionais e Regras de Negócio |
 | 1.4 | 23/07/2025 | Ronaldo Junior | Reestruturação do documento: merge com documentação técnica, reorganização das seções para melhor experiência do desenvolvedor, padronização de comandos e configurações |
 | 1.5 | 21/03/2026 | Ronaldo Junior | Atualização para o estado atual da API, renomeação da aplicação para invoice-api, revisão de endpoints, scripts e variáveis de ambiente |
+| 1.6 | 22/03/2026 | Ronaldo Junior | Documentação das salvaguardas globais da API (timeout e rate limit) |
 
 ## **Índice**
 
@@ -165,6 +166,10 @@ npm run dev
 - `DELETE /attachments/:id/delete`
 - `POST /emails`
 
+**Salvaguardas Globais (todas as rotas):**
+- `408 REQUEST_TIMEOUT`: requisição excedeu **25 segundos** de processamento.
+- `429 TOO_MANY_REQUESTS`: mesma origem excedeu **10 requisições** em uma janela de **1 minuto**.
+
 ## **6. Regras de Negócio**
 
 * [x] **RN-01:** O arquivo anexado pelo usuário **deve**, obrigatoriamente, estar no formato **.zip**. O sistema deve validar a extensão do arquivo e rejeitar formatos diferentes.  
@@ -186,6 +191,8 @@ npm run dev
 * [X] **RNF-04 (Segurança):** Os arquivos fiscais anexados devem ser tratados de forma segura, com armazenamento temporário e exclusão automática após o período definido. O acesso à funcionalidade de envio deve ser restrito a usuários autenticados.  
 * [x] **RNF-05 (Disponibilidade):** O serviço de envio de e-mail deve estar disponível 99.9% do tempo.  
 * [x] **RNF-06 (Comunicação):** As notificações de sucesso e falha para o usuário devem ser exibidas em tempo real (via Socket.IO, conforme sugerido no diagrama), sem a necessidade de recarregar a página.
+* [x] **RNF-07 (Resiliência):** Toda requisição HTTP deve encerrar com timeout após 25 segundos para evitar conexões pendentes indefinidamente.
+* [x] **RNF-08 (Proteção de Tráfego):** A API deve limitar cada IP a 10 requisições por minuto para reduzir abuso e preservar estabilidade.
 
 ## **8. Estrutura do Projeto**
 

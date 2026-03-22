@@ -2,10 +2,13 @@ import { apiReference } from "@scalar/express-api-reference";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-
+import rateLimit from "express-rate-limit";
 import swaggerDocs from "../../docs/swagger.json";
 import { getEnv } from "./env";
+import { requestTimeout } from "./http/middlewares/timeout";
 import { createRouter } from "./http/routes";
+
+const ALLOW_CONFIG = /.*/;
 
 export function createApp() {
   const app = express();
@@ -21,7 +24,7 @@ export function createApp() {
   };
 
   app.use(cors(corsOptions));
-  app.options(/.*/, cors(corsOptions));
+  app.options(ALLOW_CONFIG, cors(corsOptions));
 
   app.use(
     "/reference",
@@ -34,6 +37,21 @@ export function createApp() {
 
   app.use(express.json());
   app.use(cookieParser());
+  app.use(requestTimeout(25_000));
+  app.use(
+    rateLimit({
+      windowMs: 1 * 60 * 1000, // 1 minute
+      max: 10, // Limit each IP to 10 requests per windowMs
+      message: {
+        code: "TOO_MANY_REQUESTS",
+        message: "Muitas requisições - Por favor, tente novamente mais tarde.",
+        data: {},
+      },
+      statusCode: 429,
+      standardHeaders: true, // Return rate limit info in headers
+      legacyHeaders: false,
+    })
+  );
 
   app.use(createRouter());
 

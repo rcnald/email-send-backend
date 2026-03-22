@@ -3,7 +3,7 @@
   "info": {
     "title": "Send Email API",
     "version": "1.0",
-    "description": "API para envio automatizado de documentos fiscais por email"
+    "description": "API para envio automatizado de documentos fiscais por email. Todas as rotas possuem salvaguardas globais: timeout de 25 segundos por requisição e rate limit de 10 requisições por minuto por IP."
   },
   "servers": [
     {
@@ -582,7 +582,9 @@
                         },
                         "message": {
                           "type": "string",
-                          "enum": ["Não autorizado - token inválido ou expirado"]
+                          "enum": [
+                            "Não autorizado - token inválido ou expirado"
+                          ]
                         },
                         "data": {
                           "type": "object"
@@ -819,9 +821,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "enum": [
-                        "Assistente não encontrado"
-                      ]
+                      "enum": ["Assistente não encontrado"]
                     },
                     "data": {
                       "type": "object",
@@ -1897,6 +1897,44 @@
         "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
         "example": "123e4567-e89b-12d3-a456-426614174000"
       },
+      "RequestTimeoutError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": ["REQUEST_TIMEOUT"]
+          },
+          "message": {
+            "type": "string",
+            "enum": ["Requisição demorou mais do que o tempo limite permitido."]
+          },
+          "data": {
+            "type": "object",
+            "example": {}
+          }
+        },
+        "required": ["code", "message", "data"]
+      },
+      "TooManyRequestsError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": ["TOO_MANY_REQUESTS"]
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Muitas requisições - Por favor, tente novamente mais tarde."
+            ]
+          },
+          "data": {
+            "type": "object",
+            "example": {}
+          }
+        },
+        "required": ["code", "message", "data"]
+      },
       "UnauthorizedError": {
         "type": "object",
         "properties": {
@@ -1911,6 +1949,38 @@
           },
           "data": {
             "type": "object"
+          }
+        }
+      }
+    },
+    "responses": {
+      "RequestTimeout": {
+        "description": "Tempo limite de 25 segundos excedido",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RequestTimeoutError"
+            },
+            "example": {
+              "code": "REQUEST_TIMEOUT",
+              "message": "Requisição demorou mais do que o tempo limite permitido.",
+              "data": {}
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Limite de 10 requisições por minuto excedido",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/TooManyRequestsError"
+            },
+            "example": {
+              "code": "TOO_MANY_REQUESTS",
+              "message": "Muitas requisições - Por favor, tente novamente mais tarde.",
+              "data": {}
+            }
           }
         }
       }

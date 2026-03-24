@@ -1,3 +1,5 @@
+import type { ErrorCodeType } from "@/core/domain-error";
+
 export interface LoggerField {
   "request.id"?: string;
   "http.method"?: string;
@@ -9,6 +11,7 @@ export interface LoggerField {
   port?: number;
   reference_url?: string;
   "error.type"?: string;
+  "error.code"?: ErrorCodeType;
   "error.safe_message"?: string;
 }
 

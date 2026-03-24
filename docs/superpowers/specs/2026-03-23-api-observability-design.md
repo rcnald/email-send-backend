@@ -1,7 +1,7 @@
 # API Observability Learning Spec
 
 Date: 2026-03-23  
-Project: `email-send-backend`  
+Project: `invoice-backend`  
 Status: Draft for learning and future implementation
 
 ## 1) Why this spec exists

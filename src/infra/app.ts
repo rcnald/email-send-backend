@@ -5,6 +5,7 @@ import express from "express";
 import rateLimit from "express-rate-limit";
 import swaggerDocs from "../../docs/swagger.json";
 import { getEnv } from "./env";
+import { requestLogger } from "./http/middlewares/request-logger";
 import { requestTimeout } from "./http/middlewares/timeout";
 import { createRouter } from "./http/routes";
 
@@ -25,6 +26,7 @@ export function createApp() {
 
   app.use(cors(corsOptions));
   app.options(ALLOW_CONFIG, cors(corsOptions));
+  app.use(requestLogger);
 
   app.use(
     "/reference",

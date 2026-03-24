@@ -1,13 +1,14 @@
 import { createApp } from "./app";
 import { getEnv } from "./env";
+import { logger } from "./logger/local";
 
 const app = createApp();
 
 const env = getEnv();
 
 app.listen(env.PORT, () => {
-  if (env.ENVIRONMENT === "development") {
-    console.log("Consult the API reference at http://localhost:3333/reference");
-    console.log(`🚀 Server is running on port ${env.PORT}`);
-  }
+  logger.info("server.started", {
+    port: env.PORT,
+    reference_url: `http://localhost:${env.PORT}/reference`,
+  });
 });

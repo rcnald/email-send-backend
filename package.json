@@ -47,6 +47,7 @@
     "@aws-sdk/s3-request-presigner": "^3.848.0",
     "@prisma/client": "6.11.1",
     "@scalar/express-api-reference": "^0.8.13",
+    "@sentry/node": "^10.45.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

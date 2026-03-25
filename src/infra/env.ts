@@ -28,6 +28,7 @@ const envSchema = z.object({
   ENVIRONMENT: z
     .enum(["development", "production", "test"])
     .default("development"),
+  SENTRY_DSN: z.url().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

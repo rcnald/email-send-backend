@@ -1,6 +1,6 @@
 import { createApp } from "./app";
 import { getEnv } from "./env";
-import { logger } from "./logger/local";
+import { logger } from "./observability/local-logger";
 
 const app = createApp();
 

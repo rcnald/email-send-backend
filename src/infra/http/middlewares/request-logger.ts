@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import type { NextFunction, Request, Response } from "express";
 
-import { logger } from "@/infra/logger/local";
+import { logger } from "@/infra/observability/local-logger";
 
 const REQUEST_ID_REGEX = /^[A-Za-z0-9_-]{8,64}$/;
 

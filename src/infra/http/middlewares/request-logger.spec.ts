@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { afterEach, vi } from "vitest";
 
-import { logger } from "@/infra/logger/local";
+import { logger } from "@/infra/observability/local-logger";
 
 import { requestLogger } from "./request-logger";
 

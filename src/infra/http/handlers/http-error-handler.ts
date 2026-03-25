@@ -2,7 +2,7 @@ import type { Response } from "express";
 
 import type { DomainErrorData } from "@/core/domain-error";
 import { ErrorMapper } from "@/infra/http/mappers/error-mapper";
-import { logger } from "@/infra/logger/local";
+import { logger } from "@/infra/observability/local-logger";
 
 export class HttpErrorHandler {
   static handle(response: Response, error: DomainErrorData): Response {

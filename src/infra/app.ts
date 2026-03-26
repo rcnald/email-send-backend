@@ -1,6 +1,7 @@
 import { apiReference } from "@scalar/express-api-reference";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import type { Express } from "express";
 import express from "express";
 import rateLimit from "express-rate-limit";
 import swaggerDocs from "../../docs/swagger.json";
@@ -11,7 +12,11 @@ import { createRouter } from "./http/routes";
 
 const ALLOW_CONFIG = /.*/;
 
-export function createApp() {
+interface CreateAppOptions {
+  registerTestRoutes?: (app: Express) => void;
+}
+
+export function createApp(options: CreateAppOptions = {}) {
   const app = express();
   const env = getEnv();
 
@@ -54,6 +59,8 @@ export function createApp() {
       legacyHeaders: false,
     })
   );
+
+  options.registerTestRoutes?.(app);
 
   app.use(createRouter());
 

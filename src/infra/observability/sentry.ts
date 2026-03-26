@@ -8,7 +8,6 @@ import {
 import type {
   CaptureHttpErrorInput,
   ErrorCaptureGateway,
-  InitErrorCaptureConfig,
 } from "@/domain/application/observability/error-capture";
 import { getEnv } from "@/infra/env";
 
@@ -21,10 +20,11 @@ const SAFE_TAGS = [
   "code",
 ] as const;
 
-class SentryErrorCaptureGateway implements ErrorCaptureGateway<ErrorEvent> {
+class SentryErrorCaptureGateway implements ErrorCaptureGateway {
   private enabled = true;
+  private eventCallbackForTests?: (event: ErrorEvent) => void;
 
-  init(config: InitErrorCaptureConfig<ErrorEvent> = { enabled: true }) {
+  init() {
     const env = getEnv();
 
     if (!env.SENTRY_DSN) {
@@ -32,21 +32,22 @@ class SentryErrorCaptureGateway implements ErrorCaptureGateway<ErrorEvent> {
       return;
     }
 
-    sentryInit({
+    const options = {
       dsn: env.SENTRY_DSN,
       sendDefaultPii: false,
       beforeSend: (event: ErrorEvent) => {
         const sanitizedEvent = this.sanitizeEvent(event);
 
-        if (!config.enabled) {
-          config.eventCallback(sanitizedEvent);
-          this.enabled = false;
+        if (this.eventCallbackForTests) {
+          this.eventCallbackForTests(sanitizedEvent);
           return null;
         }
 
         return sanitizedEvent;
       },
-    });
+    };
+
+    sentryInit(options as never);
 
     this.enabled = true;
   }
@@ -72,6 +73,10 @@ class SentryErrorCaptureGateway implements ErrorCaptureGateway<ErrorEvent> {
 
   shutDown(): void {
     close(0);
+  }
+
+  setSentryEventCallbackForTests(callback?: (event: ErrorEvent) => void): void {
+    this.eventCallbackForTests = callback;
   }
 
   private sanitizeEvent(event: ErrorEvent): ErrorEvent {

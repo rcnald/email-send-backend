@@ -12,8 +12,10 @@
 
 ## File map
 
+- Create: `src/domain/application/observability/error-capture.ts` (error capture gateway contract)
 - Create: `src/infra/observability/sentry.ts` (Sentry init + capture gateway)
 - Create: `src/infra/observability/sentry.spec.ts` (gateway unit tests)
+- Create: `test/observability/in-memory-sentry-event-storage.ts` (deterministic in-memory event sink for tests)
 - Create: `src/infra/http/handlers/http-error-handler.e2e-spec.ts` (HTTP-level handler capture behavior)
 - Create: `src/infra/http/handlers/unexpected-error-handler.ts` (capture unexpected request errors)
 - Create: `src/infra/http/handlers/unexpected-error-handler.e2e-spec.ts` (HTTP-level unexpected error behavior)
@@ -33,28 +35,31 @@
 
 ### Task 1: Add env support and Sentry gateway
 
+Status: Implemented in commit `99e465f` and now treated as baseline for Tasks 2-5.
+
 **Files:**
+- Create: `src/domain/application/observability/error-capture.ts`
 - Modify: `src/infra/env.ts`
 - Create: `src/infra/observability/sentry.ts`
 - Create/Test: `src/infra/observability/sentry.spec.ts`
+- Create: `test/observability/in-memory-sentry-event-storage.ts`
 - Modify: `package.json`
 
-- [ ] **Step 1: Write failing gateway tests**
+- [x] **Step 1: Write failing gateway tests**
 
 Create `src/infra/observability/sentry.spec.ts` with tests for:
 
 1. init is no-op when DSN is missing
-2. capture is no-op when Sentry disabled
-3. capture sends safe fields only when enabled
+2. capture sends sanitized allowlisted fields when DSN is configured
 
-Use real Sentry SDK integration path and inject a deterministic **local transport sink** only for tests (no network calls).
+Use real Sentry SDK integration path and disable network delivery in tests via infra-only callback seam: `setSentryEventCallbackForTests(...)` + `init()`. Persist callback events with `InMemorySentryEventStorage`.
 
-- [ ] **Step 2: Run test to verify failure**
+- [x] **Step 2: Run test to verify failure**
 
 Run: `yarn vitest run src/infra/observability/sentry.spec.ts`
 Expected: FAIL because gateway module does not exist.
 
-- [ ] **Step 3: Add optional Sentry env variables**
+- [x] **Step 3: Add optional Sentry env variables**
 
 Update `src/infra/env.ts` schema with optional fields:
 
@@ -62,18 +67,25 @@ Update `src/infra/env.ts` schema with optional fields:
 
 Keep all existing required env vars unchanged.
 
-- [ ] **Step 4: Implement minimal gateway**
+- [x] **Step 4: Implement minimal gateway**
+
+Create `src/domain/application/observability/error-capture.ts` with:
+
+- `CaptureHttpErrorInput`
+- `ErrorCaptureGateway` abstract class (`init`, `captureHttpError`, `shutDown`) with no Sentry-specific event types
 
 Create `src/infra/observability/sentry.ts` with:
 
-- `initSentry()`
-  - returns immediately when no DSN
+- singleton `sentryErrorCaptureGateway` implementing `ErrorCaptureGateway`
+- `init()`
+  - returns immediately and disables capture when no DSN
   - calls `Sentry.init({...})` when DSN exists
   - sets deny-by-default privacy config:
     - `sendDefaultPii: false`
     - `beforeSend` allowlist scrubber for event payload
     - reconstruct event from allowlisted fields only (deny-all default)
     - strip request data not in allowlist
+  - when infra test callback seam is configured, call callback with sanitized event and return `null` to avoid network
 - `captureHttpError()`
   - no-op when disabled
   - captures a sanitized synthetic `Error` with allowlisted context only:
@@ -86,12 +98,12 @@ Create `src/infra/observability/sentry.ts` with:
   - do not attach stack traces or causes from request-originated errors
   - never forwards `error.data`
   - never includes headers, cookies, bodies, tokens, raw payloads, or raw exception messages
+- `shutDown()`
+  - closes Sentry client (`close(0)`) for deterministic teardown in tests
+- `setSentryEventCallbackForTests(callback?)`
+  - infra-only test seam to observe sanitized events without leaking test contracts into application port
 
-- `setSentryTransportForTests()`
-  - test seam to provide local deterministic transport sink while still exercising real SDK capture path
-  - reset after each test
-
-- [ ] **Step 5: Add dependency and run gateway tests**
+- [x] **Step 5: Add dependency and run gateway tests**
 
 Run:
 
@@ -102,11 +114,11 @@ yarn vitest run src/infra/observability/sentry.spec.ts
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit gateway slice**
+- [x] **Step 6: Commit gateway slice**
 
 ```bash
-git add package.json yarn.lock src/infra/env.ts src/infra/observability/sentry.ts src/infra/observability/sentry.spec.ts
-git commit -m "feat: add sentry gateway with env-driven initialization"
+git add package.json yarn.lock src/domain/application/observability/error-capture.ts src/infra/env.ts src/infra/observability/sentry.ts src/infra/observability/sentry.spec.ts test/observability/in-memory-sentry-event-storage.ts
+git commit -m "feat: add sentry error capture gateway with safe test callbacks"
 ```
 
 ### Task 2: Capture 5xx from central HTTP error handler
@@ -116,9 +128,9 @@ git commit -m "feat: add sentry gateway with env-driven initialization"
 - Modify: `src/infra/http/handlers/http-error-handler.ts`
 - Modify: `src/infra/app.ts`
 
-- [ ] **Step 1: Write failing HTTP-level e2e tests**
+- [x] **Step 1: Write failing HTTP-level e2e tests**
 
-Create `http-error-handler.e2e-spec.ts` using `createApp()` + `supertest` and deterministic local Sentry transport sink. Add assertions:
+Create `http-error-handler.e2e-spec.ts` using `createApp()` + `supertest` and deterministic callback mode from `sentry.ts` (`setSentryEventCallbackForTests(...)` + `init()`) with `InMemorySentryEventStorage`. In each test, initialize gateway before requests and call `setSentryEventCallbackForTests()` + `shutDown()` in teardown. Add assertions:
 
 1. 4xx response path does not produce Sentry event
 2. 5xx response path (`EXTERNAL_SERVICE_FAILED` -> 503) produces Sentry event with allowlisted fields
@@ -135,12 +147,12 @@ Introduce app factory seam in this task (not later):
 - `createApp({ registerTestRoutes?: (app) => void })`
 - invoke `registerTestRoutes` before global unexpected error middleware registration
 
-- [ ] **Step 2: Run test to verify failure**
+- [x] **Step 2: Run test to verify failure**
 
 Run: `yarn vitest run --config vitest.config.e2e.ts src/infra/http/handlers/http-error-handler.e2e-spec.ts`
 Expected: FAIL before handler integration.
 
-- [ ] **Step 3: Implement minimal handler integration**
+- [x] **Step 3: Implement minimal handler integration**
 
 Update `HttpErrorHandler.handle(...)`:
 
@@ -149,7 +161,7 @@ Update `HttpErrorHandler.handle(...)`:
 - keep current response JSON contract unchanged
 - update `createApp` signature to accept optional `registerTestRoutes` seam used by this and later e2e tests
 
-- [ ] **Step 4: Run handler tests**
+- [x] **Step 4: Run handler tests**
 
 Run: `yarn vitest run --config vitest.config.e2e.ts src/infra/http/handlers/http-error-handler.e2e-spec.ts`
 Expected: PASS.
@@ -172,8 +184,8 @@ git commit -m "feat: capture 5xx domain errors in sentry"
 
 Create `src/infra/bootstrap.spec.ts` and add a focused test with injected deps asserting call order:
 
-1. `initSentry()` called exactly once
-2. `listen` is invoked only after `initSentry()`
+1. `sentryErrorCaptureGateway.init()` called exactly once
+2. `listen` is invoked only after gateway initialization
 
 - [ ] **Step 2: Run test to verify failure**
 
@@ -184,11 +196,11 @@ Expected: FAIL before bootstrap entry exists.
 
 Create `src/infra/bootstrap.ts` with `startServer(deps?)` that:
 
-- calls `initSentry()`
+- calls `sentryErrorCaptureGateway.init()`
 - builds app and env via injected deps/default imports
 - starts listen via injected/default listener function
 
-Call-order contract in code: `initSentry()` executes before any `listen(...)` invocation.
+Call-order contract in code: gateway initialization executes before any `listen(...)` invocation.
 
 Use this seam to avoid port binding in tests.
 
@@ -215,7 +227,7 @@ git commit -m "feat: initialize sentry during server startup"
 
 - [ ] **Step 1: Write failing unexpected-error e2e tests**
 
-Add tests (using `createApp()` + `supertest`) to verify unexpected request-pipeline errors are:
+Add tests (using `createApp()` + `supertest`) with deterministic callback mode from `sentry.ts` (`setSentryEventCallbackForTests(...)` + `init()`) and explicit teardown (`setSentryEventCallbackForTests()` + `shutDown()`) to verify unexpected request-pipeline errors are:
 
 1. captured in Sentry with allowlisted context
 2. responded with safe 500 payload

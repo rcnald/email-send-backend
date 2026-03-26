@@ -17,6 +17,7 @@ describe("sentryErrorCaptureGateway", () => {
   });
 
   afterEach(() => {
+    sentryErrorCaptureGateway.setSentryEventCallbackForTests();
     sentryErrorCaptureGateway.shutDown();
     storage.clear();
     process.env = originalEnv;
@@ -25,10 +26,10 @@ describe("sentryErrorCaptureGateway", () => {
   it("does not capture events when initialized without DSN", async () => {
     expect(getEnv().SENTRY_DSN).toBeUndefined();
 
-    sentryErrorCaptureGateway.init({
-      enabled: false,
-      eventCallback: storage.store.bind(storage),
-    });
+    sentryErrorCaptureGateway.setSentryEventCallbackForTests(
+      storage.store.bind(storage)
+    );
+    sentryErrorCaptureGateway.init();
 
     sentryErrorCaptureGateway.captureHttpError({
       requestId: "req-gw-1",
@@ -47,10 +48,10 @@ describe("sentryErrorCaptureGateway", () => {
     process.env.SENTRY_DSN = "https://test@example.ingest.sentry.io/1000000";
     expect(getEnv().SENTRY_DSN).toBe(process.env.SENTRY_DSN);
 
-    sentryErrorCaptureGateway.init({
-      enabled: false,
-      eventCallback: storage.store.bind(storage),
-    });
+    sentryErrorCaptureGateway.setSentryEventCallbackForTests(
+      storage.store.bind(storage)
+    );
+    sentryErrorCaptureGateway.init();
 
     sentryErrorCaptureGateway.captureHttpError({
       requestId: "req-gw-2",

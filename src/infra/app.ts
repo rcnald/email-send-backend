@@ -6,6 +6,7 @@ import express from "express";
 import rateLimit from "express-rate-limit";
 import swaggerDocs from "../../docs/swagger.json";
 import { getEnv } from "./env";
+import { unexpectedErrorHandler } from "./http/handlers/unexpected-error-handler";
 import { requestLogger } from "./http/middlewares/request-logger";
 import { requestTimeout } from "./http/middlewares/timeout";
 import { createRouter } from "./http/routes";
@@ -63,6 +64,7 @@ export function createApp(options: CreateAppOptions = {}) {
   options.registerTestRoutes?.(app);
 
   app.use(createRouter());
+  app.use(unexpectedErrorHandler);
 
   return app;
 }

@@ -166,7 +166,7 @@ Update `HttpErrorHandler.handle(...)`:
 Run: `yarn vitest run --config vitest.config.e2e.ts src/infra/http/handlers/http-error-handler.e2e-spec.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit handler slice**
+- [x] **Step 5: Commit handler slice**
 
 ```bash
 git add src/infra/http/handlers/http-error-handler.ts src/infra/http/handlers/http-error-handler.e2e-spec.ts src/infra/app.ts
@@ -180,19 +180,19 @@ git commit -m "feat: capture 5xx domain errors in sentry"
 - Create/Test: `src/infra/bootstrap.spec.ts`
 - Modify: `src/infra/server.ts`
 
-- [ ] **Step 1: Write failing startup integration assertion**
+- [x] **Step 1: Write failing startup integration assertion**
 
 Create `src/infra/bootstrap.spec.ts` and add a focused test with injected deps asserting call order:
 
 1. `sentryErrorCaptureGateway.init()` called exactly once
 2. `listen` is invoked only after gateway initialization
 
-- [ ] **Step 2: Run test to verify failure**
+- [x] **Step 2: Run test to verify failure**
 
 Run: `yarn vitest run src/infra/bootstrap.spec.ts`
 Expected: FAIL before bootstrap entry exists.
 
-- [ ] **Step 3: Implement startup init (minimal change)**
+- [x] **Step 3: Implement startup init (minimal change)**
 
 Create `src/infra/bootstrap.ts` with `startServer(deps?)` that:
 
@@ -206,12 +206,12 @@ Use this seam to avoid port binding in tests.
 
 Then keep `src/infra/server.ts` as thin entrypoint that only calls `startServer()`.
 
-- [ ] **Step 4: Run startup test**
+- [x] **Step 4: Run startup test**
 
 Run: `yarn vitest run src/infra/bootstrap.spec.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit startup slice**
+- [x] **Step 5: Commit startup slice**
 
 ```bash
 git add src/infra/bootstrap.ts src/infra/bootstrap.spec.ts src/infra/server.ts
@@ -225,7 +225,7 @@ git commit -m "feat: initialize sentry during server startup"
 - Create: `src/infra/http/handlers/unexpected-error-handler.ts`
 - Modify: `src/infra/app.ts`
 
-- [ ] **Step 1: Write failing unexpected-error e2e tests**
+- [x] **Step 1: Write failing unexpected-error e2e tests**
 
 Add tests (using `createApp()` + `supertest`) with deterministic callback mode from `sentry.ts` (`setSentryEventCallbackForTests(...)` + `init()`) and explicit teardown (`setSentryEventCallbackForTests()` + `shutDown()`) to verify unexpected request-pipeline errors are:
 
@@ -238,12 +238,12 @@ Use deterministic test route:
 
 Reuse app factory seam introduced in Task 2 to register this test route before unexpected error middleware.
 
-- [ ] **Step 2: Run test to verify failure**
+- [x] **Step 2: Run test to verify failure**
 
 Run: `yarn vitest run --config vitest.config.e2e.ts src/infra/http/handlers/unexpected-error-handler.e2e-spec.ts`
 Expected: FAIL before handler exists.
 
-- [ ] **Step 3: Implement minimal unexpected error handler**
+- [x] **Step 3: Implement minimal unexpected error handler**
 
 Create Express error middleware `(error, request, response, _next)` that:
 
@@ -252,12 +252,12 @@ Create Express error middleware `(error, request, response, _next)` that:
 
 Register this middleware in `src/infra/app.ts` after routes.
 
-- [ ] **Step 4: Run unexpected handler tests**
+- [x] **Step 4: Run unexpected handler tests**
 
 Run: `yarn vitest run --config vitest.config.e2e.ts src/infra/http/handlers/unexpected-error-handler.e2e-spec.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit unexpected error slice**
+- [x] **Step 5: Commit unexpected error slice**
 
 ```bash
 git add src/infra/http/handlers/unexpected-error-handler.ts src/infra/http/handlers/unexpected-error-handler.e2e-spec.ts src/infra/app.ts
@@ -269,7 +269,7 @@ git commit -m "feat: capture unexpected request errors with sentry"
 **Files:**
 - No required production file edits
 
-- [ ] **Step 1: Run relevant unit suite**
+- [x] **Step 1: Run relevant unit suite**
 
 Run:
 
@@ -280,7 +280,7 @@ yarn vitest run --config vitest.config.e2e.ts src/infra/http/handlers/http-error
 
 Expected: PASS.
 
-- [ ] **Step 2: Run selected e2e suite (if Docker infra is up)**
+- [x] **Step 2: Run selected e2e suite (if Docker infra is up)**
 
 Run:
 
